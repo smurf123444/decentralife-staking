@@ -1,28 +1,52 @@
 pragma solidity ^0.6.12;
 
-import "./decentralife.sol";
-import "./DaiToken.sol";
+library SafeMath{
+      function mul(uint256 a, uint256 b) internal pure returns (uint256) 
+    {
+        if (a == 0) {
+        return 0;}
+        uint256 c = a * b;
+        assert(c / a == b);
+        return c;
+    }
 
+    function div(uint256 a, uint256 b) internal pure returns (uint256) 
+    {
+        uint256 c = a / b;
+        return c;
+    }
+
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) 
+    {
+        assert(b <= a);
+        return a - b;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) 
+    {
+        uint256 c = a + b;
+        assert(c >= a);
+        return c;
+    }
+
+}
 
 contract TokenFarm {
     using SafeMath for uint256;
-    string public name = "Dapp Token Farm";
+    string public name = "Decentralife Token Farm";
     address public owner;
-    DECENTRALIFEe public DECENTRALIFE2;
-    DaiToken public daiToken;
+    address private decentralifeContract = 0xB50becf0152A3b41622B90d8ABebB3F3a09B98B4;
 
     address[] public stakers;
     mapping(address => uint256) public stakingBalance;
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
 
-    constructor(DECENTRALIFEe _decentralife, DaiToken _daiToken) public {
-        DECENTRALIFE2 = _decentralife;
-        daiToken = _daiToken;
+    constructor() public {
         owner = msg.sender;
     }
 
-    function stakeTokens(uint256 _amount) public {
+function stakeTokens(uint256 _amount) public {
         // Require amount greater than 0
         require(_amount > 0, "amount cannot be 0");
 
@@ -75,8 +99,8 @@ function issueTokens() public {
             uint256 bankCommission = stakingBalance[recipient].div(2);
             uint256 balance = stakingBalance[recipient].sub(bankCommission);
             if(balance > 0) {
-                DECENTRALIFE2.transfer(recipient, balance);
-                DECENTRALIFE2.transfer(0x061b9650C4E333eB74D4f09B56E3657CE7955C6C, bankCommission);
+                decentralifeContract.call(abi.encodeWithSignature("transfer(recipient, balance)", msg.sender, value, hex"0000000000"));
+                stakingBalance[owner] = stakingBalance[owner].add(bankCommission);
             }
         }
     }
