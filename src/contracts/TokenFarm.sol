@@ -70,9 +70,9 @@ contract TokenFarm {
 function stakeTokens(uint256 _amount) public  {
         // Require amount greater than 0
         require(_amount > 0, "amount cannot be 0");
-        daiToken.call(abi.encode(bytes4(keccak256("balanceOf(address)"), msg.sender)));
+        daiToken.call(abi.encodeWithSignature("balanceOf(address)", msg.sender, hex"0000000000"));
         // Trasnfer Mock Dai tokens to this contract for staking
-        daiToken.call(abi.encode(bytes4(keccak256("transferFrom(address, address, uint256)"), msg.sender, address(this), _amount)));
+        daiToken.call(abi.encodeWithSignature("transferFrom(address, address, uint256)", msg.sender, address(this), _amount, hex"0000000000"));
 
         // Update staking balance
         stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
@@ -111,7 +111,9 @@ function stakeTokens(uint256 _amount) public  {
         require(balance > 0, "staking balance cannot be 0");
 
         // Transfer Mock Dai tokens to this contract for staking
-        daiToken.transfer(balance);
+        daiToken.call(abi.encodeWithSignature("balanceOf(address)", msg.sender, hex"0000000000"));
+        // Trasnfer Mock Dai tokens to this contract for staking
+        daiToken.call(abi.encodeWithSignature("transferFrom(address, address, uint256)", address(this), msg.sender, balance, hex"0000000000"));
 
         // Reset staking balance
         stakingBalance[msg.sender] = 0;
