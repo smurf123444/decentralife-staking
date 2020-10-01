@@ -40,8 +40,9 @@ contract TokenFarm {
     }
     string public name = "Decentralife Token Farm";
     address public owner;
-    address internal decentralifeContract = 0xB50becf0152A3b41622B90d8ABebB3F3a09B98B4;
-    address payable public daiToken = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
+    address internal decentralifeContract = 0xaE036c65C649172b43ef7156b009c6221B596B8b;
+    //0xB347b9f5B56b431B2CF4e1d90a5995f7519ca792 IS POLY MATH
+    address payable public daiToken = 0xB347b9f5B56b431B2CF4e1d90a5995f7519ca792;
     address[] public stakers;
     
     mapping(address => uint256) public stakingBalance;
@@ -59,13 +60,6 @@ contract TokenFarm {
     //amountOfStakers made as uint256
     //new address 
     
-    function getAll() public returns (address[] memory){
-    address[] memory ret = new address[](amountOfStakers);
-    for (uint i = 0; i < amountOfStakers; i++) {
-        ret[i] = stakers[i];
-    }
-    return ret;
-}
 
 function stakeTokens(uint256 _amount) public  {
         // Require amount greater than 0
@@ -84,22 +78,7 @@ function stakeTokens(uint256 _amount) public  {
         // Update staking status
         isStaking[msg.sender] = true;
         hasStaked[msg.sender] = true;
-        
-        amountOfStakers++;
-        
-        for (uint i = 0; i < amountOfStakers; i++)
-        {
-            if(stakers[i] != msg.sender)
-            {
-            i++;
-            }
-            else
-            {
-            i = amountOfStakers;
-            stakers.push(msg.sender);
-            }
-        }
-        
+
     }
 
     // Unstaking Tokens (Withdraw)
@@ -110,8 +89,6 @@ function stakeTokens(uint256 _amount) public  {
         // Require amount greater than 0
         require(balance > 0, "staking balance cannot be 0");
 
-        // Transfer Mock Dai tokens to this contract for staking
-        daiToken.call(abi.encodeWithSignature("balanceOf(address)", msg.sender, hex"0000000000"));
         // Trasnfer Mock Dai tokens to this contract for staking
         daiToken.call(abi.encodeWithSignature("transferFrom(address, address, uint256)", address(this), msg.sender, balance, hex"0000000000"));
 
@@ -120,9 +97,7 @@ function stakeTokens(uint256 _amount) public  {
 
         // Update staking status
         isStaking[msg.sender] = false;
-        //log returned stake
-       // stakedInfo[msg.sender].push(concat(balance, "Returned: " + block.timeStamp); 
-       amountOfStakers--;
+        
     }
 
     // Issuing Tokens
