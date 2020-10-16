@@ -1,4 +1,4 @@
-const DappToken = artifacts.require('DECENTRALIFEe')
+const DappToken = artifacts.require('DappToken')
 const DaiToken = artifacts.require('DaiToken')
 const TokenFarm = artifacts.require('TokenFarm')
 
@@ -14,8 +14,7 @@ module.exports = async function(deployer, network, accounts) {
   // Deploy TokenFarm
   await deployer.deploy(TokenFarm, dappToken.address, daiToken.address)
   const tokenFarm = await TokenFarm.deployed()
-  //ALLOW DAPP TOO TRANSFER DECENTRALIFE
-  await dappToken.allowAddress(tokenFarm.address, true)
+
   // Transfer all tokens to TokenFarm (1 million)
   await dappToken.transfer(tokenFarm.address, '1000000000000000000000000')
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import DaiToken from '../abis/DaiToken.json'
-import DappToken from '../abis/DECENTRALIFEe.json'
+import DappToken from '../abis/DappToken.json'
 import TokenFarm from '../abis/TokenFarm.json'
 import Navbar from './Navbar'
 import Main from './Main'
@@ -25,7 +25,7 @@ class App extends Component {
     // Load DaiToken
     const daiTokenData = DaiToken.networks[networkId]
     if(daiTokenData) {
-      const daiToken = new web3.eth.Contract(DaiToken.abi, 0x6b175474e89094c44da98b954eedeac495271d0f)
+      const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
       this.setState({ daiToken })
       let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
       this.setState({ daiTokenBalance: daiTokenBalance.toString() })
