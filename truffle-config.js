@@ -28,7 +28,7 @@ const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
- const mnemonic = "switch honey outdoor asset screen feed board clutch attend marble quit under clap ritual orphan";
+ const mnemonic = "";
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -64,7 +64,7 @@ module.exports = {
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
     kovan: {
-      provider: () => new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/e272d9d07a2e489d94cee678fede6768`),
+      provider: () => new HDWalletProvider(mnemonic, ``),
       network_id: 42,       // Ropsten's id
       gas: 3000000,        // Ropsten has a lower block limit than mainnet
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
