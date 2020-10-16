@@ -43,16 +43,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"last_completed_migration\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"completed\",\"type\":\"uint256\"}],\"name\":\"setCompleted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/chris/Desktop/StakingDappTruffle 2/src/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/chris/Desktop/StakingDappTruffle 2/src/contracts/Migrations.sol\":{\"keccak256\":\"0x7955721ab2ed54c88170dd112ba118cc3a5406b39b51f13f88b5cea8912bc71c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://591d35841468a83f4d619ea7ab08b523c01c58b17713ca1ad82e0d86e0800b5f\",\"dweb:/ipfs/QmNN7MGeM3SPyPxgifPLhXUJHphVHsdqLc8qmWFfNXvEd4\"]}},\"version\":1}",
-  "bytecode": "0x6080604052600080546001600160a01b0319163317905534801561002257600080fd5b5061016f806100326000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c8063445df0ac146100465780638da5cb5b14610060578063fdacd57614610084575b600080fd5b61004e6100a3565b60408051918252519081900360200190f35b6100686100a9565b604080516001600160a01b039092168252519081900360200190f35b6100a16004803603602081101561009a57600080fd5b50356100b8565b005b60015481565b6000546001600160a01b031681565b6000546001600160a01b031633146101015760405162461bcd60e51b81526004018080602001828103825260338152602001806101076033913960400191505060405180910390fd5b60015556fe546869732066756e6374696f6e206973207265737472696374656420746f2074686520636f6e74726163742773206f776e6572a2646970667358221220779bbd9dcbaa0f9eef6e4650a7c1160c2633e1ef5cf380334303e3b34b3eadbb64736f6c634300060c0033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100415760003560e01c8063445df0ac146100465780638da5cb5b14610060578063fdacd57614610084575b600080fd5b61004e6100a3565b60408051918252519081900360200190f35b6100686100a9565b604080516001600160a01b039092168252519081900360200190f35b6100a16004803603602081101561009a57600080fd5b50356100b8565b005b60015481565b6000546001600160a01b031681565b6000546001600160a01b031633146101015760405162461bcd60e51b81526004018080602001828103825260338152602001806101076033913960400191505060405180910390fd5b60015556fe546869732066756e6374696f6e206973207265737472696374656420746f2074686520636f6e74726163742773206f776e6572a2646970667358221220779bbd9dcbaa0f9eef6e4650a7c1160c2633e1ef5cf380334303e3b34b3eadbb64736f6c634300060c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"last_completed_migration\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"completed\",\"type\":\"uint256\"}],\"name\":\"setCompleted\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/chris/Desktop/Decentralife-staking/src/contracts/Migrations.sol\":\"Migrations\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/chris/Desktop/Decentralife-staking/src/contracts/Migrations.sol\":{\"keccak256\":\"0x7955721ab2ed54c88170dd112ba118cc3a5406b39b51f13f88b5cea8912bc71c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://591d35841468a83f4d619ea7ab08b523c01c58b17713ca1ad82e0d86e0800b5f\",\"dweb:/ipfs/QmNN7MGeM3SPyPxgifPLhXUJHphVHsdqLc8qmWFfNXvEd4\"]}},\"version\":1}",
+  "bytecode": "0x6080604052600080546001600160a01b0319163317905534801561002257600080fd5b5061016f806100326000396000f3fe608060405234801561001057600080fd5b50600436106100415760003560e01c8063445df0ac146100465780638da5cb5b14610060578063fdacd57614610084575b600080fd5b61004e6100a3565b60408051918252519081900360200190f35b6100686100a9565b604080516001600160a01b039092168252519081900360200190f35b6100a16004803603602081101561009a57600080fd5b50356100b8565b005b60015481565b6000546001600160a01b031681565b6000546001600160a01b031633146101015760405162461bcd60e51b81526004018080602001828103825260338152602001806101076033913960400191505060405180910390fd5b60015556fe546869732066756e6374696f6e206973207265737472696374656420746f2074686520636f6e74726163742773206f776e6572a26469706673582212204b086a25ae90d530bca5e412b38c289f490a62eb18a494f9454d8de63bd4500d64736f6c634300060c0033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b50600436106100415760003560e01c8063445df0ac146100465780638da5cb5b14610060578063fdacd57614610084575b600080fd5b61004e6100a3565b60408051918252519081900360200190f35b6100686100a9565b604080516001600160a01b039092168252519081900360200190f35b6100a16004803603602081101561009a57600080fd5b50356100b8565b005b60015481565b6000546001600160a01b031681565b6000546001600160a01b031633146101015760405162461bcd60e51b81526004018080602001828103825260338152602001806101076033913960400191505060405180910390fd5b60015556fe546869732066756e6374696f6e206973207265737472696374656420746f2074686520636f6e74726163742773206f776e6572a26469706673582212204b086a25ae90d530bca5e412b38c289f490a62eb18a494f9454d8de63bd4500d64736f6c634300060c0033",
   "immutableReferences": {},
   "sourceMap": "58:352:2:-:0;;;82:33;;;-1:-1:-1;;;;;;82:33:2;105:10;82:33;;;58:352;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "58:352:2:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;119:36;;;:::i;:::-;;;;;;;;;;;;;;;;82:33;;;:::i;:::-;;;;-1:-1:-1;;;;;82:33:2;;;;;;;;;;;;;;305:103;;;;;;;;;;;;;;;;-1:-1:-1;305:103:2;;:::i;:::-;;119:36;;;;:::o;82:33::-;;;-1:-1:-1;;;;;82:33:2;;:::o;305:103::-;217:5;;-1:-1:-1;;;;;217:5:2;203:10;:19;188:101;;;;-1:-1:-1;;;188:101:2;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;367:24:::1;:36:::0;305:103::o",
   "source": "// SPDX-License-Identifier: MIT\npragma solidity ^0.6.12;\n\ncontract Migrations {\n  address public owner = msg.sender;\n  uint public last_completed_migration;\n\n  modifier restricted() {\n    require(\n      msg.sender == owner,\n      \"This function is restricted to the contract's owner\"\n    );\n    _;\n  }\n\n  function setCompleted(uint completed) public restricted {\n    last_completed_migration = completed;\n  }\n}\n",
-  "sourcePath": "/Users/chris/Desktop/StakingDappTruffle 2/src/contracts/Migrations.sol",
+  "sourcePath": "/Users/chris/Desktop/Decentralife-staking/src/contracts/Migrations.sol",
   "ast": {
-    "absolutePath": "/Users/chris/Desktop/StakingDappTruffle 2/src/contracts/Migrations.sol",
+    "absolutePath": "/Users/chris/Desktop/Decentralife-staking/src/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         394
@@ -468,7 +468,7 @@
     "src": "32:379:2"
   },
   "legacyAST": {
-    "absolutePath": "/Users/chris/Desktop/StakingDappTruffle 2/src/contracts/Migrations.sol",
+    "absolutePath": "/Users/chris/Desktop/Decentralife-staking/src/contracts/Migrations.sol",
     "exportedSymbols": {
       "Migrations": [
         394
@@ -891,12 +891,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0xcef7F08aCe202799eD0FF873CDd9d5bA1a44A931",
-      "transactionHash": "0xb456566682c5f1db958db162789bb372b3e648eec6f47acbbe6658ace85c314f"
+      "address": "0xA97ccb3Cf6e462Bc468Cb08E23AA97F2c16ba4CA",
+      "transactionHash": "0xbcc48a937462a2e463e04385ae60f4460ea7881048521de2836cfd85ca94310f"
     }
   },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-09-26T22:41:05.484Z",
+  "updatedAt": "2020-09-27T20:15:47.636Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
