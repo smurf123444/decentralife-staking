@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import DaiToken from '../abis/DaiToken.json'
-import DappToken from '../abis/DappToken.json'
+import DappToken from '../abis/DECENTRALIFEe.json'
 import TokenFarm from '../abis/TokenFarm.json'
 import Navbar from './Navbar'
 import Main from './Main'
@@ -34,13 +34,15 @@ class App extends Component {
     }
 
     // Load DappToken
-    const dappTokenData = DappToken.networks[networkId]
-    if(dappTokenData) {
-      const dappToken = new web3.eth.Contract(DappToken.abi, dappTokenData.address)
+  
+    let ride = true
+    if(ride) {
+      const dappToken = new web3.eth.Contract(DappToken.abi, '0x74E42519A927AA320bBdd775582515Fb0532deDf')
       this.setState({ dappToken })
       let dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
       this.setState({ dappTokenBalance: dappTokenBalance.toString() })
     } else {
+      ride = false
       window.alert('DappToken contract not deployed to detected network.')
     }
 
