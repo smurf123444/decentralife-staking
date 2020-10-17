@@ -1,12 +1,12 @@
 pragma solidity 0.6.0;
 
-import "./DappToken.sol";
+import "./decentralife.sol";
 import "./DaiToken.sol";
 
 contract TokenFarm {
     string public name = "Dapp Token Farm";
     address public owner;
-    DappToken public dappToken;
+    DECENTRALIFEe public dappToken;
     DaiToken public daiToken;
 
     address[] public stakers;
@@ -14,7 +14,7 @@ contract TokenFarm {
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
 
-    constructor(DappToken _dappToken, DaiToken _daiToken) public {
+    constructor(DECENTRALIFEe _dappToken, DaiToken _daiToken) public {
         dappToken = _dappToken;
         daiToken = _daiToken;
         owner = msg.sender;
