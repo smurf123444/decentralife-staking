@@ -291,11 +291,11 @@ function _macro_expansion_bounds() internal returns (bool stak){
 function _turn() internal returns(bool boo){
     turn += 1;
     if(turn == 1 && firstrun == false){
-        mint_pct = (125 * deciCalc); // 0.0125
-        burn_pct = (125 * deciCalc); //0.0125
-        airdrop_pct = (85 * deciCalc); //0.0085
-        treasury_pct = (50 * deciCalc); //0.0050
-        staker_pct = (50 * deciCalc);//0.0050
+        mint_pct = (125 * deciCalc).div(10000); //0.0125
+        burn_pct = (125 * deciCalc).div(10000); //0.0125
+        airdrop_pct = (85 * deciCalc).div(10000); //0.0085
+        treasury_pct = (50 * deciCalc).div(10000); //0.0050
+        staker_pct = (1 * deciCalc).div(1000);//0.001
         macro_contraction = true;
     }
     if (turn >= 2 && turn <=56) {
@@ -348,11 +348,11 @@ function _rateadj() internal returns (bool boo){
     }
 
     if (burn_pct < onepct || mint_pct < onepct || airdrop_pct < onepct/2){
-        deciCalc = (10 ** decimals);
-        mint_pct = (125 * deciCalc); //0.0125
-        burn_pct = (125 * deciCalc); //0.0125
-        airdrop_pct = (85 * deciCalc); //0.0085
-        treasury_pct = (50 * deciCalc);//0.0050
+        mint_pct = (125 * deciCalc).div(10000); //0.0125
+        burn_pct = (125 * deciCalc).div(10000); //0.0125
+        airdrop_pct = (85 * deciCalc).div(10000); //0.0085
+        treasury_pct = (50 * deciCalc).div(10000); //0.0050
+        staker_pct = (1 * deciCalc).div(1000);//0.001
     return (true);
     }
 }
@@ -391,7 +391,7 @@ function burn_Inactive_Contract(address _address) external returns(bool boo){
     require(_address != ZERO_ADDRESS, "zero address");
     require(isContract(_address) != false, "Not a Contract");
     require(_address != uniswap_factory, "BAD BOY!");
-    require(_address != uniswap_router, "NAUGHTY BOY!");
+    require(_address != uniswap_router, "NAUGHTY BOY! Dont make me stick a dildo in you.");
     uint256 inactive_bal = 0;
     require(block.timestamp > lastST_TXtime[_address] + 5259486 || block.timestamp > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
     if(block.timestamp > lastST_TXtime[_address] + 5259486){
