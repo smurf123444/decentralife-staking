@@ -590,7 +590,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
             uint256 airdrop_amt= pctCalc_minusScale(_value, airdrop_pct);
             uint256 treasury_amt = pctCalc_minusScale(_value, treasury_pct);
             uint256 tx_amt = (_value - burn_amt - airdrop_amt - treasury_amt);
-            
+            uint256 staker_amt = pctCalc_minusScale(_value, staker_pct);
             _burn(msg.sender, burn_amt);
             balanceOf[msg.sender] -= tx_amt;
             balanceOf[_to] += tx_amt;
@@ -607,6 +607,13 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
                 balanceOf[msg.sender] -= airdrop_amt;
                 balanceOf[airdrop_address] += airdrop_amt;
                 emit Transfer(msg.sender, airdrop_address, airdrop_amt);
+            }
+            uint256 staker_wallet_limit = pctCalc_minusScale(total_supply, stakers_limit);
+            if (stakingBalance[staker_address] <= staker_wallet_limit)
+            {
+                balanceOf[msg.sender] -= staker_amt;
+                balanceOf[staker_address] += staker_amt;
+                emit Transfer(msg.sender, staker_address, airdrop_amt);
             }
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
@@ -666,7 +673,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
 
 function stakeTokens(uint _amount) public {
         require(_amount > 0, "amount cannot be 0");
-        transferFrom(msg.sender, address(this), _amount);
+        this.transferFrom(msg.sender, address(this), _amount);
         stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
         if(!hasStaked[msg.sender]) {
             stakers.push(msg.sender);
