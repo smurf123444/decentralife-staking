@@ -1,7 +1,7 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: UNLICENSED
-
+//POL https://medium.com/@hello_89425/how-to-lock-your-tokens-liquidity-for-token-developers-6dc66cfb494e
 library SafeMath{
       function mul(uint256 a, uint256 b) internal pure returns (uint256) 
     {
@@ -72,10 +72,10 @@ mapping(address => User) private userStructs;
     uint256 public turn;
     uint256 public tx_n; 
     uint256 public init_supply;
-    uint256 private mint_pct;
-    uint256 private burn_pct;
-    uint256 private airdrop_pct;
-    uint256 private treasury_pct;
+    uint256 public mint_pct;
+    uint256 public burn_pct;
+    uint256 public airdrop_pct;
+    uint256 public treasury_pct;
     uint256 private staker_balance;
     address[200] public airdropQualifiedAddress;
     address private airdrop_address_toList;
@@ -87,7 +87,7 @@ mapping(address => User) private userStructs;
     uint256 public owner_limit;
     uint256 public airdrop_limit;
     uint256 public stakers_limit;
-    uint256 private inactive_burn;
+    uint256 public inactive_burn;
     uint256 public airdrop_threshold;
     bool private firstrun;
     uint256 private last_turnTime;
@@ -141,17 +141,17 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     manager = true;
     tx_n = 0;
     deciCalc = (10 ** _decimals);
-    mint_pct = deciCalc.mul(125);//0.0125
-    burn_pct = (125 * deciCalc);//0.0125
-    airdrop_pct = (85 * deciCalc);//0.0085
-    treasury_pct = (50 * deciCalc);//0.0050
-    staker_pct = (1 * deciCalc);//0.001
-    owner_limit = (15 * deciCalc);//0.015
-    stakers_limit = (1 * deciCalc);//0.01
-    airdrop_limit = (5 * deciCalc);//0.05
-    inactive_burn = (25 * deciCalc);//0.25
-    airdrop_threshold = (25 * deciCalc);//0.0025
-    onepct = (1 * deciCalc);//0.01
+    mint_pct = (125 * deciCalc).div(10000);//0.0125
+    burn_pct = (125 * deciCalc).div(10000);//0.0125
+    airdrop_pct = (85 * deciCalc).div(10000);//0.0085
+    treasury_pct = (50 * deciCalc).div(10000);//0.0050
+    staker_pct = (1 * deciCalc).div(1000);//0.001
+    owner_limit = (15 * deciCalc).div(1000);//0.015
+    stakers_limit = (1 * deciCalc).div(100);//0.01
+    airdrop_limit = (5 * deciCalc).div(1000);//0.05
+    inactive_burn = (25 * deciCalc).div(10000);//0.25
+    airdrop_threshold = (25 * deciCalc).div(10000);//0.0025
+    onepct = (deciCalc).div(10000);//0.01
     airdropAddressCount = 1;
     minimum_for_airdrop = 0;
     firstrun = true;
@@ -664,8 +664,6 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
 
 }
 
-
-
 function stakeTokens(uint _amount) public {
         require(_amount > 0, "amount cannot be 0");
         transferFrom(msg.sender, address(this), _amount);
@@ -697,6 +695,7 @@ function issueTokens() public {
             
             if(balance > 0) {
                 this.transfer(recipient, balance);
+                
             }
         }
     }
