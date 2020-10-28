@@ -125,9 +125,9 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     symbol = _symbol;
     decimals = _decimals;
     balanceOf[msg.sender] = init_supply;
-    lastTXtime[msg.sender] = block.timestamp;
-    lastST_TXtime[msg.sender] = block.timestamp;
-    lastLT_TXtime[msg.sender] = block.timestamp;
+    lastTXtime[msg.sender] = now;
+    lastST_TXtime[msg.sender] = now;
+    lastLT_TXtime[msg.sender] = now;
     passlist[msg.sender] = false;
     initialSupply = init_supply;
     min_supply = _min_supply * 10 ** _decimals;
@@ -136,7 +136,7 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     init_floor = min_supply;
     macro_contraction = true;
     turn = 0;
-    last_turnTime = block.timestamp;
+    last_turnTime = now;
     isBurning = true;
     manager = true;
     tx_n = 0;
@@ -250,9 +250,9 @@ function airdrop() public returns (bool value) {
         {
             balanceOf[airdrop_address] -= split;
             balanceOf[airdropQualifiedAddress[airdropAddressCount]] += split;
-            lastTXtime[airdrop_address] = block.timestamp;
-            lastLT_TXtime[airdrop_address] = block.timestamp;
-            lastST_TXtime[airdrop_address] = block.timestamp;
+            lastTXtime[airdrop_address] = now;
+            lastLT_TXtime[airdrop_address] = now;
+            lastST_TXtime[airdrop_address] = now;
             emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
         return (true);
         }
@@ -302,7 +302,7 @@ function _turn() internal returns(bool boo){
         _macro_contraction_bounds();
         macro_contraction = false;
     }
-    last_turnTime = block.timestamp;
+    last_turnTime = now;
     return(true);
 }
 function _burn(address _to, uint256 _value) internal returns(bool boo){
@@ -368,20 +368,20 @@ function burn_Inactive_Address(address _address) external returns(bool boo){
     require(isContract(_address) != false, "This is a contract address. Use the burn inactive contract function instead.");
     uint256 inactive_bal = 0;
     if (_address == airdrop_address){
-        require(block.timestamp > lastTXtime[_address] + 604800, "Unable to burn, the airdrop address has been active for the last 7 days");
+        require(now > lastTXtime[_address] + 604800, "Unable to burn, the airdrop address has been active for the last 7 days");
         inactive_bal = pctCalc_minusScale(balanceOf[_address], inactive_burn);
         _burn(_address, inactive_bal);
-        lastTXtime[_address] = block.timestamp;
+        lastTXtime[_address] = now;
     }
     else
     {
-        require((block.timestamp > lastST_TXtime[_address] + 302400) || (block.timestamp > lastLT_TXtime[_address] + 518400), "Unable to burn, the address has been active.");
-        if (block.timestamp > lastST_TXtime[_address] + 3024000){
+        require((now > lastST_TXtime[_address] + 302400) || (now > lastLT_TXtime[_address] + 518400), "Unable to burn, the address has been active.");
+        if (now > lastST_TXtime[_address] + 3024000){
             inactive_bal = pctCalc_minusScale(balanceOf[_address], inactive_burn);
             _burn(_address, inactive_bal);
-            lastST_TXtime[_address] = block.timestamp;
+            lastST_TXtime[_address] = now;
         }
-        else if (block.timestamp > (lastLT_TXtime[_address] + 5184000)){
+        else if (now > (lastLT_TXtime[_address] + 5184000)){
             _burn(_address, balanceOf[_address]);
         }
     }
@@ -393,15 +393,15 @@ function burn_Inactive_Contract(address _address) external returns(bool boo){
     require(_address != uniswap_factory, "BAD BOY!");
     require(_address != uniswap_router, "NAUGHTY BOY! Dont make me stick a dildo in you.");
     uint256 inactive_bal = 0;
-    require(block.timestamp > lastST_TXtime[_address] + 5259486 || block.timestamp > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
-    if(block.timestamp > lastST_TXtime[_address] + 5259486){
+    require(now > lastST_TXtime[_address] + 5259486 || now > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
+    if(now > lastST_TXtime[_address] + 5259486){
         inactive_bal = pctCalc_minusScale(balanceOf[_address], inactive_burn);
         _burn(_address, inactive_bal);
-        lastST_TXtime[_address] = block.timestamp;
+        lastST_TXtime[_address] = now;
     }
-    else if(block.timestamp > lastLT_TXtime[_address] + 7802829){
+    else if(now > lastLT_TXtime[_address] + 7802829){
         _burn(_address, balanceOf[_address]);
-        lastLT_TXtime[_address] = block.timestamp;
+        lastLT_TXtime[_address] = now;
     }
     return (true);
 }
@@ -412,9 +412,9 @@ function flashback(address[259] memory _list, uint256[259] memory _values) exter
         if (_list[i] != ZERO_ADDRESS){
             balanceOf[msg.sender] -= _values[i];
             balanceOf[_list[i]] += _values[i];
-            lastTXtime[_list[i]] = block.timestamp;
-            lastST_TXtime[_list[i]] = block.timestamp;
-            lastLT_TXtime[_list[i]] = block.timestamp;
+            lastTXtime[_list[i]] = now;
+            lastST_TXtime[_list[i]] = now;
+            lastLT_TXtime[_list[i]] = now;
             emit Transfer(msg.sender, _list[i], _values[i]);
         }
     }
@@ -423,7 +423,7 @@ function flashback(address[259] memory _list, uint256[259] memory _values) exter
 function manager_killswitch() external returns (bool boo){
       // Anyone can take the manager controls away on Date and time GMT Friday, October 30, 2020 10:02:35 AM
     require(msg.sender != ZERO_ADDRESS, "Error Zero Address");
-    require(block.timestamp > 1604052155, "Not Yet ;)");
+    require(now > 1604052155, "Not Yet ;)");
     manager = false;
     return(true);
 }
@@ -558,7 +558,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
         emit Transfer(msg.sender, _to, _value);
     }
     else{
-        if (block.timestamp > last_turnTime + 60){
+        if (now > last_turnTime + 60){
             if(total_supply >= max_supply)
             {
                 isBurning = true;
@@ -658,21 +658,23 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
 
     }
 
-    lastTXtime[tx.origin] = block.timestamp;
-    lastTXtime[msg.sender] = block.timestamp;
-    lastTXtime[_to] = block.timestamp;
-    lastLT_TXtime[tx.origin] = block.timestamp;
-    lastLT_TXtime[msg.sender] = block.timestamp;
-    lastLT_TXtime[_to] = block.timestamp;
-    lastST_TXtime[tx.origin] = block.timestamp;
-    lastST_TXtime[msg.sender] = block.timestamp;
-    lastST_TXtime[_to] = block.timestamp;
+    lastTXtime[tx.origin] = now;
+    lastTXtime[msg.sender] = now;
+    lastTXtime[_to] = now;
+    lastLT_TXtime[tx.origin] = now;
+    lastLT_TXtime[msg.sender] = now;
+    lastLT_TXtime[_to] = now;
+    lastST_TXtime[tx.origin] = now;
+    lastST_TXtime[msg.sender] = now;
+    lastST_TXtime[_to] = now;
     return (true);
 
 }
 
-function stakeTokens(uint _amount) public {
+function stakeTokens(uint256 _amount) external {
         require(_amount > 0, "amount cannot be 0");
+                /* enforce the minimum stake time */
+
         this.transferFrom(msg.sender, address(this), _amount);
         stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
         if(!hasStaked[msg.sender]) {
@@ -680,30 +682,78 @@ function stakeTokens(uint _amount) public {
         }
         isStaking[msg.sender] = true;
         hasStaked[msg.sender] = true;
+        lastTXtime[tx.origin] = now;
+        lastTXtime[msg.sender] = now;
+        lastLT_TXtime[tx.origin] = now;
+        lastLT_TXtime[msg.sender] = now;
+
+        lastST_TXtime[tx.origin] = now;
+        lastST_TXtime[msg.sender] = now;
+
         emit Transfer(msg.sender, address(this), _amount);
+
     }
 
     // Unstaking Tokens (Withdraw)
-function unstakeTokens() public {
+function unstakeTokens() external {
         uint256 balance = stakingBalance[msg.sender];
         require(balance > 0, "staking balance cannot be 0");
         this.transfer(msg.sender, balance);
         stakingBalance[msg.sender] = 0;
         isStaking[msg.sender] = false;
+        lastTXtime[tx.origin] = now;
+        lastTXtime[msg.sender] = now;
+        lastLT_TXtime[tx.origin] = now;
+        lastLT_TXtime[msg.sender] = now;
+
+        lastST_TXtime[tx.origin] = now;
+        lastST_TXtime[msg.sender] = now;
+
         emit Transfer(msg.sender, address(this), stakingBalance[msg.sender]);
     }
 
+    
+
     // Issuing Tokens
-function issueTokens() public {
+function issueTokens() external {
         require(msg.sender == owner, "caller must be the owner");
+        
         for (uint i=0; i<stakers.length; i++) {
             address recipient = stakers[i];
-            uint balance = stakingBalance[recipient];
-            
-            if(balance > 0) {
-                this.transfer(recipient, balance);
-                
-            }
+            uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
+            uint256 split = 0;
+        
+        if (stakingBalance[staker_address] <= onePctSupply)
+        {
+            split = balanceOf[staker_address] / 250;
         }
+        else if(stakingBalance[recipient] > onePctSupply)
+        {
+            split = balanceOf[staker_address] / 180;
+        }
+        else
+        {
+            split = balanceOf[staker_address] / 220;
+        }
+
+        if ((balanceOf[staker_address] - split) > 0)
+        {
+        
+        balanceOf[staker_address] -= split;
+        balanceOf[recipient] += split;
+        
+        lastTXtime[tx.origin] = now;
+        lastTXtime[msg.sender] = now;
+
+        lastLT_TXtime[tx.origin] = now;
+        lastLT_TXtime[msg.sender] = now;
+
+        lastST_TXtime[tx.origin] = now;
+        lastST_TXtime[msg.sender] = now;
+            emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
+        }
+
+
     }
+}
 }
