@@ -5031,12 +5031,12 @@
         }
       },
       "links": {},
-      "address": "0x74E42519A927AA320bBdd775582515Fb0532deDf",
-      "transactionHash": "0xbb588a4eb127d877c7a1e03f3d5fe9e39e0b965143013eeb99c08864cc155a0c"
+      "address": "0x4E67423aAC38B4667Da3ff1F596a68Ac4AE30E10",
+      "transactionHash": "0x43cfc7e235deb7cc783cfb50787b881af93539b5b5a7ec59461d1ededb01e919"
     }
   },
   "schemaVersion": "3.2.3",
-  "updatedAt": "2020-10-16T17:52:27.126Z",
+  "updatedAt": "2020-10-17T15:36:41.831Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}

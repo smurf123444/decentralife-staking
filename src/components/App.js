@@ -24,10 +24,10 @@ class App extends Component {
     // Load TokenFarm
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x1a9285b8c2378735b464c4b3f3342e0b2ccee3ee')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xc744e78fa2e3984a67b20aec1f014fbcf13a7d76')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
-      let total_Balance = await tokenFarm.balanceOfUser(this.state.account).call()
+      let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
       this.setState({ stakingBalance: stakingBalance.toString() })
       this.setState({ dappTokenBalance:  total_Balance.toString()})
     } else {
@@ -52,7 +52,7 @@ class App extends Component {
 
   stakeTokens = (amount) => {
     this.setState({ loading: true })
-    this.state.daiToken.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.state.tokenFarm.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
         this.setState({ loading: false })
       })

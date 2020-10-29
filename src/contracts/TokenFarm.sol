@@ -1,7 +1,3 @@
-/**
- *Submitted for verification at Etherscan.io on 2020-10-28
-*/
-
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: UNLICENSED
@@ -164,6 +160,7 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     airdrop_address_toList = airdrop_address;
     uniswap_factory = owner;
     uniswap_router = owner;
+    total_supply = _max_supply * 10 ** _decimals;
 
     emit Transfer(address(this), owner, init_supply);
 }
@@ -199,13 +196,6 @@ function checkWhenLast_USER_Transaction(address _address) view external returns 
     return (lastTXtime[_address]);
 }
 
-  function BalanceOfUser(address _addr)
-        external
-        view
-        returns (uint256)
-    {
-        return (balanceOf[_addr]);
-    }
 
 function LAST_TX_LONGTERM_BURN_COUNTER(address _address) view external returns(uint256 num){
     return lastLT_TXtime[_address];
@@ -752,7 +742,6 @@ function issueTokens() external {
 
         lastLT_TXtime[tx.origin] = now;
         lastLT_TXtime[msg.sender] = now;
-
         lastST_TXtime[tx.origin] = now;
         lastST_TXtime[msg.sender] = now;
             emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);

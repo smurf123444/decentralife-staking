@@ -16,8 +16,8 @@ class Main extends Component {
           </thead>
           <tbody>
             <tr>
-              <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} mDAI</td>
-              <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} DTE</td>
+              <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} TITS</td>
+              <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} TITS</td>
             </tr>
           </tbody>
         </table>
@@ -34,9 +34,9 @@ class Main extends Component {
                 this.props.stakeTokens(amount)
               }}>
               <div>
-                <label className="float-left"><b>Stake Tokens</b></label>
+                <label className="float-left"><b>Stake TIT Tokens</b></label>
                 <span className="float-right text-muted">
-                  Balance: {window.web3.utils.fromWei(this.props.daiTokenBalance, 'Ether')}
+                  Balance: {window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')}
                 </span>
               </div>
               <div className="input-group mb-4">
@@ -49,7 +49,7 @@ class Main extends Component {
                 <div className="input-group-append">
                   <div className="input-group-text">
                     <img src={dai} height='32' alt=""/>
-                    &nbsp;&nbsp;&nbsp; mDAI
+                    &nbsp;&nbsp;&nbsp; TITS
                   </div>
                 </div>
               </div>
