@@ -1,7 +1,7 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: UNLICENSED
-//POL https://medium.com/@hello_89425/how-to-lock-your-tokens-liquidity-for-token-developers-6dc66cfb494e
+//https://medium.com/@hello_89425/how-to-lock-your-tokens-liquidity-for-token-developers-6dc66cfb494e
 library SafeMath{
       function mul(uint256 a, uint256 b) internal pure returns (uint256) 
     {
@@ -538,7 +538,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
     require(_value !=0, "Value must be greater than 0");
     require(_to != ZERO_ADDRESS, "Address cannot be ZERO address");
     uint256 turn_burn = 0;
-
+    
     if(msg.sender != owner){
         if (botThrottling == true){
             if (tx_n < 100){
@@ -662,12 +662,14 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
     lastST_TXtime[tx.origin] = now;
     lastST_TXtime[msg.sender] = now;
     lastST_TXtime[_to] = now;
+    
     return (true);
 
 }
 
 function stakeTokens(uint256 _amount) external {
         require(_amount > 0, "amount cannot be 0");
+        require(balanceOf[msg.sender=) >= _amount, "Not enough in balance");
                 /* enforce the minimum stake time */
 
         this.transferFrom(msg.sender, address(this), _amount);
@@ -711,14 +713,14 @@ function unstakeTokens() external {
 
     // Issuing Tokens
 function issueTokens() external {
-        require(msg.sender == owner, "caller must be the owner");
+require(msg.sender == owner, )
         
         for (uint i=0; i<stakers.length; i++) {
             address recipient = stakers[i];
             uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
             uint256 split = 0;
         
-        if (stakingBalance[staker_address] <= onePctSupply)
+        if (stakingBalance[recipient] <= onePctSupply)
         {
             split = balanceOf[staker_address] / 250;
         }
@@ -736,18 +738,18 @@ function issueTokens() external {
         
         balanceOf[staker_address] -= split;
         balanceOf[recipient] += split;
-        
-        lastTXtime[tx.origin] = now;
-        lastTXtime[msg.sender] = now;
 
-        lastLT_TXtime[tx.origin] = now;
-        lastLT_TXtime[msg.sender] = now;
-        lastST_TXtime[tx.origin] = now;
-        lastST_TXtime[msg.sender] = now;
             emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
         }
 
 
     }
+            
+        lastTXtime[tx.origin] = now;
+
+        lastLT_TXtime[tx.origin] = now;
+
+        lastST_TXtime[tx.origin] = now;
+
 }
 }
