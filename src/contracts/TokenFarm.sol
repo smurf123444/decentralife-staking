@@ -1,3 +1,7 @@
+/**
+ *Submitted for verification at Etherscan.io on 2020-10-28
+*/
+
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: UNLICENSED
@@ -195,6 +199,13 @@ function checkWhenLast_USER_Transaction(address _address) view external returns 
     return (lastTXtime[_address]);
 }
 
+  function BalanceOfUser(address _addr)
+        external
+        view
+        returns (uint256)
+    {
+        return (balanceOf[_addr]);
+    }
 
 function LAST_TX_LONGTERM_BURN_COUNTER(address _address) view external returns(uint256 num){
     return lastLT_TXtime[_address];
@@ -433,7 +444,7 @@ function setPassList(address _address) external returns(bool boo){
         passlist[_address] = true;
         return (true);
     }
-    function remPasslist(address _address) external returns(bool boo){
+function remPasslist(address _address) external returns(bool boo){
         require(_address != ZERO_ADDRESS, "Zero address error");
         require (_address == owner, "Function must be called by owner.");
         passlist[_address] = false;
@@ -449,13 +460,7 @@ function setPassList(address _address) external returns(bool boo){
         emit Transfer(_to, ZERO_ADDRESS, _value);
         return (true);
     }
-function manager_bot_throttlng() external returns(bool boo){
-    require (manager == true);
-    require (msg.sender != ZERO_ADDRESS);
-    require (msg.sender == owner);
-    botThrottling = false;
-    return true;
-}
+
 function setAirdropAddress(address _airdropAddress) external returns(bool boo){
     require(manager == true, "Manager not present");
     require(msg.sender != ZERO_ADDRESS, "Zero Address error");

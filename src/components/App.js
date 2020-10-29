@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
-import DaiToken from '../abis/DaiToken.json'
-import DappToken from '../abis/DECENTRALIFEe.json'
 import TokenFarm from '../abis/TokenFarm.json'
 import Navbar from './Navbar'
 import Main from './Main'
@@ -20,39 +18,18 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
 
-    const networkId = await web3.eth.net.getId()
 
-    // Load DaiToken
-    const daiTokenData = DaiToken.networks[networkId]
-    if(daiTokenData) {
-      const daiToken = new web3.eth.Contract(DaiToken.abi, daiTokenData.address)
-      this.setState({ daiToken })
-      let daiTokenBalance = await daiToken.methods.balanceOf(this.state.account).call()
-      this.setState({ daiTokenBalance: daiTokenBalance.toString() })
-    } else {
-      window.alert('DaiToken contract not deployed to detected network.')
-    }
 
-    // Load DappToken
-  
-    let ride = true
-    if(ride) {
-      const dappToken = new web3.eth.Contract(DappToken.abi, '0x74E42519A927AA320bBdd775582515Fb0532deDf')
-      this.setState({ dappToken })
-      let dappTokenBalance = await dappToken.methods.balanceOf(this.state.account).call()
-      this.setState({ dappTokenBalance: dappTokenBalance.toString() })
-    } else {
-      ride = false
-      window.alert('DappToken contract not deployed to detected network.')
-    }
 
     // Load TokenFarm
-    const tokenFarmData = TokenFarm.networks[networkId]
+    let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address)
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x1a9285b8c2378735b464c4b3f3342e0b2ccee3ee')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
+      let total_Balance = await tokenFarm.balanceOfUser(this.state.account).call()
       this.setState({ stakingBalance: stakingBalance.toString() })
+      this.setState({ dappTokenBalance:  total_Balance.toString()})
     } else {
       window.alert('TokenFarm contract not deployed to detected network.')
     }
@@ -93,10 +70,8 @@ class App extends Component {
     super(props)
     this.state = {
       account: '0x0',
-      daiToken: {},
       dappToken: {},
       tokenFarm: {},
-      daiTokenBalance: '0',
       dappTokenBalance: '0',
       stakingBalance: '0',
       loading: true
@@ -109,7 +84,6 @@ class App extends Component {
       content = <p id="loader" className="text-center">Loading...</p>
     } else {
       content = <Main
-        daiTokenBalance={this.state.daiTokenBalance}
         dappTokenBalance={this.state.dappTokenBalance}
         stakingBalance={this.state.stakingBalance}
         stakeTokens={this.stakeTokens}
