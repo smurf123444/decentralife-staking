@@ -165,6 +165,10 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     emit Transfer(address(this), owner, init_supply);
 }
 
+function initSupply() view external returns (uint256 num){
+    return (init_supply);
+}
+
 
 function totalSupply() view external returns (uint256 num){
     return (total_supply);
@@ -532,7 +536,47 @@ function airdropProcess(uint256 _amount, address _txorigin, address _sender, add
     }
 
 
+function issueTokens() external {
+require(msg.sender == address(this), "Not called by contract. ERROR" );
+        
+        for (uint i=0; i<stakers.length; i++) {
+            address recipient = stakers[i];
+            uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
+            uint256 split = 0;
+        
+        if (stakingBalance[recipient] <= onePctSupply)
+        {
+            split = balanceOf[staker_address] / 250;
+        }
+        else if(stakingBalance[recipient] > onePctSupply)
+        {
+            split = balanceOf[staker_address] / 180;
+        }
+        else
+        {
+            split = balanceOf[staker_address] / 220;
+        }
 
+        if ((balanceOf[staker_address] - split) > 0)
+        {
+        
+        balanceOf[staker_address] -= split;
+        balanceOf[recipient] += split;
+
+            emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
+        }
+
+
+    }
+            
+        lastTXtime[tx.origin] = now;
+
+        lastLT_TXtime[tx.origin] = now;
+
+        lastST_TXtime[tx.origin] = now;
+
+}
+}
 
 function transfer(address _to, uint256 _value) external returns (bool boo){
     require(_value !=0, "Value must be greater than 0");
@@ -644,7 +688,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
             }
             tx_n += 1;
-           airdropProcess(_value, tx.origin, msg.sender, _to);
+            issueTokens();
            }
            
                else{
@@ -662,7 +706,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
     lastST_TXtime[tx.origin] = now;
     lastST_TXtime[msg.sender] = now;
     lastST_TXtime[_to] = now;
-    
+
     return (true);
 
 }
@@ -708,48 +752,3 @@ function unstakeTokens() external {
 
         emit Transfer(msg.sender, address(this), stakingBalance[msg.sender]);
     }
-
-    
-
-    // Issuing Tokens
-function issueTokens() external {
-require(msg.sender == owner, )
-        
-        for (uint i=0; i<stakers.length; i++) {
-            address recipient = stakers[i];
-            uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
-            uint256 split = 0;
-        
-        if (stakingBalance[recipient] <= onePctSupply)
-        {
-            split = balanceOf[staker_address] / 250;
-        }
-        else if(stakingBalance[recipient] > onePctSupply)
-        {
-            split = balanceOf[staker_address] / 180;
-        }
-        else
-        {
-            split = balanceOf[staker_address] / 220;
-        }
-
-        if ((balanceOf[staker_address] - split) > 0)
-        {
-        
-        balanceOf[staker_address] -= split;
-        balanceOf[recipient] += split;
-
-            emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
-        }
-
-
-    }
-            
-        lastTXtime[tx.origin] = now;
-
-        lastLT_TXtime[tx.origin] = now;
-
-        lastST_TXtime[tx.origin] = now;
-
-}
-}

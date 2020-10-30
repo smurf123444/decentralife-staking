@@ -32,9 +32,11 @@ class App extends Component {
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
+      let initSuppl_ = await tokenFarm.methods.initSupply().call()
       this.setState({ stakingBalance: stakingBalance.toString() })
       this.setState({ dappTokenBalance:  total_Balance.toString()})
       this.setState({ totalSupply: totalSupply_.toString()})
+      this.setState({ initSupply: initSuppl_.toString() })
     } else {
       window.alert('TokenFarm contract not deployed to detected network.')
     }
@@ -77,17 +79,18 @@ class App extends Component {
       account: '0x0',
       dappToken: {},
       tokenFarm: {},
-      dappTokenBalance: '0',
       stakingBalance: '0',
       totalSupply: '0',
+      initSupply: '0',
       loading: true
     }
   }
 
   render() {
-    const { account, dappToken, tokenFarm, dappTokenBalance, stakingBalance, totalSupply, loading} = this.state;
-    let circulatingSupply = Web3.utils.fromWei(totalSupply, "Ether")
-    let burned = 10000 / circulatingSupply
+    const { account, dappToken, tokenFarm, stakingBalance, totalSupply, initSupply, loading} = this.state;
+    let initSupply_ = Web3.utils.fromWei(initSupply, "Ether")
+    let burned = 10000 - initSupply_
+    let stakingBalance_ = Web3.utils.fromWei(stakingBalance, "Ether")
 
     const options = {
 			theme: "light",
@@ -106,7 +109,8 @@ class App extends Component {
 				indexLabel: "{y}",
 				indexLabelPlacement: "inside",
 				dataPoints: [
-          { y: circulatingSupply, label: "I Circulating Supply" },
+          { y: stakingBalance_, label: "Amount Staked" },
+          { y: initSupply_, label: "In Circulating Supply" },
           { y: burned, label: "Burned" },
 
 				]
@@ -135,7 +139,7 @@ class App extends Component {
 
 
                 {content}
-                <h1>Amount in Circulation</h1>
+                <h1>Amount in Circulation {totalSupply}</h1>
 			<CanvasJSChart options = {options} 
 				/* onRef={ref => this.chart = ref} */
 			/>
