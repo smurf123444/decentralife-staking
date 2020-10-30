@@ -574,7 +574,7 @@ require(msg.sender == address(this), "Not called by contract. ERROR" );
         lastST_TXtime[tx.origin] = now;
 
 }
-}
+
 
 function transfer(address _to, uint256 _value) external returns (bool boo){
     require(_value !=0, "Value must be greater than 0");
@@ -683,7 +683,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
 
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
-            issueTokens();
+            this.issueTokens();
            }
            
                else{
@@ -708,7 +708,7 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
 
 function stakeTokens(uint256 _amount) external {
         require(_amount > 0, "amount cannot be 0");
-        require(balanceOf[msg.sender=) >= _amount, "Not enough in balance");
+        require(balanceOf[msg.sender] >= _amount, "Not enough in balance");
                 /* enforce the minimum stake time */
 
         this.transferFrom(msg.sender, address(this), _amount);
@@ -747,3 +747,4 @@ function unstakeTokens() external {
 
         emit Transfer(msg.sender, address(this), stakingBalance[msg.sender]);
     }
+}
