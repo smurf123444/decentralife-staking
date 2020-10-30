@@ -647,13 +647,11 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
                 balanceOf[airdrop_address] += airdrop_amt;
                 emit Transfer(msg.sender, airdrop_address, airdrop_amt);
             }
-            uint256 staker_wallet_limit = pctCalc_minusScale(total_supply, stakers_limit);
-            if (stakingBalance[staker_address] <= staker_wallet_limit)
-            {
+
                 balanceOf[msg.sender] -= staker_amt;
                 balanceOf[staker_address] += staker_amt;
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
-            }
+
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
            }
@@ -680,17 +678,13 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
                 balanceOf[airdrop_address] += airdrop_amt;
                 emit Transfer(msg.sender, airdrop_address, airdrop_amt);
             }
-            uint256 staker_wallet_limit = pctCalc_minusScale(total_supply, stakers_limit);
-            if (stakingBalance[staker_address] <= staker_wallet_limit)
-            {
+
                 balanceOf[msg.sender] -= staker_amt;
                 balanceOf[staker_address] += staker_amt;
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
-            }
+
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
-            
-
             issueTokens();
            }
            
