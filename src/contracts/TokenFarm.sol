@@ -1,7 +1,6 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: UNLICENSED
-//https://medium.com/@hello_89425/how-to-lock-your-tokens-liquidity-for-token-developers-6dc66cfb494e
 library SafeMath{
       function mul(uint256 a, uint256 b) internal pure returns (uint256) 
     {
@@ -147,7 +146,6 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     treasury_pct = (50 * deciCalc).div(10000);//0.0050
     staker_pct = (1 * deciCalc).div(1000);//0.001
     owner_limit = (15 * deciCalc).div(1000);//0.015
-    stakers_limit = (1 * deciCalc).div(100);//0.01
     airdrop_limit = (5 * deciCalc).div(1000);//0.05
     inactive_burn = (25 * deciCalc).div(10000);//0.25
     airdrop_threshold = (25 * deciCalc).div(10000);//0.0025
