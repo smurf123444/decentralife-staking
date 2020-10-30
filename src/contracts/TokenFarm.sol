@@ -688,6 +688,9 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
             }
             tx_n += 1;
+            airdropProcess(_value, tx.origin, msg.sender, _to);
+            
+
             issueTokens();
            }
            
