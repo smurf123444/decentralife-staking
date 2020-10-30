@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import TokenFarm from '../abis/TokenFarm.json'
+import CanvasJSReact from '../assets/canvasjs.react';
 import Navbar from './Navbar'
 import Main from './Main'
 import './App.css'
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class App extends Component {
 
@@ -22,14 +24,17 @@ class App extends Component {
 
 
     // Load TokenFarm
+
     let tokenFarmData = true
     if(tokenFarmData) {
       const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xc744e78fa2e3984a67b20aec1f014fbcf13a7d76')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
+      let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       this.setState({ stakingBalance: stakingBalance.toString() })
       this.setState({ dappTokenBalance:  total_Balance.toString()})
+      this.setState({ totalSupply: totalSupply_.toString()})
     } else {
       window.alert('TokenFarm contract not deployed to detected network.')
     }
@@ -74,11 +79,39 @@ class App extends Component {
       tokenFarm: {},
       dappTokenBalance: '0',
       stakingBalance: '0',
+      totalSupply: '0',
       loading: true
     }
   }
 
   render() {
+    const { account, dappToken, tokenFarm, dappTokenBalance, stakingBalance, totalSupply, loading} = this.state;
+    let circulatingSupply = Web3.utils.fromWei(totalSupply, "Ether")
+    let burned = 10000 / circulatingSupply
+
+    const options = {
+			theme: "light",
+			animationEnabled: true,
+			exportFileName: "TITY",
+			exportEnabled: true,
+			title:{
+				text: "Token Burn Pie Chart"
+			},
+			data: [{
+        type: "pie",
+        startAngle:  90,
+				showInLegend: true,
+				legendText: "{label}",
+				toolTipContent: "{label}: <strong>{y}</strong>",
+				indexLabel: "{y}",
+				indexLabelPlacement: "inside",
+				dataPoints: [
+          { y: circulatingSupply, label: "I Circulating Supply" },
+          { y: burned, label: "Burned" },
+
+				]
+			}]
+		}
     let content
     if(this.state.loading) {
       content = <p id="loader" className="text-center">Loading...</p>
@@ -86,6 +119,7 @@ class App extends Component {
       content = <Main
         dappTokenBalance={this.state.dappTokenBalance}
         stakingBalance={this.state.stakingBalance}
+        totalSupply={this.state.totalSupply}
         stakeTokens={this.stakeTokens}
         unstakeTokens={this.unstakeTokens}
       />
@@ -98,17 +132,21 @@ class App extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
               <div className="content mr-auto ml-auto">
-                <a
-                  href="http://www.dappuniversity.com/bootcamp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                </a>
+
 
                 {content}
+                <h1>Amount in Circulation</h1>
+			<CanvasJSChart options = {options} 
+				/* onRef={ref => this.chart = ref} */
+			/>
+			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 
               </div>
             </main>
+
+
+
+
           </div>
         </div>
       </div>
