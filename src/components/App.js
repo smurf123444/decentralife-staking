@@ -27,7 +27,7 @@ class App extends Component {
 
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xd71a3059398c118be1bd75c362888d045c77b6ba')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xE948Edfd0497cCB5201bf0DAAC0048222fc5ff9A')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
@@ -89,7 +89,8 @@ class App extends Component {
   render() {
     const { account, dappToken, tokenFarm, stakingBalance, totalSupply, initSupply, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Ether")
-    let burned = 10000 - initSupply_
+    let totalSupply_ = Web3.utils.fromWei(totalSupply, "ether")
+    let burned = Web3.utils.fromWei(totalSupply, "Ether") - 10000
     let stakingBalance_ = Web3.utils.fromWei(stakingBalance, "Ether")
 
     const options = {
@@ -110,7 +111,7 @@ class App extends Component {
 				indexLabelPlacement: "inside",
 				dataPoints: [
           { y: stakingBalance_, label: "Amount Staked" },
-          { y: initSupply_, label: "In Circulating Supply" },
+          { y: totalSupply_, label: "In Circulating Supply" },
           { y: burned, label: "Burned" },
 
 				]
@@ -139,7 +140,8 @@ class App extends Component {
 
 
                 {content}
-                <h1>Amount in Circulation {totalSupply}</h1>
+                <h1>Amount in Circulation</h1>
+                <h1>{ totalSupply_ } </h1>
 			<CanvasJSChart options = {options} 
 				/* onRef={ref => this.chart = ref} */
 			/>

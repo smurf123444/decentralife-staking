@@ -9,7 +9,7 @@ function tokens(n) {
 }
 
 contract('TokenFarm', ([owner, investor]) => {
-  let daiToken, dappToken, tokenFarm
+  let tokenFarm
 
   before(async () => {
     // Load Contracts
@@ -75,8 +75,6 @@ contract('TokenFarm', ([owner, investor]) => {
       result = await tokenFarm.balanceOf(owner)
       assert.equal(result.toString(), tokens('100'), 'investor Mock DAI wallet balance correct after staking')
 
-      result = await daiToken.balanceOf(tokenFarm.address)
-      assert.equal(result.toString(), tokens('0'), 'Token Farm Mock DAI balance correct after staking')
 
       result = await tokenFarm.stakingBalance(owner)
       assert.equal(result.toString(), tokens('0'), 'investor staking balance correct after staking')
