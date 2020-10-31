@@ -27,7 +27,7 @@ class App extends Component {
 
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xE948Edfd0497cCB5201bf0DAAC0048222fc5ff9A')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x8764B56AE2C58c881948fa59D78c7f0179b05622')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
@@ -90,7 +90,7 @@ class App extends Component {
     const { account, dappToken, tokenFarm, stakingBalance, totalSupply, initSupply, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Ether")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "ether")
-    let burned = totalSupply_ - initSupply_
+    let burned =  initSupply_ - totalSupply_ 
     let stakingBalance_ = Web3.utils.fromWei(stakingBalance, "Ether")
 
     const options = {

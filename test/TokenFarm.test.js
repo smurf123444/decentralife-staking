@@ -14,7 +14,7 @@ contract('TokenFarm', ([owner, investor]) => {
   before(async () => {
     // Load Contracts
 
-    tokenFarm = await TokenFarm.at('0xE948Edfd0497cCB5201bf0DAAC0048222fc5ff9A')
+    tokenFarm = await TokenFarm.at('0x267a12fEE79d1A83A77dFE974bDe1837A00adF1e')
 
 
   })
@@ -57,7 +57,7 @@ contract('TokenFarm', ([owner, investor]) => {
     })
 
     it('issuing Stake.', async () => {
-      await tokenFarm.issueTokens({ from: TokenFarm.address })
+      await tokenFarm.issueTokens()
       // Issue Tokens
       
 
