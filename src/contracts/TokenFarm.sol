@@ -140,8 +140,8 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     manager = true;
     tx_n = 0;
     deciCalc = (10 ** _decimals);
-    mint_pct = (125 * deciCalc).div(10000);//0.0125
-    burn_pct = (125 * deciCalc).div(10000);//0.0125
+    mint_pct = (135 * deciCalc).div(10000); //0.0135
+    burn_pct = (135 * deciCalc).div(10000); //0.0135
     airdrop_pct = (85 * deciCalc).div(10000);//0.0085
     treasury_pct = (50 * deciCalc).div(10000);//0.0050
     staker_pct = (1 * deciCalc).div(1000);//0.001
@@ -294,8 +294,8 @@ function _macro_expansion_bounds() internal returns (bool stak){
 function _turn() internal returns(bool boo){
     turn += 1;
     if(turn == 1 && firstrun == false){
-        mint_pct = (125 * deciCalc).div(10000); //0.0125
-        burn_pct = (125 * deciCalc).div(10000); //0.0125
+        mint_pct = (135 * deciCalc).div(10000); //0.0135
+        burn_pct = (135 * deciCalc).div(10000); //0.0135
         airdrop_pct = (85 * deciCalc).div(10000); //0.0085
         treasury_pct = (50 * deciCalc).div(10000); //0.0050
         staker_pct = (1 * deciCalc).div(1000);//0.001
@@ -351,8 +351,8 @@ function _rateadj() internal returns (bool boo){
     }
 
     if (burn_pct < onepct || mint_pct < onepct || airdrop_pct < onepct/2){
-        mint_pct = (125 * deciCalc).div(10000); //0.0125
-        burn_pct = (125 * deciCalc).div(10000); //0.0125
+        mint_pct = (135 * deciCalc).div(10000); //0.0135
+        burn_pct = (135 * deciCalc).div(10000); //0.0135
         airdrop_pct = (85 * deciCalc).div(10000); //0.0085
         treasury_pct = (50 * deciCalc).div(10000); //0.0050
         staker_pct = (1 * deciCalc).div(1000);//0.001

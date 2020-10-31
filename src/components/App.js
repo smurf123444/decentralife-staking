@@ -90,7 +90,7 @@ class App extends Component {
     const { account, dappToken, tokenFarm, stakingBalance, totalSupply, initSupply, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Ether")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "ether")
-    let burned = Web3.utils.fromWei(totalSupply, "Ether") - 10000
+    let burned = totalSupply_ - initSupply_
     let stakingBalance_ = Web3.utils.fromWei(stakingBalance, "Ether")
 
     const options = {
