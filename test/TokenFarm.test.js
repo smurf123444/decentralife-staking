@@ -14,7 +14,7 @@ contract('TokenFarm', ([owner, investor]) => {
   before(async () => {
     // Load Contracts
 
-    tokenFarm = await TokenFarm.at('0x267a12fEE79d1A83A77dFE974bDe1837A00adF1e')
+    tokenFarm = await TokenFarm.at('0x21Daa6e96469da830c7F99AFa3889FA9db209816')
 
 
   })
@@ -24,11 +24,6 @@ contract('TokenFarm', ([owner, investor]) => {
     it('has a name', async () => {
       const name = await tokenFarm.name()
       assert.equal(name, 'TITSASSsuka')
-    })
-
-    it('contract has tokens', async () => {
-      let balance = await tokenFarm.balanceOf(owner)
-      assert.equal(balance.toString(), tokens('10000'))
     })
   })
 
@@ -55,7 +50,7 @@ contract('TokenFarm', ([owner, investor]) => {
         result = await tokenFarm.isStaking(owner)
         assert.equal(result.toString(), 'false', 'investor staking status correct after staking')
     })
-
+/*
     it('issuing Stake.', async () => {
       await tokenFarm.issueTokens()
       // Issue Tokens
@@ -82,6 +77,22 @@ contract('TokenFarm', ([owner, investor]) => {
       result = await tokenFarm.isStaking(owner)
       assert.equal(result.toString(), 'false', 'investor staking status correct after staking')
   
-  })
+  })*/
+  it('Transfer Tokens Repedetly.', async () => {
+    var i, t;
+    await tokenFarm.approve(investor, tokens('100000'), { from: investor })
+    await tokenFarm.approve(owner, tokens('100000'), { from: owner})
+    for(i = 0; i < 1000000; i++){
+      t = 100;
+      await tokenFarm._transfer(investor, tokens((t--).toString()), { from: owner })
+      await tokenFarm._transfer(owner, tokens((t--).toString()), { from: investor })
+      if (t === 0)
+      {
+        t = 100;
+      }
+    }
+
+})
+
 })
 })
