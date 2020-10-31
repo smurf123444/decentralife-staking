@@ -27,7 +27,7 @@ class App extends Component {
 
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x21Daa6e96469da830c7F99AFa3889FA9db209816')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x0c10C469Ea23f24cD7ED71402120D5688C073e9B')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()

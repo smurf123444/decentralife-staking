@@ -535,8 +535,7 @@ function airdropProcess(uint256 _amount, address _txorigin, address _sender, add
 
 
 function issueTokens() external {
-require(msg.sender == address(this), "Not called by contract. ERROR" );
-        
+        require(msg.sender == owner, "Only owner can call this.");
         for (uint i=0; i<stakers.length; i++) {
             address recipient = stakers[i];
             uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
@@ -683,6 +682,7 @@ function _transfer(address _to, uint256 _value) external returns (bool boo){
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
 
             tx_n += 1;
+
             airdropProcess(_value, tx.origin, msg.sender, _to);
            }
            
