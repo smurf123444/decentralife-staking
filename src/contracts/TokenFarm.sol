@@ -65,7 +65,11 @@ mapping(address => User) private userStructs;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
     mapping(address => bool) public passlist;
-    uint256 public staker_pct;
+    uint256 public staker_amt;
+    uint256 public airdrop_amt;
+    uint256 public burn_amt;
+    uint256 public treasury_amt;
+    uint256 public mint_amt;
     bool public isBurning;
     bool public manager;
     uint256 public total_supply;
@@ -73,6 +77,7 @@ mapping(address => User) private userStructs;
     uint256 public tx_n; 
     uint256 public init_supply;
     uint256 public mint_pct;
+    uint256 public staker_pct;
     uint256 public burn_pct;
     uint256 public airdrop_pct;
     uint256 public treasury_pct;
@@ -95,6 +100,7 @@ mapping(address => User) private userStructs;
     bool private macro_contraction;
     uint256 public init_ceiling;
     uint256 public init_floor;
+    uint256 public tx_amt;
     address[] private stakers;
     mapping(address => uint) public stakingBalance;
     mapping(address => bool) public hasStaked;
@@ -113,7 +119,7 @@ mapping(address => User) private userStructs;
         uint256 _value
     );
     
-    
+
 
 constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uint256 _supply, uint256 _max_supply, uint256 _min_supply) public {
     init_supply = _supply * 10 ** _decimals;
@@ -161,6 +167,12 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     uniswap_factory = owner;
     uniswap_router = owner;
     total_supply = _max_supply * 10 ** _decimals;
+    staker_amt = 0;
+    airdrop_amt = 0;
+    burn_amt = 0;
+    treasury_amt = 0;
+    mint_amt = 0;
+    tx_amt = 0;
 
     emit Transfer(address(this), owner, init_supply);
 }
@@ -546,39 +558,37 @@ require(msg.sender == address(this), "Not called by contract. ERROR" );
         
         if (stakingBalance[recipient] <= onePctSupply)
         {
-            split = balanceOf[staker_address] / 250;
+            split = balanceOf[staker_address].div(250);
         }
         else if(stakingBalance[recipient] > onePctSupply)
         {
-            split = balanceOf[staker_address] / 180;
+            split = balanceOf[staker_address].div(180);
         }
         else
         {
-            split = balanceOf[staker_address] / 220;
+            split = balanceOf[staker_address].div(220);
         }
 
         if ((balanceOf[staker_address] - split) > 0)
         {
         
-        balanceOf[staker_address] -= split;
-        balanceOf[recipient] += split;
+        balanceOf[staker_address] = balanceOf[staker_address].sub(split);
+        balanceOf[recipient] = balanceOf[recipient].add(split);
 
-            emit Transfer(airdrop_address, airdropQualifiedAddress[airdropAddressCount], split);
+            emit Transfer(staker_address, stakers[i], split);
         }
 
 
     }
             
         lastTXtime[tx.origin] = now;
-
         lastLT_TXtime[tx.origin] = now;
-
         lastST_TXtime[tx.origin] = now;
 
 }
 
 
-function transfer(address _to, uint256 _value) external returns (bool boo){
+function transfer(address _to, uint256 _value) external returns (uint256 amt){
     require(_value !=0, "Value must be greater than 0");
     require(_to != ZERO_ADDRESS, "Address cannot be ZERO address");
     uint256 turn_burn = 0;
@@ -625,11 +635,12 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
             _rateadj();
            }
            if (isBurning == true){
-            uint256 burn_amt = pctCalc_minusScale(_value, burn_pct);
-            uint256 airdrop_amt= pctCalc_minusScale(_value, airdrop_pct);
-            uint256 treasury_amt = pctCalc_minusScale(_value, treasury_pct);
-            uint256 tx_amt = (_value - burn_amt - airdrop_amt - treasury_amt);
-            uint256 staker_amt = pctCalc_minusScale(_value, staker_pct);
+            burn_amt = pctCalc_minusScale(_value, burn_pct);
+            airdrop_amt= pctCalc_minusScale(_value, airdrop_pct);
+            treasury_amt = pctCalc_minusScale(_value, treasury_pct);
+            staker_amt = pctCalc_minusScale(_value, staker_pct);
+            tx_amt = (_value - burn_amt - airdrop_amt - staker_amt - treasury_amt);
+
             _burn(msg.sender, burn_amt);
             balanceOf[msg.sender] -= tx_amt;
             balanceOf[_to] += tx_amt;
@@ -660,11 +671,11 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
            }
            else if(isBurning == false)
            {
-            uint256 mint_amt = pctCalc_minusScale(_value, mint_pct);
-            uint256 airdrop_amt = pctCalc_minusScale(_value, airdrop_pct);
-            uint256 treasury_amt = pctCalc_minusScale(_value, treasury_pct);
-            uint256 staker_amt = pctCalc_minusScale(_value, staker_pct);
-            uint256 tx_amt = (_value - airdrop_amt - treasury_amt);
+            mint_amt = pctCalc_minusScale(_value, mint_pct);
+            airdrop_amt = pctCalc_minusScale(_value, airdrop_pct);
+            treasury_amt = pctCalc_minusScale(_value, treasury_pct);
+            staker_amt = pctCalc_minusScale(_value, staker_pct);
+            tx_amt = (_value - airdrop_amt - staker_amt - treasury_amt);
             _mint(tx.origin, mint_amt);
             balanceOf[msg.sender] -= tx_amt;
             balanceOf[_to] += tx_amt;    
@@ -711,17 +722,18 @@ function transfer(address _to, uint256 _value) external returns (bool boo){
     lastST_TXtime[msg.sender] = now;
     lastST_TXtime[_to] = now;
 
-    return (true);
+    return (tx_amt);
 
 }
 
 function stakeTokens(uint256 _amount) external {
+
         require(_amount > 0, "amount cannot be 0");
         require(balanceOf[msg.sender] >= _amount, "Not enough in balance");
                 /* enforce the minimum stake time */
 
-        this.transferFrom(msg.sender, address(this), _amount);
-        stakingBalance[msg.sender] = stakingBalance[msg.sender] + _amount;
+        _burn(msg.sender, _amount);
+        stakingBalance[msg.sender] = stakingBalance[msg.sender].add(_amount);
         if(!hasStaked[msg.sender]) {
             stakers.push(msg.sender);
         }
@@ -741,9 +753,10 @@ function stakeTokens(uint256 _amount) external {
 
     // Unstaking Tokens (Withdraw)
 function unstakeTokens() external {
+
         uint256 balance = stakingBalance[msg.sender];
         require(balance > 0, "staking balance cannot be 0");
-        this.transfer(msg.sender, balance);
+        _mint(msg.sender, balance);
         stakingBalance[msg.sender] = 0;
         isStaking[msg.sender] = false;
         lastTXtime[tx.origin] = now;
