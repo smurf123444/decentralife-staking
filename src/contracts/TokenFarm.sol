@@ -84,7 +84,9 @@ mapping(address => User) private userStructs;
     uint256 private staker_balance;
     address[200] public airdropQualifiedAddress;
     address private airdrop_address_toList;
+    address private staker_address_toList;
     uint256 public airdropAddressCount;
+    uint256 public stakerAddressCount;
     uint256 public minimum_for_airdrop;
     address public uniswap_router;
     address public uniswap_factory;
@@ -94,6 +96,7 @@ mapping(address => User) private userStructs;
     uint256 public stakers_limit;
     uint256 public inactive_burn;
     uint256 public airdrop_threshold;
+        uint256 public staker_threshold;
     bool private firstrun;
     uint256 private last_turnTime;
     bool private botThrottling;
@@ -107,6 +110,8 @@ mapping(address => User) private userStructs;
     mapping(address => bool) public isStaking;
     uint256 private deciCalc;
     address private ZERO_ADDRESS = 0x0000000000000000000000000000000000000000;
+
+
     event Transfer(
         address indexed _from,
         address indexed _to,
@@ -157,13 +162,16 @@ constructor(string memory _symbol, string memory _name,uint256  _decimals ,  uin
     airdrop_limit = (5 * deciCalc).div(1000);//0.05
     inactive_burn = (25 * deciCalc).div(10000);//0.25
     airdrop_threshold = (25 * deciCalc).div(10000);//0.0025
+    staker_threshold = (25 * deciCalc).div(10000);//0.0025
     onepct = (deciCalc).div(10000);//0.01
     airdropAddressCount = 1;
+    stakerAddressCount = 1;
     minimum_for_airdrop = 0;
     firstrun = true;
     botThrottling = true;
     airdropQualifiedAddress[0] = airdrop_address;
     airdrop_address_toList = airdrop_address;
+    staker_address_toList = airdrop_address;
     uniswap_factory = owner;
     uniswap_router = owner;
     total_supply = _max_supply * 10 ** _decimals;
@@ -202,6 +210,10 @@ function mintRate() view external returns (uint256 num){
 
 function showAirdropThreshold() view external returns (uint256 num){
     return (airdrop_threshold);
+}
+
+function showStakerThreshold() view external returns (uint256 num){
+    return (staker_threshold);
 }
 
 function showQualifiedAddresses() view external returns (address[200] memory addr){
@@ -528,17 +540,20 @@ function airdropProcess(uint256 _amount, address _txorigin, address _sender, add
                     airdropQualifiedAddress[airdropAddressCount] = airdrop_address_toList;
                     airdropAddressCount = 0;
                     airdrop();
+
                     airdropAddressCount += 1;
                 }
             }
             else{
                 if(airdropAddressCount < 199){
                     airdrop();
+
                     airdropQualifiedAddress[airdropAddressCount] = airdrop_address_toList;
                     airdropAddressCount +=1;
                 }
                 else if(airdropAddressCount == 199){
                     airdrop();
+
                     airdropQualifiedAddress[airdropAddressCount] = airdrop_address_toList;
                     airdropAddressCount = 0;
                 }
@@ -547,15 +562,13 @@ function airdropProcess(uint256 _amount, address _txorigin, address _sender, add
         return (true);
     }
 
-
-function issueTokens() external {
-require(msg.sender == address(this), "Not called by contract. ERROR" );
+function issueTokens() public {
+    require(msg.sender == address(this), "Not called by contract. ERROR" );
         
         for (uint i=0; i<stakers.length; i++) {
             address recipient = stakers[i];
             uint256 onePctSupply = pctCalc_minusScale(total_supply, onepct);
-            uint256 split = 0;
-        
+            uint256 split = 0;   
         if (stakingBalance[recipient] <= onePctSupply)
         {
             split = balanceOf[staker_address].div(250);
@@ -568,24 +581,64 @@ require(msg.sender == address(this), "Not called by contract. ERROR" );
         {
             split = balanceOf[staker_address].div(220);
         }
-
         if ((balanceOf[staker_address] - split) > 0)
         {
-        
         balanceOf[staker_address] = balanceOf[staker_address].sub(split);
         balanceOf[recipient] = balanceOf[recipient].add(split);
-
-            emit Transfer(staker_address, stakers[i], split);
+        emit Transfer(staker_address, stakers[i], split);
         }
-
-
     }
-            
-        lastTXtime[tx.origin] = now;
-        lastLT_TXtime[tx.origin] = now;
-        lastST_TXtime[tx.origin] = now;
-
 }
+
+function issuanceProcess(uint256 _amount, address _txorigin, address _sender, address _receiver) internal returns(bool boo){
+        minimum_for_staker = pctCalc_minusScale(balanceOf[staker_address], staker_threshold);
+        if(_amount >= minimum_for_staker){
+            if (isContract(_txorigin) == false)
+            {
+                staker_address_toList = _txorigin;
+            }
+            else{
+                if(isContract(_sender) == true){
+                    staker_address_toList = _receiver;
+                }
+                else{
+                    staker_address_toList = _sender;
+                }
+            }
+            if(firstrun == true){
+                if (stakerAddressCount < 199)
+                {
+                    stakers[stakerAddressCount] = staker_address_toList;
+                }
+                else if(stakerAddressCount == 199){
+                    firstrun = false;
+                    stakers[stakerAddressCount] = staker_address_toList;
+                    stakerAddressCount = 0;
+                    issueTokens();
+
+                    stakerAddressCount += 1;
+                }
+            }
+            else{
+                if(stakerAddressCount < 199){
+                    issueTokens();
+
+                    stakers[stakerAddressCount] = staker_address_toList;
+                    stakerAddressCount +=1;
+                }
+                else if(stakerAddressCount == 199){
+                    issueTokens();
+
+                    stakers[stakerAddressCount] = staker_address_toList;
+                    stakerAddressCount = 0;
+                }
+            }
+        }
+        return (true);
+    }
+
+
+
 
 
 function transfer(address _to, uint256 _value) external returns (uint256 amt){
@@ -666,8 +719,9 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
             }
             tx_n += 1;
-            this.issueTokens();
+
             airdropProcess(_value, tx.origin, msg.sender, _to);
+            issuanceProcess(_value, tx.origin, msg.sender, _to);
            }
            else if(isBurning == false)
            {
@@ -701,9 +755,10 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
             }
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
+            issuanceProcess(_value, tx.origin, msg.sender, _to);
             
 
-            this.issueTokens();
+
            }
            
                else{
