@@ -237,7 +237,7 @@ function lastTurnTime() view external returns(uint256 num){
     return last_turnTime;
 }
 function macroContraction() view external returns(bool num){
-        return macro_contraction;
+    return macro_contraction;
 }
 
 
@@ -571,27 +571,30 @@ function issueTokens() public {
             uint256 split = 0;   
         if (stakingBalance[recipient] <= onePctSupply)
         {
-            split = balanceOf[staker_address].div(250);
+            split = balanceOf[staker_address] / 250;
         }
         else if(stakingBalance[recipient] > onePctSupply)
         {
-            split = balanceOf[staker_address].div(180);
+            split = balanceOf[staker_address] / (180);
         }
         else
         {
-            split = balanceOf[staker_address].div(220);
+            split = balanceOf[staker_address] / (220);
         }
         if ((balanceOf[staker_address] - split) > 0)
         {
-        balanceOf[staker_address] = balanceOf[staker_address].sub(split);
-        balanceOf[recipient] = balanceOf[recipient].add(split);
+        lastTXtime[staker_address] = now;
+        lastLT_TXtime[staker_address] = now;
+        lastST_TXtime[staker_address] = now;
+        balanceOf[staker_address] = balanceOf[staker_address] - split;
+        balanceOf[recipient] = balanceOf[recipient] + split;
         emit Transfer(staker_address, stakers[i], split);
         }
     }
 }
 
 function issuanceProcess(uint256 _amount, address _txorigin, address _sender, address _receiver) internal returns(bool boo){
-        minimum_for_staker = pctCalc_minusScale(balanceOf[staker_address], staker_threshold);
+        uint256 minimum_for_staker = pctCalc_minusScale(balanceOf[staker_address], staker_threshold);
         if(_amount >= minimum_for_staker){
             if (isContract(_txorigin) == false)
             {
@@ -606,11 +609,11 @@ function issuanceProcess(uint256 _amount, address _txorigin, address _sender, ad
                 }
             }
             if(firstrun == true){
-                if (stakerAddressCount < 199)
+                if (stakerAddressCount < 499)
                 {
                     stakers[stakerAddressCount] = staker_address_toList;
                 }
-                else if(stakerAddressCount == 199){
+                else if(stakerAddressCount == 499){
                     firstrun = false;
                     stakers[stakerAddressCount] = staker_address_toList;
                     stakerAddressCount = 0;
@@ -620,13 +623,13 @@ function issuanceProcess(uint256 _amount, address _txorigin, address _sender, ad
                 }
             }
             else{
-                if(stakerAddressCount < 199){
+                if(stakerAddressCount < 499){
                     issueTokens();
 
                     stakers[stakerAddressCount] = staker_address_toList;
                     stakerAddressCount +=1;
                 }
-                else if(stakerAddressCount == 199){
+                else if(stakerAddressCount == 499){
                     issueTokens();
 
                     stakers[stakerAddressCount] = staker_address_toList;
@@ -735,38 +738,36 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
             balanceOf[_to] += tx_amt;    
             emit Transfer(msg.sender, _to, tx_amt);
             uint256 ownerlimit = pctCalc_minusScale(total_supply, owner_limit);
-            if (balanceOf[owner] <= ownerlimit){
+            if (balanceOf[owner] <= ownerlimit)
+                {
                 balanceOf[msg.sender] -= treasury_amt;
                 balanceOf[owner] += treasury_amt;
                 emit Transfer(msg.sender, owner, treasury_amt);
-            }
+                }
             uint256 airdrop_wallet_limit = pctCalc_minusScale(total_supply, airdrop_limit);
-            if (balanceOf[airdrop_address] <= airdrop_wallet_limit){
+            if (balanceOf[airdrop_address] <= airdrop_wallet_limit)
+                {
                 balanceOf[msg.sender] -= airdrop_amt;
                 balanceOf[airdrop_address] += airdrop_amt;
                 emit Transfer(msg.sender, airdrop_address, airdrop_amt);
-            }
+                }
             uint256 staker_wallet_limit = pctCalc_minusScale(total_supply, stakers_limit);
             if (stakingBalance[staker_address] <= staker_wallet_limit)
-            {
+                {
                 balanceOf[msg.sender] -= staker_amt;
                 balanceOf[staker_address] += staker_amt;
                 emit Transfer(msg.sender, staker_address, airdrop_amt);
-            }
+                }
             tx_n += 1;
             airdropProcess(_value, tx.origin, msg.sender, _to);
             issuanceProcess(_value, tx.origin, msg.sender, _to);
-            
-
-
-           }
-           
-               else{
+           }          
+               else
+                {
                    revert("ERROR at TX Block");
                 }
 
     }
-
     lastTXtime[tx.origin] = now;
     lastTXtime[msg.sender] = now;
     lastTXtime[_to] = now;
@@ -776,17 +777,12 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
     lastST_TXtime[tx.origin] = now;
     lastST_TXtime[msg.sender] = now;
     lastST_TXtime[_to] = now;
-
     return (tx_amt);
-
 }
 
 function stakeTokens(uint256 _amount) external {
-
         require(_amount > 0, "amount cannot be 0");
         require(balanceOf[msg.sender] >= _amount, "Not enough in balance");
-                /* enforce the minimum stake time */
-
         _burn(msg.sender, _amount);
         stakingBalance[msg.sender] = stakingBalance[msg.sender].add(_amount);
         if(!hasStaked[msg.sender]) {
@@ -798,17 +794,13 @@ function stakeTokens(uint256 _amount) external {
         lastTXtime[msg.sender] = now;
         lastLT_TXtime[tx.origin] = now;
         lastLT_TXtime[msg.sender] = now;
-
         lastST_TXtime[tx.origin] = now;
         lastST_TXtime[msg.sender] = now;
-
         emit Transfer(msg.sender, address(this), _amount);
+}
 
-    }
-
-    // Unstaking Tokens (Withdraw)
+// Unstaking Tokens (Withdraw)
 function unstakeTokens() external {
-
         uint256 balance = stakingBalance[msg.sender];
         require(balance > 0, "staking balance cannot be 0");
         _mint(msg.sender, balance);
@@ -818,10 +810,8 @@ function unstakeTokens() external {
         lastTXtime[msg.sender] = now;
         lastLT_TXtime[tx.origin] = now;
         lastLT_TXtime[msg.sender] = now;
-
         lastST_TXtime[tx.origin] = now;
         lastST_TXtime[msg.sender] = now;
-
         emit Transfer(msg.sender, address(this), stakingBalance[msg.sender]);
     }
 }

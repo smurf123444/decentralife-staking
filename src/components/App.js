@@ -27,7 +27,7 @@ class App extends Component {
 
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x0c10C469Ea23f24cD7ED71402120D5688C073e9B')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xA026DB44645b6C94473540700b83309629baDF74')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
@@ -110,7 +110,7 @@ class App extends Component {
 				indexLabel: "{y}",
 				indexLabelPlacement: "inside",
 				dataPoints: [
-          { y: stakingBalance_, label: "Amount Staked" },
+          { y: stakingBalance_, label: "Amount Personally Staked" },
           { y: totalSupply_, label: "In Circulating Supply" },
           { y: burned, label: "Burned" },
 
@@ -132,7 +132,7 @@ class App extends Component {
 
     return (
       <div>
-        <Navbar account={this.state.account} />
+        
         <div className="container-fluid mt-5">
           <div className="row">
             <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
