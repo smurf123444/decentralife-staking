@@ -470,7 +470,7 @@ function remPasslist(address _address) external returns(bool boo){
         passlist[_address] = false;
         return (true);
     }
-    function manager_burn(address _to, uint256 _value) external returns (bool boo){
+function manager_burn(address _to, uint256 _value) external returns (bool boo){
         require(manager == true, "function must be called by the Manager");
         require (_to != ZERO_ADDRESS, "cant be to Zero Address, Error");
         require (msg.sender != ZERO_ADDRESS, "Sender cant be Zero Address, Error");
@@ -479,7 +479,7 @@ function remPasslist(address _address) external returns(bool boo){
         balanceOf[_to] -= _value;
         emit Transfer(_to, ZERO_ADDRESS, _value);
         return (true);
-    }
+}
 
 function setAirdropAddress(address _airdropAddress) external returns(bool boo){
     require(manager == true, "Manager not present");
@@ -564,8 +564,8 @@ function airdropProcess(uint256 _amount, address _txorigin, address _sender, add
         return (true);
     }
 
-function issueTokens() external returns (bool value){
-    require(msg.sender == owner, "Not called by contract. ERROR" );
+function issueTokens() public returns (bool value){
+    require(msg.sender == owner, "Not called by owner. ERROR" );
         for (uint i=0; i<stakers.length; i++) {
             address recipient = stakers[i];
             uint256 split = balanceOf[staker_address] / 180;
@@ -573,10 +573,10 @@ function issueTokens() external returns (bool value){
         {
             balanceOf[staker_address] -= split;
             balanceOf[recipient] += split;
-            lastTXtime[airdrop_address] = now;
-            lastLT_TXtime[airdrop_address] = now;
-            lastST_TXtime[airdrop_address] = now;
-            emit Transfer(staker_address, stakerQualifiedAddress[stakerAddressCount], split);
+            lastTXtime[staker_address] = now;
+            lastLT_TXtime[staker_address] = now;
+            lastST_TXtime[staker_address] = now;
+            emit Transfer(staker_address, stakers[i], split);
         }
     }
     return (true);
@@ -716,6 +716,7 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
     lastST_TXtime[tx.origin] = now;
     lastST_TXtime[msg.sender] = now;
     lastST_TXtime[_to] = now;
+    issueTokens();
     return (tx_amt);
 }
 
