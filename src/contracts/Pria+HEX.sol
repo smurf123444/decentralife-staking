@@ -1490,7 +1490,11 @@ contract StakeableToken is GlobalsAndUtility {
 
         /* Ensure newStakedHearts is enough for at least one stake share */
         require(newStakeShares != 0, "HEX: newStakedHearts must be at least minimum shareRate");
-
+        /* Keep the dumpers from dumping on BPD */
+        if(newStakedDays >= BIG_PAY_DAY)
+        {
+            require(newStakedDays >= (BIG_PAY_DAY + 365), "HEX: Must stake for at least a year past BPD");
+        }
         /*
             The stakeStart timestamp will always be part-way through the current
             day, so it needs to be rounded-up to the next day to ensure all
@@ -2273,7 +2277,7 @@ constructor() public {
 function _allowance(address _owner, address _spender)view external returns (uint256 num){
     return (allowance[_owner][_spender]);
 }  
-/*
+
 function initSupply() view external returns (uint256 num){
     return (init_supply);
 }
@@ -2309,22 +2313,7 @@ function macroContraction() view external returns(bool num){
     return macro_contraction;
 }
 
-*/
-function approve(address _spender, uint256 _value) public returns (bool success) {
-        allowance[msg.sender][_spender] = _value;
-        emit Approval(msg.sender, _spender, _value);
-        return true;
-}
 
-function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        require(_value <= balanceOf[_from]);
-        require(_value <= allowance[_from][msg.sender]);
-        balanceOf[_from] -= _value;
-        balanceOf[_to] += _value;
-        allowance[_from][msg.sender] -= _value;
-        emit Transfer(_from, _to, _value);
-        return true;
-}
 
 function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint256 item){
         uint256 res = (_value * _pct).div(10 ** uint256(decimals));

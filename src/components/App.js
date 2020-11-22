@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
+import Button from 'react-bootstrap/Button';
+
 import TokenFarm from '../abis/TokenFarm.json'
 import CanvasJSReact from '../assets/canvasjs.react';
 import Navbar from './Navbar'
 import Main from './Main'
+import TableList from './TableList'
 import './App.css'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -27,7 +30,7 @@ class App extends Component {
 
     let tokenFarmData = true
     if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0xA026DB44645b6C94473540700b83309629baDF74')
+      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x1294709358c96D6625Dda7fb859304666FBd4Cd4')
       this.setState({ tokenFarm })
       let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
       let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
@@ -135,9 +138,12 @@ class App extends Component {
         
         <div className="container-fluid mt-5">
           <div className="row">
+            <Navbar />
             <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
+
               <div className="content mr-auto ml-auto">
 
+              <TableList />
 
                 {content}
                 <h1>Amount in Circulation</h1>

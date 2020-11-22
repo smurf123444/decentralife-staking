@@ -2,8 +2,12 @@ import React, { Component } from 'react'
 import dai from '../dai.png'
 
 class Main extends Component {
-
   render() {
+
+    
+
+
+
     return (
       <div id="content" className="mt-3">
 
@@ -16,11 +20,15 @@ class Main extends Component {
           </thead>
           <tbody>
             <tr>
-              <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} TITS</td>
-              <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} TITS</td>
+              <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} Tokens</td>
+              <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} Tokens</td>
             </tr>
           </tbody>
-        </table>
+
+
+
+        
+          </table>
 
         <div className="card mb-4" >
 
@@ -49,7 +57,7 @@ class Main extends Component {
                 <div className="input-group-append">
                   <div className="input-group-text">
                     <img src={dai} height='32' alt=""/>
-                    &nbsp;&nbsp;&nbsp; TITS
+                    &nbsp;&nbsp;&nbsp; Token
                   </div>
                 </div>
               </div>
