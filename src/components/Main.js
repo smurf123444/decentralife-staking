@@ -20,8 +20,7 @@ class Main extends Component {
           </thead>
           <tbody>
             <tr>
-              <td>{window.web3.utils.fromWei(this.props.stakingBalance, 'Ether')} Tokens</td>
-              <td>{window.web3.utils.fromWei(this.props.dappTokenBalance, 'Ether')} Tokens</td>
+              
             </tr>
           </tbody>
 

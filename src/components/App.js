@@ -1,13 +1,20 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
-import TokenFarm from '../abis/TokenFarm.json'
+import TokenFarm from '../assets/TokenFarm.json'
 import CanvasJSReact from '../assets/canvasjs.react';
-import Navbar from './Navbar'
 import Main from './Main'
-import TableList from './TableList'
+import TransformList from './TransformLobby/TransformList'
 import './App.css'
+import Logo from '../dai.png'
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class App extends Component {
@@ -22,29 +29,67 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x34774160287212a831b6f6Ac14D48aE39bA97fC9')
+    this.setState({ tokenFarm })
+      let i = 351
+      let currentDay = await tokenFarm.methods.currentDay().call()
+      let currentReversed = 351 - currentDay
+      console.log(currentDay)
+      let totalEth = 0
 
+  function myTotalHex() {
+       var newArray = []
+       var amount = ""
+      for (var i = 351; i >= 1; --i)
+      {
+      if(i >= 20)
+      {
+      amount = 500000000
+      newArray.push (amount)
+      }
+      if(i <= 19 && i >= 1)
+      {
+      amount = 525000000
+      newArray.push (amount)
+      }
+      if(i < 2 && i >= 1)
+      {
+      amount = 1500000000
+      newArray.push (amount)
+      }
+  }
+  return newArray;   // The function returns the product of p1 and p2
+}
+i = 351
+      totalEth = await tokenFarm.methods.xfLobby(currentDay).call()
 
-
-
+      let totalEthByDay = []
+      let hexAvailableArray = myTotalHex();
+      let hexToEthDisplay = 0
+      let hexToEth = hexAvailableArray[currentReversed]
+      console.log(hexToEth)
+      while (i >= 1)
+      {
+        totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
+        console.log(hexAvailableArray[i])
+        if(totalEth > 0){
+        hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEth, "Ether")
+      }
+        i--
+      }
+       hexToEth = hexToEth + " HEX / 1 ETH"
     // Load TokenFarm
+      console.log(totalEth)
+      console.log(hexToEth)
 
-    let tokenFarmData = true
-    if(tokenFarmData) {
-      const tokenFarm = new web3.eth.Contract(TokenFarm.abi, '0x1294709358c96D6625Dda7fb859304666FBd4Cd4')
-      this.setState({ tokenFarm })
-      let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call()
-      let total_Balance = await tokenFarm.methods.balanceOf(this.state.account).call()
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
+      let day = await tokenFarm.methods.currentDay().call()
       let initSuppl_ = await tokenFarm.methods.initSupply().call()
-      this.setState({ stakingBalance: stakingBalance.toString() })
-      this.setState({ dappTokenBalance:  total_Balance.toString()})
+      this.setState({ totalEthXL:  totalEth.toString()})
+      this.setState({ hexToEth:  hexToEth.toString()})
+      this.setState({ currentDay:  day.toString()})
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
-    } else {
-      window.alert('TokenFarm contract not deployed to detected network.')
-    }
-
-    this.setState({ loading: false })
   }
 
   async loadWeb3() {
@@ -76,13 +121,22 @@ class App extends Component {
     })
   }
 
+  exitDay = (day) => {
+    this.setState({ loading: true })
+    this.state.tokenFarm.methods.xfLobbyExit(day , '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
+
   constructor(props) {
     super(props)
     this.state = {
       account: '0x0',
       dappToken: {},
+      currentDay: '0',
       tokenFarm: {},
-      stakingBalance: '0',
+      totalEthXL: '0',
+      hexToEth: '0',
       totalSupply: '0',
       initSupply: '0',
       loading: true
@@ -90,11 +144,12 @@ class App extends Component {
   }
 
   render() {
-    const { account, dappToken, tokenFarm, stakingBalance, totalSupply, initSupply, loading} = this.state;
-    let initSupply_ = Web3.utils.fromWei(initSupply, "Ether")
-    let totalSupply_ = Web3.utils.fromWei(totalSupply, "ether")
-    let stakingBalance_ = Web3.utils.fromWei(stakingBalance, "Ether")
-    let burned =  initSupply_ - totalSupply_  - stakingBalance_
+    const { account, dappToken, currentDay, tokenFarm, totalEthXL, hexToEth, totalSupply, initSupply, loading} = this.state;
+    let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
+    let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
+    let currentDay_ = currentDay
+
+    let burned =  initSupply_ - totalSupply_ 
 
     const options = {
 			theme: "light",
@@ -113,7 +168,6 @@ class App extends Component {
 				indexLabel: "{y}",
 				indexLabelPlacement: "inside",
 				dataPoints: [
-          { y: stakingBalance_, label: "Amount Personally Staked" },
           { y: totalSupply_, label: "In Circulating Supply" },
           { y: burned, label: "Burned" },
 
@@ -126,7 +180,7 @@ class App extends Component {
     } else {
       content = <Main
         dappTokenBalance={this.state.dappTokenBalance}
-        stakingBalance={this.state.stakingBalance}
+        
         totalSupply={this.state.totalSupply}
         stakeTokens={this.stakeTokens}
         unstakeTokens={this.unstakeTokens}
@@ -135,15 +189,40 @@ class App extends Component {
 
     return (
       <div>
-        
-        <div className="container-fluid mt-5">
+                      <Router>
+        <div>
+    <nav>
+      <h3>
+      <img src={Logo} />
+      </h3>
+      <ul className="nav-links">
+            <li>
+              <Link to="/" exact>Home</Link>
+            </li>
+            <li>
+              <Link to="/stake">Stake</Link>
+            </li>
+            <li>
+              <Link to="/transform">Transform</Link>
+            </li>
+            <li>
+              <Link to="/transfer">Transfer</Link>
+            </li>
+      </ul>
+    </nav>
+
+    </div>
+
+              <Switch>
+          <Route path="/stake">
+          <div className="container-fluid mt-5">
           <div className="row">
-            <Navbar />
+
             <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
 
               <div className="content mr-auto ml-auto">
 
-              <TableList />
+
 
                 {content}
                 <h1>Amount in Circulation</h1>
@@ -154,6 +233,7 @@ class App extends Component {
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 
               </div>
+
             </main>
 
 
@@ -161,6 +241,28 @@ class App extends Component {
 
           </div>
         </div>
+          </Route>
+          <Route path="/transform">
+          <TransformList 
+          day={currentDay}
+          ethTransformed={this.props.ethTransformed} 
+          totalEth={Web3.utils.fromWei(totalEthXL, "ether")} 
+          hexToEth={hexToEth} 
+          closing={currentDay}
+          yourHex={this.props.yourHex}
+          yourEth={this.props.yourEth}
+          xfLobbyExit={this.exitDay}/>
+          </Route>
+          <Route path="/" exact>
+            <div>
+            <h1>Welcome to Decentralife Prototype v1.0</h1>
+            </div>
+          </Route>
+          <Route path="/transfer" exact>
+          </Route>
+        </Switch>
+        </Router>
+
       </div>
     );
   }
