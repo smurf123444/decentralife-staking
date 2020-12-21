@@ -29,7 +29,7 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x34774160287212a831b6f6Ac14D48aE39bA97fC9')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x075e4F66C4D53DD2d37b91BD7382b34F3B681B4f')
     this.setState({ tokenFarm })
       let i = 351
       let currentDay = await tokenFarm.methods.currentDay().call()
@@ -42,17 +42,18 @@ class App extends Component {
        var amount = ""
       for (var i = 351; i >= 1; --i)
       {
-      if(i >= 20)
+      if(i >= 19)
       {
       amount = 500000000
       newArray.push (amount)
       }
-      if(i <= 19 && i >= 1)
+      if(i <= 19 && i >= 2)
       {
+
       amount = 525000000
       newArray.push (amount)
       }
-      if(i < 2 && i >= 1)
+      if(i >= 20 && i <= 351)
       {
       amount = 1500000000
       newArray.push (amount)
@@ -67,27 +68,27 @@ i = 351
       let hexAvailableArray = myTotalHex();
       let hexToEthDisplay = 0
       let hexToEth = hexAvailableArray[currentReversed]
-      console.log(hexToEth)
+
       while (i >= 1)
       {
         totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
-        console.log(hexAvailableArray[i])
         if(totalEth > 0){
         hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEth, "Ether")
       }
         i--
       }
-       hexToEth = hexToEth + " HEX / 1 ETH"
+       hexToEth = hexToEth
     // Load TokenFarm
-      console.log(totalEth)
-      console.log(hexToEth)
+
 
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
+      let yourAddress_ = await tokenFarm.methods.currentDay().call()
       let initSuppl_ = await tokenFarm.methods.initSupply().call()
       this.setState({ totalEthXL:  totalEth.toString()})
       this.setState({ hexToEth:  hexToEth.toString()})
       this.setState({ currentDay:  day.toString()})
+      this.setState({ yourAddress:  yourAddress_.toString()})
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
   }
@@ -148,6 +149,7 @@ i = 351
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
     let currentDay_ = currentDay
+    let account_ = account
 
     let burned =  initSupply_ - totalSupply_ 
 
@@ -249,8 +251,7 @@ i = 351
           totalEth={Web3.utils.fromWei(totalEthXL, "ether")} 
           hexToEth={hexToEth} 
           closing={currentDay}
-          yourHex={this.props.yourHex}
-          yourEth={this.props.yourEth}
+          yourAddress={account}
           xfLobbyExit={this.exitDay}/>
           </Route>
           <Route path="/" exact>

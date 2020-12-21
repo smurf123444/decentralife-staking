@@ -111,15 +111,15 @@ const getTotalValue = async (hex, addr, stakeId, stakeIndex) => {
     return BigInt(stake.stakedHearts) + interest;
 }
 
-let uri = null; // some JSON RPC uri, like infura
+let uri = 'https://rinkeby.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'; // some JSON RPC uri, like infura
 
 const web3 = new Web3(uri);
 let hex = new web3.eth.Contract(compiledContractABI, hexAddr);
 
 // examples
-getInterestToDate(hex, testAddr, undefined, 5)
+getInterestToDate(hex, '0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84', undefined, 5)
 .then(console.log);
 
 
-getTotalValue(hex, testAddr, testStakeId)
+getTotalValue(hex, '0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84', '2206793579083864573715031754547732929332884600001928645223')
 .then(console.log);
