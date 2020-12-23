@@ -20,6 +20,9 @@ class TransformList extends Component {
     hexToEth={this.props.hexToEth} 
     closing={this.props.closing}
     yourAddress={this.props.yourAddress}
+    yourHex={this.props.yourHex}
+    yourEth={this.props.yourEth}
+    yourButton={this.props.yourButton}
     xfLobbyExit={this.props.xfLobbyExit}/></td>
     </tr>
 

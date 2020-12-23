@@ -8,9 +8,21 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 
 
 
+class PersonalTransactions{
 
+  value;
+  timestamp;
+
+  constructor(inputValue, inputTimestamp){
+    this.value = inputValue;
+    this.timestamp = inputTimestamp;
+  }
+
+} 
+
+let PersTransArray = []
 let valueEth = 0
-let blockOfValueEth
+let transactionTimestamp = 0
 class TransactionChecker {
   web3;
   account;
@@ -37,7 +49,7 @@ class TransactionChecker {
           for (let txHash of block.transactions) {
               //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
               let tx = await this.web3.eth.getTransaction(txHash);
-              console.log(block.timestamp)
+             // console.log(block.timestamp)
               let time = block.timestamp
               let timeConfigured = new Date(time*1000);
             if (tx.to != null)
@@ -45,7 +57,7 @@ class TransactionChecker {
             if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
                 //  console.log('Transaction found on block: ' + number);
                   valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
-                  blockOfValueEth = timeConfigured.toUTCString()
+                  transactionTimestamp = timeConfigured.toUTCString()
                   return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
               }
           }
@@ -180,7 +192,7 @@ function yourHEXcalc(hex, day) {
   let s = 351 - day + 1
   let newArray= [];
   let string = ""
-  let string2 = ""
+
   let string3 = ""
   //slet string3 = ""
   let txChecker = new TransactionChecker(process.env.INFURA_ID, '0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84');
@@ -189,40 +201,67 @@ function yourHEXcalc(hex, day) {
   do{
    if(s >= i && s <= i)
   {
-    string = valueEth * hex
-    console.log(valueEth)
-    string2 = blockOfValueEth
-  
-
-
-
-    console.log(string2)
-    newArray[i--] = (<tr><td className="td-height">{string2}</td></tr>)
+    string = hex
+    newArray[i--] = (<tr><td className="td-height">{string}</td></tr>)
   }
   else{
-    string = day
+    string = ""
     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
   }
-
   }
   while(i > 0)
   return newArray;   // The function returns the product of p1 and p2
 }
 
 
-function yourETHcalc() {
-  var newArray = []
-  var amount = false
-  var sting = ""
-  if(amount === false)
-  {
-    sting = "{your ETH}"
-  }
-  for (var i = 351; i >= 1; --i)
-  {
-   newArray.push (<tr><td>{sting}</td></tr>)
-  }
-  return newArray;   // The function returns the product of p1 and p2
+function yourETHcalc(hex, day) {
+  let i = 351
+  let s = 351 - day + 1
+  let newArray= [];
+  let string = ""
+  do{
+    if(s >= i && s <= i)
+   {
+     string = hex
+     newArray[i--] = (<tr><td className="td-height">{string}</td></tr>)
+   }
+   else{
+     string = ""
+     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+   }
+   }
+   while(i > 0)
+   return newArray;   // The function returns the product of p1 and p2
+}
+
+function yourButtoncalc(day,test,eth) {
+  let i = 351
+  let s = 351 - day + 1
+  let newArray= [];
+  let string = ""
+
+  do{
+    if(eth[i] !== null && eth[i] !== true)
+   {
+     console.log(eth[i])
+   /* newArray[i--] = (<tr><td className="td-height">   
+                          <form onSubmit={(event) => {
+                            event.preventDefault()
+                            test(day)
+                            }}>
+
+                            <button type="submit" className="td-height" >Exit!</button>
+                            </form></td></tr>
+                      )
+   }
+   else if(eth[i] === true){
+     string = ""
+     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+   }
+   */
+   }
+   while(i > 0)
+   return newArray;   // The function returns the product of p1 and p2
 }
 
 class TransformTable extends Component {
@@ -278,36 +317,14 @@ class TransformTable extends Component {
                          {closingBool(this.props.day)}
                         </td>
                         <td>
-                          {yourHEXcalc(this.props.hexToEth, this.props.day)}
+                          {yourHEXcalc(this.props.yourHex, this.props.day)}
                         </td>
                         <td>
-                          {yourETHcalc(this.props.yourEth)}
+                          {yourETHcalc(this.props.yourEth, this.props.day)}
                         </td>
-                         
+                         {yourButtoncalc(this.props.day, this.props.xfLobbyExit,this.props.yourButton)}
                         <td>
-                        <form className="mb-3" onSubmit={(event) => {
-                event.preventDefault()
-                let day
-                day = this.input.value.toString()
-                this.props.xfLobbyExit(day)
-              }}>
 
-              <div className="input-group mb-4">
-                <input
-                  type="text"
-                  ref={(input) => { this.input = input }}
-                  className="form-control form-control-lg"
-                  placeholder="0"
-                  required />
-                <div className="input-group-append">
-                  <div className="input-group-text">
-                  
-                    &nbsp;&nbsp;&nbsp; Day
-                  </div>
-                </div>
-              </div>
-              <button type="submit" className="btn btn-primary btn-block btn-lg">Exit!</button>
-            </form>
 </td>
 </tr>   
        </tbody>

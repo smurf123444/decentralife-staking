@@ -1,10 +1,4 @@
 /**
- *Submitted for verification at Etherscan.io on 2020-11-25
-*/
-
-//SPDX-License-Identifier: UNLICENSED
-//https://medium.com/@hello_89425/how-to-lock-your-tokens-liquidity-for-token-developers-6dc66cfb494e
-/**
  *Submitted for verification at Etherscan.io on 2019-12-03
 */
 
@@ -49,7 +43,16 @@ interface IERC20 {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
+    function balanceOf(address account) external view returns (uint256);
 
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transfer(address recipient, uint256 amount) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -58,7 +61,22 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * IMPORTANT: Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an {Approval} event.
+     */
     function approve(address spender, uint256 amount) external returns (bool);
 
     /**
@@ -285,6 +303,29 @@ contract ERC20 is Context, IERC20 {
     /**
      * @dev See {IERC20-balanceOf}.
      */
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }
+
+    /**
+     * @dev See {IERC20-transfer}.
+     *
+     * Requirements:
+     *
+     * - `recipient` cannot be the zero address.
+     * - the caller must have a balance of at least `amount`.
+     */
+    function transfer(address recipient, uint256 amount) public returns (bool) {
+        _transfer(_msgSender(), recipient, amount);
+        return true;
+    }
+
+    /**
+     * @dev See {IERC20-allowance}.
+     */
+    function allowance(address owner, address spender) public view returns (uint256) {
+        return _allowances[owner][spender];
+    }
 
     /**
      * @dev See {IERC20-approve}.
@@ -610,7 +651,7 @@ contract GlobalsAndUtility is ERC20 {
     uint256 internal constant HEARTS_PER_SATOSHI = HEARTS_PER_HEX / SATOSHIS_PER_BTC * HEX_PER_BTC;
 
     /* Time of contract launch (2019-12-03T00:00:00Z) */
-    uint256 internal constant LAUNCH_TIME = 1605816016;
+    uint256 internal constant LAUNCH_TIME = 1575331200;
 
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
@@ -639,18 +680,18 @@ contract GlobalsAndUtility is ERC20 {
 
     /* BigPayDay */
     uint256 internal constant BIG_PAY_DAY = CLAIM_PHASE_END_DAY + 1;
-/*
-    /* Root hash of the UTXO Merkle tree 
+
+    /* Root hash of the UTXO Merkle tree */
     bytes32 internal constant MERKLE_TREE_ROOT = 0x4e831acb4223b66de3b3d2e54a2edeefb0de3d7916e2886a4b134d9764d41bec;
 
-    /* Size of a Satoshi claim uint in a Merkle leaf 
+    /* Size of a Satoshi claim uint in a Merkle leaf */
     uint256 internal constant MERKLE_LEAF_SATOSHI_SIZE = 45;
 
-    /* Zero-fill between BTC address and Satoshis in a Merkle leaf 
+    /* Zero-fill between BTC address and Satoshis in a Merkle leaf */
     uint256 internal constant MERKLE_LEAF_FILL_SIZE = 256 - 160 - MERKLE_LEAF_SATOSHI_SIZE;
     uint256 internal constant MERKLE_LEAF_FILL_BASE = (1 << MERKLE_LEAF_FILL_SIZE) - 1;
     uint256 internal constant MERKLE_LEAF_FILL_MASK = MERKLE_LEAF_FILL_BASE << MERKLE_LEAF_SATOSHI_SIZE;
-*/
+
     /* Size of a Satoshi total uint */
     uint256 internal constant SATOSHI_UINT_SIZE = 51;
     uint256 internal constant SATOSHI_UINT_MASK = (1 << SATOSHI_UINT_SIZE) - 1;
@@ -736,11 +777,9 @@ contract GlobalsAndUtility is ERC20 {
         uint256 _dailyDataCount;
         uint256 _stakeSharesTotal;
         uint40 _latestStakeId;
-        
         uint256 _unclaimedSatoshisTotal;
         uint256 _claimedSatoshisTotal;
         uint256 _claimedBtcAddrCount;
-        
         //
         uint256 _currentDay;
     }
@@ -883,7 +922,6 @@ contract GlobalsAndUtility is ERC20 {
         view
         returns (uint256[13] memory)
     {
-        
         uint256 _claimedBtcAddrCount;
         uint256 _claimedSatoshisTotal;
         uint256 _unclaimedSatoshisTotal;
@@ -891,7 +929,6 @@ contract GlobalsAndUtility is ERC20 {
         (_claimedBtcAddrCount, _claimedSatoshisTotal, _unclaimedSatoshisTotal) = _claimStatsDecode(
             globals.claimStats
         );
-        
 
         return [
             // 1
@@ -903,11 +940,9 @@ contract GlobalsAndUtility is ERC20 {
             globals.dailyDataCount,
             globals.stakeSharesTotal,
             globals.latestStakeId,
-          
             _unclaimedSatoshisTotal,
             _claimedSatoshisTotal,
             _claimedBtcAddrCount,
-            
             //
             block.timestamp,
             totalSupply(),
@@ -967,12 +1002,9 @@ contract GlobalsAndUtility is ERC20 {
         g._dailyDataCount = globals.dailyDataCount;
         g._stakeSharesTotal = globals.stakeSharesTotal;
         g._latestStakeId = globals.latestStakeId;
-        
         (g._claimedBtcAddrCount, g._claimedSatoshisTotal, g._unclaimedSatoshisTotal) = _claimStatsDecode(
             globals.claimStats
         );
-        
-        
         //
         g._currentDay = _currentDay();
 
@@ -992,11 +1024,9 @@ contract GlobalsAndUtility is ERC20 {
         gSnapshot._dailyDataCount = g._dailyDataCount;
         gSnapshot._stakeSharesTotal = g._stakeSharesTotal;
         gSnapshot._latestStakeId = g._latestStakeId;
-        
         gSnapshot._unclaimedSatoshisTotal = g._unclaimedSatoshisTotal;
         gSnapshot._claimedSatoshisTotal = g._claimedSatoshisTotal;
         gSnapshot._claimedBtcAddrCount = g._claimedBtcAddrCount;
-        
     }
 
     function _globalsSync(GlobalsCache memory g, GlobalsCache memory gSnapshot)
@@ -1015,11 +1045,18 @@ contract GlobalsAndUtility is ERC20 {
         if (g._dailyDataCount != gSnapshot._dailyDataCount
             || g._stakeSharesTotal != gSnapshot._stakeSharesTotal
             || g._latestStakeId != gSnapshot._latestStakeId
-            ) {
+            || g._unclaimedSatoshisTotal != gSnapshot._unclaimedSatoshisTotal
+            || g._claimedSatoshisTotal != gSnapshot._claimedSatoshisTotal
+            || g._claimedBtcAddrCount != gSnapshot._claimedBtcAddrCount) {
             // 2
             globals.dailyDataCount = uint16(g._dailyDataCount);
             globals.stakeSharesTotal = uint72(g._stakeSharesTotal);
             globals.latestStakeId = g._latestStakeId;
+            globals.claimStats = _claimStatsEncode(
+                g._claimedBtcAddrCount,
+                g._claimedSatoshisTotal,
+                g._unclaimedSatoshisTotal
+            );
         }
     }
 
@@ -1164,31 +1201,29 @@ contract GlobalsAndUtility is ERC20 {
         return payout;
     }
 
-
     function _calcAdoptionBonus(GlobalsCache memory g, uint256 payout)
         internal
         pure
         returns (uint256)
     {
-        
-            //VIRAL REWARDS: Add adoption percentage bonus to payout
+        /*
+            VIRAL REWARDS: Add adoption percentage bonus to payout
 
-          //  viral = payout * (claimedBtcAddrCount / CLAIMABLE_BTC_ADDR_COUNT)
-        
+            viral = payout * (claimedBtcAddrCount / CLAIMABLE_BTC_ADDR_COUNT)
+        */
         uint256 viral = payout * g._claimedBtcAddrCount / CLAIMABLE_BTC_ADDR_COUNT;
 
-        
-           // CRIT MASS REWARDS: Add adoption percentage bonus to payout
+        /*
+            CRIT MASS REWARDS: Add adoption percentage bonus to payout
 
-         //   crit  = payout * (claimedSatoshisTotal / CLAIMABLE_SATOSHIS_TOTAL)
-        
+            crit  = payout * (claimedSatoshisTotal / CLAIMABLE_SATOSHIS_TOTAL)
+        */
         uint256 crit = payout * g._claimedSatoshisTotal / CLAIMABLE_SATOSHIS_TOTAL;
 
         return viral + crit;
-}
-    
+    }
 
-function _dailyRoundCalc(GlobalsCache memory g, DailyRoundState memory rs, uint256 day)
+    function _dailyRoundCalc(GlobalsCache memory g, DailyRoundState memory rs, uint256 day)
         private
         pure
     {
@@ -1497,11 +1532,7 @@ contract StakeableToken is GlobalsAndUtility {
 
         /* Ensure newStakedHearts is enough for at least one stake share */
         require(newStakeShares != 0, "HEX: newStakedHearts must be at least minimum shareRate");
-        /* Keep the dumpers from dumping on BPD */
-        if(newStakedDays >= BIG_PAY_DAY)
-        {
-            require(newStakedDays >= (BIG_PAY_DAY + 365), "HEX: Must stake for at least a year past BPD");
-        }
+
         /*
             The stakeStart timestamp will always be part-way through the current
             day, so it needs to be rounded-up to the next day to ensure all
@@ -1887,17 +1918,17 @@ contract StakeableToken is GlobalsAndUtility {
         );
     }
 }
-/*
+
 /**
  * @dev These functions deal with verification of Merkle trees (hash trees),
-
+ */
 library MerkleProof {
     /**
      * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
      * defined by `root`. For this, a `proof` must be provided, containing
      * sibling hashes on the branch from the leaf to the root of the tree. Each
      * pair of leaves and each pair of pre-images are assumed to be sorted.
-    
+     */
     function verify(bytes32[] memory proof, bytes32 root, bytes32 leaf) internal pure returns (bool) {
         bytes32 computedHash = leaf;
 
@@ -1918,11 +1949,751 @@ library MerkleProof {
     }
 }
 
-*/
+contract UTXOClaimValidation is StakeableToken {
+    /**
+     * @dev PUBLIC FACING: Verify a BTC address and balance are unclaimed and part of the Merkle tree
+     * @param btcAddr Bitcoin address (binary; no base58-check encoding)
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @param proof Merkle tree proof
+     * @return True if can be claimed
+     */
+    function btcAddressIsClaimable(bytes20 btcAddr, uint256 rawSatoshis, bytes32[] calldata proof)
+        external
+        view
+        returns (bool)
+    {
+        uint256 day = _currentDay();
 
+        require(day >= CLAIM_PHASE_START_DAY, "HEX: Claim phase has not yet started");
+        require(day < CLAIM_PHASE_END_DAY, "HEX: Claim phase has ended");
 
+        /* Don't need to check Merkle proof if UTXO BTC address has already been claimed    */
+        if (btcAddressClaims[btcAddr]) {
+            return false;
+        }
 
-contract TransformableToken is StakeableToken {
+        /* Verify the Merkle tree proof */
+        return _btcAddressIsValid(btcAddr, rawSatoshis, proof);
+    }
+
+    /**
+     * @dev PUBLIC FACING: Verify a BTC address and balance are part of the Merkle tree
+     * @param btcAddr Bitcoin address (binary; no base58-check encoding)
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @param proof Merkle tree proof
+     * @return True if valid
+     */
+    function btcAddressIsValid(bytes20 btcAddr, uint256 rawSatoshis, bytes32[] calldata proof)
+        external
+        pure
+        returns (bool)
+    {
+        return _btcAddressIsValid(btcAddr, rawSatoshis, proof);
+    }
+
+    /**
+     * @dev PUBLIC FACING: Verify a Merkle proof using the UTXO Merkle tree
+     * @param merkleLeaf Leaf asserted to be present in the Merkle tree
+     * @param proof Generated Merkle tree proof
+     * @return True if valid
+     */
+    function merkleProofIsValid(bytes32 merkleLeaf, bytes32[] calldata proof)
+        external
+        pure
+        returns (bool)
+    {
+        return _merkleProofIsValid(merkleLeaf, proof);
+    }
+
+    /**
+     * @dev PUBLIC FACING: Verify that a Bitcoin signature matches the claim message containing
+     * the Ethereum address and claim param hash
+     * @param claimToAddr Eth address within the signed claim message
+     * @param claimParamHash Param hash within the signed claim message
+     * @param pubKeyX First  half of uncompressed ECDSA public key
+     * @param pubKeyY Second half of uncompressed ECDSA public key
+     * @param claimFlags Claim flags specifying address and message formats
+     * @param v v parameter of ECDSA signature
+     * @param r r parameter of ECDSA signature
+     * @param s s parameter of ECDSA signature
+     * @return True if matching
+     */
+    function claimMessageMatchesSignature(
+        address claimToAddr,
+        bytes32 claimParamHash,
+        bytes32 pubKeyX,
+        bytes32 pubKeyY,
+        uint8 claimFlags,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    )
+        public
+        pure
+        returns (bool)
+    {
+        require(v >= 27 && v <= 30, "HEX: v invalid");
+
+        /*
+            ecrecover() returns an Eth address rather than a public key, so
+            we must do the same to compare.
+        */
+        address pubKeyEthAddr = pubKeyToEthAddress(pubKeyX, pubKeyY);
+
+        /* Create and hash the claim message text */
+        bytes32 messageHash = _hash256(
+            _claimMessageCreate(claimToAddr, claimParamHash, claimFlags)
+        );
+
+        /* Verify the public key */
+        return ecrecover(messageHash, v, r, s) == pubKeyEthAddr;
+    }
+
+    /**
+     * @dev PUBLIC FACING: Derive an Ethereum address from an ECDSA public key
+     * @param pubKeyX First  half of uncompressed ECDSA public key
+     * @param pubKeyY Second half of uncompressed ECDSA public key
+     * @return Derived Eth address
+     */
+    function pubKeyToEthAddress(bytes32 pubKeyX, bytes32 pubKeyY)
+        public
+        pure
+        returns (address)
+    {
+        return address(uint160(uint256(keccak256(abi.encodePacked(pubKeyX, pubKeyY)))));
+    }
+
+    /**
+     * @dev PUBLIC FACING: Derive a Bitcoin address from an ECDSA public key
+     * @param pubKeyX First  half of uncompressed ECDSA public key
+     * @param pubKeyY Second half of uncompressed ECDSA public key
+     * @param claimFlags Claim flags specifying address and message formats
+     * @return Derived Bitcoin address (binary; no base58-check encoding)
+     */
+    function pubKeyToBtcAddress(bytes32 pubKeyX, bytes32 pubKeyY, uint8 claimFlags)
+        public
+        pure
+        returns (bytes20)
+    {
+        /*
+            Helpful references:
+             - https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
+             - https://github.com/cryptocoinjs/ecurve/blob/master/lib/point.js
+        */
+        uint8 startingByte;
+        bytes memory pubKey;
+        bool compressed = (claimFlags & CLAIM_FLAG_BTC_ADDR_COMPRESSED) != 0;
+        bool nested = (claimFlags & CLAIM_FLAG_BTC_ADDR_P2WPKH_IN_P2SH) != 0;
+        bool bech32 = (claimFlags & CLAIM_FLAG_BTC_ADDR_BECH32) != 0;
+
+        if (compressed) {
+            /* Compressed public key format */
+            require(!(nested && bech32), "HEX: claimFlags invalid");
+
+            startingByte = (pubKeyY[31] & 0x01) == 0 ? 0x02 : 0x03;
+            pubKey = abi.encodePacked(startingByte, pubKeyX);
+        } else {
+            /* Uncompressed public key format */
+            require(!nested && !bech32, "HEX: claimFlags invalid");
+
+            startingByte = 0x04;
+            pubKey = abi.encodePacked(startingByte, pubKeyX, pubKeyY);
+        }
+
+        bytes20 pubKeyHash = _hash160(pubKey);
+        if (nested) {
+            return _hash160(abi.encodePacked(hex"0014", pubKeyHash));
+        }
+        return pubKeyHash;
+    }
+
+    /**
+     * @dev Verify a BTC address and balance are part of the Merkle tree
+     * @param btcAddr Bitcoin address (binary; no base58-check encoding)
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @param proof Merkle tree proof
+     * @return True if valid
+     */
+    function _btcAddressIsValid(bytes20 btcAddr, uint256 rawSatoshis, bytes32[] memory proof)
+        internal
+        pure
+        returns (bool)
+    {
+        /*
+            Ensure the proof does not attempt to treat a Merkle leaf as if it were an
+            internal Merkle tree node. A leaf will always have the zero-fill. An
+            internal node will never have the zero-fill, as guaranteed by HEX's Merkle
+            tree construction.
+
+            The first element, proof[0], will always be a leaf because it is the pair
+            of the leaf being validated. The rest of the elements, proof[1..length-1],
+            must be internal nodes.
+
+            The number of leaves (CLAIMABLE_BTC_ADDR_COUNT) is even, as guaranteed by
+            HEX's Merkle tree construction, which eliminates the only edge-case where
+            this validation would not apply.
+        */
+        require((uint256(proof[0]) & MERKLE_LEAF_FILL_MASK) == 0, "HEX: proof invalid");
+        for (uint256 i = 1; i < proof.length; i++) {
+            require((uint256(proof[i]) & MERKLE_LEAF_FILL_MASK) != 0, "HEX: proof invalid");
+        }
+
+        /*
+            Calculate the 32 byte Merkle leaf associated with this BTC address and balance
+                160 bits: BTC address
+                 52 bits: Zero-fill
+                 45 bits: Satoshis (limited by MAX_BTC_ADDR_BALANCE_SATOSHIS)
+        */
+        bytes32 merkleLeaf = bytes32(btcAddr) | bytes32(rawSatoshis);
+
+        /* Verify the Merkle tree proof */
+        return _merkleProofIsValid(merkleLeaf, proof);
+    }
+
+    /**
+     * @dev Verify a Merkle proof using the UTXO Merkle tree
+     * @param merkleLeaf Leaf asserted to be present in the Merkle tree
+     * @param proof Generated Merkle tree proof
+     * @return True if valid
+     */
+    function _merkleProofIsValid(bytes32 merkleLeaf, bytes32[] memory proof)
+        private
+        pure
+        returns (bool)
+    {
+        return MerkleProof.verify(proof, MERKLE_TREE_ROOT, merkleLeaf);
+    }
+
+    function _claimMessageCreate(address claimToAddr, bytes32 claimParamHash, uint8 claimFlags)
+        private
+        pure
+        returns (bytes memory)
+    {
+        bytes memory prefixStr = (claimFlags & CLAIM_FLAG_MSG_PREFIX_OLD) != 0
+            ? OLD_CLAIM_PREFIX_STR
+            : STD_CLAIM_PREFIX_STR;
+
+        bool includeAddrChecksum = (claimFlags & CLAIM_FLAG_ETH_ADDR_LOWERCASE) == 0;
+
+        bytes memory addrStr = _addressStringCreate(claimToAddr, includeAddrChecksum);
+
+        if (claimParamHash == 0) {
+            return abi.encodePacked(
+                BITCOIN_SIG_PREFIX_LEN,
+                BITCOIN_SIG_PREFIX_STR,
+                uint8(prefixStr.length) + ETH_ADDRESS_HEX_LEN,
+                prefixStr,
+                addrStr
+            );
+        }
+
+        bytes memory claimParamHashStr = new bytes(CLAIM_PARAM_HASH_HEX_LEN);
+
+        _hexStringFromData(claimParamHashStr, claimParamHash, CLAIM_PARAM_HASH_BYTE_LEN);
+
+        return abi.encodePacked(
+            BITCOIN_SIG_PREFIX_LEN,
+            BITCOIN_SIG_PREFIX_STR,
+            uint8(prefixStr.length) + ETH_ADDRESS_HEX_LEN + 1 + CLAIM_PARAM_HASH_HEX_LEN,
+            prefixStr,
+            addrStr,
+            "_",
+            claimParamHashStr
+        );
+    }
+
+    function _addressStringCreate(address addr, bool includeAddrChecksum)
+        private
+        pure
+        returns (bytes memory addrStr)
+    {
+        addrStr = new bytes(ETH_ADDRESS_HEX_LEN);
+        _hexStringFromData(addrStr, bytes32(bytes20(addr)), ETH_ADDRESS_BYTE_LEN);
+
+        if (includeAddrChecksum) {
+            bytes32 addrStrHash = keccak256(addrStr);
+
+            uint256 offset = 0;
+
+            for (uint256 i = 0; i < ETH_ADDRESS_BYTE_LEN; i++) {
+                uint8 b = uint8(addrStrHash[i]);
+
+                _addressStringChecksumChar(addrStr, offset++, b >> 4);
+                _addressStringChecksumChar(addrStr, offset++, b & 0x0f);
+            }
+        }
+
+        return addrStr;
+    }
+
+    function _addressStringChecksumChar(bytes memory addrStr, uint256 offset, uint8 hashNybble)
+        private
+        pure
+    {
+        bytes1 ch = addrStr[offset];
+
+        if (ch >= "a" && hashNybble >= 8) {
+            addrStr[offset] = ch ^ 0x20;
+        }
+    }
+
+    function _hexStringFromData(bytes memory hexStr, bytes32 data, uint256 dataLen)
+        private
+        pure
+    {
+        uint256 offset = 0;
+
+        for (uint256 i = 0; i < dataLen; i++) {
+            uint8 b = uint8(data[i]);
+
+            hexStr[offset++] = HEX_DIGITS[b >> 4];
+            hexStr[offset++] = HEX_DIGITS[b & 0x0f];
+        }
+    }
+
+    /**
+     * @dev sha256(sha256(data))
+     * @param data Data to be hashed
+     * @return 32-byte hash
+     */
+    function _hash256(bytes memory data)
+        private
+        pure
+        returns (bytes32)
+    {
+        return sha256(abi.encodePacked(sha256(data)));
+    }
+
+    /**
+     * @dev ripemd160(sha256(data))
+     * @param data Data to be hashed
+     * @return 20-byte hash
+     */
+    function _hash160(bytes memory data)
+        private
+        pure
+        returns (bytes20)
+    {
+        return ripemd160(abi.encodePacked(sha256(data)));
+    }
+}
+
+contract UTXORedeemableToken is UTXOClaimValidation {
+    /**
+     * @dev PUBLIC FACING: Claim a BTC address and its Satoshi balance in Hearts
+     * crediting the appropriate amount to a specified Eth address. Bitcoin ECDSA
+     * signature must be from that BTC address and must match the claim message
+     * for the Eth address.
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @param proof Merkle tree proof
+     * @param claimToAddr Destination Eth address to credit Hearts to
+     * @param pubKeyX First  half of uncompressed ECDSA public key for the BTC address
+     * @param pubKeyY Second half of uncompressed ECDSA public key for the BTC address
+     * @param claimFlags Claim flags specifying address and message formats
+     * @param v v parameter of ECDSA signature
+     * @param r r parameter of ECDSA signature
+     * @param s s parameter of ECDSA signature
+     * @param autoStakeDays Number of days to auto-stake, subject to minimum auto-stake days
+     * @param referrerAddr Eth address of referring user (optional; 0x0 for no referrer)
+     * @return Total number of Hearts credited, if successful
+     */
+    function btcAddressClaim(
+        uint256 rawSatoshis,
+        bytes32[] calldata proof,
+        address claimToAddr,
+        bytes32 pubKeyX,
+        bytes32 pubKeyY,
+        uint8 claimFlags,
+        uint8 v,
+        bytes32 r,
+        bytes32 s,
+        uint256 autoStakeDays,
+        address referrerAddr
+    )
+        external
+        returns (uint256)
+    {
+        /* Sanity check */
+        require(rawSatoshis <= MAX_BTC_ADDR_BALANCE_SATOSHIS, "HEX: CHK: rawSatoshis");
+
+        /* Enforce the minimum stake time for the auto-stake from this claim */
+        require(autoStakeDays >= MIN_AUTO_STAKE_DAYS, "HEX: autoStakeDays lower than minimum");
+
+        /* Ensure signature matches the claim message containing the Eth address and claimParamHash */
+        {
+            bytes32 claimParamHash = 0;
+
+            if (claimToAddr != msg.sender) {
+                /* Claimer did not send this, so claim params must be signed */
+                claimParamHash = keccak256(
+                    abi.encodePacked(MERKLE_TREE_ROOT, autoStakeDays, referrerAddr)
+                );
+            }
+
+            require(
+                claimMessageMatchesSignature(
+                    claimToAddr,
+                    claimParamHash,
+                    pubKeyX,
+                    pubKeyY,
+                    claimFlags,
+                    v,
+                    r,
+                    s
+                ),
+                "HEX: Signature mismatch"
+            );
+        }
+
+        /* Derive BTC address from public key */
+        bytes20 btcAddr = pubKeyToBtcAddress(pubKeyX, pubKeyY, claimFlags);
+
+        /* Ensure BTC address has not yet been claimed */
+        require(!btcAddressClaims[btcAddr], "HEX: BTC address balance already claimed");
+
+        /* Ensure BTC address is part of the Merkle tree */
+        require(
+            _btcAddressIsValid(btcAddr, rawSatoshis, proof),
+            "HEX: BTC address or balance unknown"
+        );
+
+        /* Mark BTC address as claimed */
+        btcAddressClaims[btcAddr] = true;
+
+        return _satoshisClaimSync(
+            rawSatoshis,
+            claimToAddr,
+            btcAddr,
+            claimFlags,
+            autoStakeDays,
+            referrerAddr
+        );
+    }
+
+    function _satoshisClaimSync(
+        uint256 rawSatoshis,
+        address claimToAddr,
+        bytes20 btcAddr,
+        uint8 claimFlags,
+        uint256 autoStakeDays,
+        address referrerAddr
+    )
+        private
+        returns (uint256 totalClaimedHearts)
+    {
+        GlobalsCache memory g;
+        GlobalsCache memory gSnapshot;
+        _globalsLoad(g, gSnapshot);
+
+        totalClaimedHearts = _satoshisClaim(
+            g,
+            rawSatoshis,
+            claimToAddr,
+            btcAddr,
+            claimFlags,
+            autoStakeDays,
+            referrerAddr
+        );
+
+        _globalsSync(g, gSnapshot);
+
+        return totalClaimedHearts;
+    }
+
+    /**
+     * @dev Credit an Eth address with the Hearts value of a raw Satoshis balance
+     * @param g Cache of stored globals
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @param claimToAddr Destination Eth address for the claimed Hearts to be sent
+     * @param btcAddr Bitcoin address (binary; no base58-check encoding)
+     * @param autoStakeDays Number of days to auto-stake, subject to minimum auto-stake days
+     * @param referrerAddr Eth address of referring user (optional; 0x0 for no referrer)
+     * @return Total number of Hearts credited, if successful
+     */
+    function _satoshisClaim(
+        GlobalsCache memory g,
+        uint256 rawSatoshis,
+        address claimToAddr,
+        bytes20 btcAddr,
+        uint8 claimFlags,
+        uint256 autoStakeDays,
+        address referrerAddr
+    )
+        private
+        returns (uint256 totalClaimedHearts)
+    {
+        /* Allowed only during the claim phase */
+        require(g._currentDay >= CLAIM_PHASE_START_DAY, "HEX: Claim phase has not yet started");
+        require(g._currentDay < CLAIM_PHASE_END_DAY, "HEX: Claim phase has ended");
+
+        /* Check if log data needs to be updated */
+        _dailyDataUpdateAuto(g);
+
+        /* Sanity check */
+        require(
+            g._claimedBtcAddrCount < CLAIMABLE_BTC_ADDR_COUNT,
+            "HEX: CHK: _claimedBtcAddrCount"
+        );
+
+        (uint256 adjSatoshis, uint256 claimedHearts, uint256 claimBonusHearts) = _calcClaimValues(
+            g,
+            rawSatoshis
+        );
+
+        /* Increment claim count to track viral rewards */
+        g._claimedBtcAddrCount++;
+
+        totalClaimedHearts = _remitBonuses(
+            claimToAddr,
+            btcAddr,
+            claimFlags,
+            rawSatoshis,
+            adjSatoshis,
+            claimedHearts,
+            claimBonusHearts,
+            referrerAddr
+        );
+
+        /* Auto-stake a percentage of the successful claim */
+        uint256 autoStakeHearts = totalClaimedHearts * AUTO_STAKE_CLAIM_PERCENT / 100;
+        _stakeStart(g, autoStakeHearts, autoStakeDays, true);
+
+        /* Mint remaining claimed Hearts to claim address */
+        _mint(claimToAddr, totalClaimedHearts - autoStakeHearts);
+
+        return totalClaimedHearts;
+    }
+
+    function _remitBonuses(
+        address claimToAddr,
+        bytes20 btcAddr,
+        uint8 claimFlags,
+        uint256 rawSatoshis,
+        uint256 adjSatoshis,
+        uint256 claimedHearts,
+        uint256 claimBonusHearts,
+        address referrerAddr
+    )
+        private
+        returns (uint256 totalClaimedHearts)
+    {
+        totalClaimedHearts = claimedHearts + claimBonusHearts;
+
+        uint256 originBonusHearts = claimBonusHearts;
+
+        if (referrerAddr == address(0)) {
+            /* No referrer */
+            _emitClaim(
+                claimToAddr,
+                btcAddr,
+                claimFlags,
+                rawSatoshis,
+                adjSatoshis,
+                totalClaimedHearts,
+                referrerAddr
+            );
+        } else {
+            /* Referral bonus of 10% of total claimed Hearts to claimer */
+            uint256 referralBonusHearts = totalClaimedHearts / 10;
+
+            totalClaimedHearts += referralBonusHearts;
+
+            /* Then a cumulative referrer bonus of 20% to referrer */
+            uint256 referrerBonusHearts = totalClaimedHearts / 5;
+
+            originBonusHearts += referralBonusHearts + referrerBonusHearts;
+
+            if (referrerAddr == claimToAddr) {
+                /* Self-referred */
+                totalClaimedHearts += referrerBonusHearts;
+                _emitClaim(
+                    claimToAddr,
+                    btcAddr,
+                    claimFlags,
+                    rawSatoshis,
+                    adjSatoshis,
+                    totalClaimedHearts,
+                    referrerAddr
+                );
+            } else {
+                /* Referred by different address */
+                _emitClaim(
+                    claimToAddr,
+                    btcAddr,
+                    claimFlags,
+                    rawSatoshis,
+                    adjSatoshis,
+                    totalClaimedHearts,
+                    referrerAddr
+                );
+                _mint(referrerAddr, referrerBonusHearts);
+            }
+        }
+
+        _mint(ORIGIN_ADDR, originBonusHearts);
+
+        return totalClaimedHearts;
+    }
+
+    function _emitClaim(
+        address claimToAddr,
+        bytes20 btcAddr,
+        uint8 claimFlags,
+        uint256 rawSatoshis,
+        uint256 adjSatoshis,
+        uint256 claimedHearts,
+        address referrerAddr
+    )
+        private
+    {
+        emit Claim( // (auto-generated event)
+            uint256(uint40(block.timestamp))
+                | (uint256(uint56(rawSatoshis)) << 40)
+                | (uint256(uint56(adjSatoshis)) << 96)
+                | (uint256(claimFlags) << 152)
+                | (uint256(uint72(claimedHearts)) << 160),
+            uint256(uint160(msg.sender)),
+            btcAddr,
+            claimToAddr,
+            referrerAddr
+        );
+
+        if (claimToAddr == msg.sender) {
+            return;
+        }
+
+        emit ClaimAssist( // (auto-generated event)
+            uint256(uint40(block.timestamp))
+                | (uint256(uint160(btcAddr)) << 40)
+                | (uint256(uint56(rawSatoshis)) << 200),
+            uint256(uint56(adjSatoshis))
+                | (uint256(uint160(claimToAddr)) << 56)
+                | (uint256(claimFlags) << 216),
+            uint256(uint72(claimedHearts))
+                | (uint256(uint160(referrerAddr)) << 72),
+            msg.sender
+        );
+    }
+
+    function _calcClaimValues(GlobalsCache memory g, uint256 rawSatoshis)
+        private
+        pure
+        returns (uint256 adjSatoshis, uint256 claimedHearts, uint256 claimBonusHearts)
+    {
+        /* Apply Silly Whale reduction */
+        adjSatoshis = _adjustSillyWhale(rawSatoshis);
+        require(
+            g._claimedSatoshisTotal + adjSatoshis <= CLAIMABLE_SATOSHIS_TOTAL,
+            "HEX: CHK: _claimedSatoshisTotal"
+        );
+        g._claimedSatoshisTotal += adjSatoshis;
+
+        uint256 daysRemaining = CLAIM_PHASE_END_DAY - g._currentDay;
+
+        /* Apply late-claim reduction */
+        adjSatoshis = _adjustLateClaim(adjSatoshis, daysRemaining);
+        g._unclaimedSatoshisTotal -= adjSatoshis;
+
+        /* Convert to Hearts and calculate speed bonus */
+        claimedHearts = adjSatoshis * HEARTS_PER_SATOSHI;
+        claimBonusHearts = _calcSpeedBonus(claimedHearts, daysRemaining);
+
+        return (adjSatoshis, claimedHearts, claimBonusHearts);
+    }
+
+    /**
+     * @dev Apply Silly Whale adjustment
+     * @param rawSatoshis Raw BTC address balance in Satoshis
+     * @return Adjusted BTC address balance in Satoshis
+     */
+    function _adjustSillyWhale(uint256 rawSatoshis)
+        private
+        pure
+        returns (uint256)
+    {
+        if (rawSatoshis < 1000e8) {
+            /* For < 1,000 BTC: no penalty */
+            return rawSatoshis;
+        }
+        if (rawSatoshis >= 10000e8) {
+            /* For >= 10,000 BTC: penalty is 75%, leaving 25% */
+            return rawSatoshis / 4;
+        }
+        /*
+            For 1,000 <= BTC < 10,000: penalty scales linearly from 50% to 75%
+
+            penaltyPercent  = (btc - 1000) / (10000 - 1000) * (75 - 50) + 50
+                            = (btc - 1000) / 9000 * 25 + 50
+                            = (btc - 1000) / 360 + 50
+
+            appliedPercent  = 100 - penaltyPercent
+                            = 100 - ((btc - 1000) / 360 + 50)
+                            = 100 - (btc - 1000) / 360 - 50
+                            = 50 - (btc - 1000) / 360
+                            = (18000 - (btc - 1000)) / 360
+                            = (18000 - btc + 1000) / 360
+                            = (19000 - btc) / 360
+
+            adjustedBtc     = btc * appliedPercent / 100
+                            = btc * ((19000 - btc) / 360) / 100
+                            = btc * (19000 - btc) / 36000
+
+            adjustedSat     = 1e8 * adjustedBtc
+                            = 1e8 * (btc * (19000 - btc) / 36000)
+                            = 1e8 * ((sat / 1e8) * (19000 - (sat / 1e8)) / 36000)
+                            = 1e8 * (sat / 1e8) * (19000 - (sat / 1e8)) / 36000
+                            = (sat / 1e8) * 1e8 * (19000 - (sat / 1e8)) / 36000
+                            = (sat / 1e8) * (19000e8 - sat) / 36000
+                            = sat * (19000e8 - sat) / 36000e8
+        */
+        return rawSatoshis * (19000e8 - rawSatoshis) / 36000e8;
+    }
+
+    /**
+     * @dev Apply late-claim adjustment to scale claim to zero by end of claim phase
+     * @param adjSatoshis Adjusted BTC address balance in Satoshis (after Silly Whale)
+     * @param daysRemaining Number of reward days remaining in claim phase
+     * @return Adjusted BTC address balance in Satoshis (after Silly Whale and Late-Claim)
+     */
+    function _adjustLateClaim(uint256 adjSatoshis, uint256 daysRemaining)
+        private
+        pure
+        returns (uint256)
+    {
+        /*
+            Only valid from CLAIM_PHASE_DAYS to 1, and only used during that time.
+
+            adjustedSat = sat * (daysRemaining / CLAIM_PHASE_DAYS) * 100%
+                        = sat *  daysRemaining / CLAIM_PHASE_DAYS
+        */
+        return adjSatoshis * daysRemaining / CLAIM_PHASE_DAYS;
+    }
+
+    /**
+     * @dev Calculates speed bonus for claiming earlier in the claim phase
+     * @param claimedHearts Hearts claimed from adjusted BTC address balance Satoshis
+     * @param daysRemaining Number of claim days remaining in claim phase
+     * @return Speed bonus in Hearts
+     */
+    function _calcSpeedBonus(uint256 claimedHearts, uint256 daysRemaining)
+        private
+        pure
+        returns (uint256)
+    {
+        /*
+            Only valid from CLAIM_PHASE_DAYS to 1, and only used during that time.
+            Speed bonus is 20% ... 0% inclusive.
+
+            bonusHearts = claimedHearts  * ((daysRemaining - 1)  /  (CLAIM_PHASE_DAYS - 1)) * 20%
+                        = claimedHearts  * ((daysRemaining - 1)  /  (CLAIM_PHASE_DAYS - 1)) * 20/100
+                        = claimedHearts  * ((daysRemaining - 1)  /  (CLAIM_PHASE_DAYS - 1)) / 5
+                        = claimedHearts  *  (daysRemaining - 1)  / ((CLAIM_PHASE_DAYS - 1)  * 5)
+        */
+        return claimedHearts * (daysRemaining - 1) / ((CLAIM_PHASE_DAYS - 1) * 5);
+    }
+}
+
+contract TransformableToken is UTXORedeemableToken {
     /**
      * @dev PUBLIC FACING: Enter the tranform lobby for the current round
      * @param referrerAddr Eth address of referring user (optional; 0x0 for no referrer)
@@ -2093,11 +2864,11 @@ contract TransformableToken is StakeableToken {
         returns (uint256[XF_LOBBY_DAY_WORDS] memory words)
     {
         uint256 day = _currentDay() + 1;
-        
+
         if (day > CLAIM_PHASE_END_DAY) {
             day = CLAIM_PHASE_END_DAY;
         }
-        
+
         while (day-- != 0) {
             if (xfLobbyMembers[day][memberAddr].tailIndex > xfLobbyMembers[day][memberAddr].headIndex) {
                 words[day >> 8] |= 1 << (day & 255);
@@ -2163,6 +2934,26 @@ contract TransformableToken is StakeableToken {
     }
 }
 /*
+contract HEX is TransformableToken {
+    constructor()
+        public
+    {
+        // Initialize global shareRate to 1 
+        globals.shareRate = uint40(1 * SHARE_RATE_SCALE);
+
+        // Initialize dailyDataCount to skip pre-claim period
+        globals.dailyDataCount = uint16(PRE_CLAIM_DAYS);
+
+        // Add all Satoshis from UTXO snapshot to contract
+        globals.claimStats = _claimStatsEncode(
+            0, // _claimedBtcAddrCount
+            0, // _claimedSatoshisTotal
+            FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
+        );
+    }
+
+    function() external payable {}
+}
 
 contract HEX is TransformableToken {
 
