@@ -91,18 +91,20 @@ i = 351
         yourHex[i] = (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
         yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
        // hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEthByDay, "Ether")
-        checkEthByDay[i] = true
+        checkEthByDay[351 - i + 1] = true
+      
       }
       else
       {
         hexToEth[i] = hexAvailableArray[351 - i] * 1
         yourHex[i] = 0
         yourEth[i] = 0
+        checkEthByDay[351 - i + 1] = false
       }
         i--
       }
 
-   
+      console.log(checkEthByDay)
 
  // Load State Variables.
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
@@ -116,6 +118,7 @@ i = 351
       this.setState({ yourHex:  yourHex[currentDay].toString()})
       this.setState({ yourEth:  yourEth[currentDay].toString()})
       this.setState({ yourButton:  checkEthByDay})
+     
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
   }

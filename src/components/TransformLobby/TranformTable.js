@@ -241,27 +241,29 @@ function yourButtoncalc(day,test,eth) {
   let string = ""
 
   do{
-    if(eth[i] !== null && eth[i] !== true)
+    if(eth[i] !== null && eth[i] === true)
    {
      console.log(eth[i])
-   /* newArray[i--] = (<tr><td className="td-height">   
-                          <form onSubmit={(event) => {
+    newArray[i--] = (<tr><td className="form-button-height">   
+                          <form className="form-button-height" onSubmit={(event) => {
                             event.preventDefault()
                             test(day)
                             }}>
 
-                            <button type="submit" className="td-height" >Exit!</button>
+                            <button type="submit" className="form-button-height">Exit!</button>
                             </form></td></tr>
                       )
+                      
    }
-   else if(eth[i] === true){
+   
+   else if(eth[i] !== true){
      string = ""
      newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
    }
-   */
+
    }
-   while(i > 0)
-   return newArray;   // The function returns the product of p1 and p2
+    while(i > 0)    // The function returns the product of p1 and p2
+return newArray;
 }
 
 class TransformTable extends Component {
@@ -322,8 +324,9 @@ class TransformTable extends Component {
                         <td>
                           {yourETHcalc(this.props.yourEth, this.props.day)}
                         </td>
-                         {yourButtoncalc(this.props.day, this.props.xfLobbyExit,this.props.yourButton)}
+
                         <td>
+                        {yourButtoncalc(this.props.day, this.props.xfLobbyExit,this.props.yourButton)}
 
 </td>
 </tr>   
@@ -331,6 +334,7 @@ class TransformTable extends Component {
       </Table>
     );
   }
+  
 }
 
 export default TransformTable;
