@@ -1,28 +1,19 @@
 import "./styles.css";
-import React, { Component } from 'react'
+import React, { useState, Component } from 'react'
 import Table from 'react-bootstrap/Table';
+import TokenFarm from '../../assets/TokenFarm.json'
 import Button from 'react-bootstrap/Button';
-import Blocks from 'eth-block-timestamp'
+import App from "../App";
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
 
 
 
-class PersonalTransactions{
 
-  value;
-  timestamp;
-
-  constructor(inputValue, inputTimestamp){
-    this.value = inputValue;
-    this.timestamp = inputTimestamp;
-  }
-
-} 
-
-let PersTransArray = []
+let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0x075e4F66C4D53DD2d37b91BD7382b34F3B681B4f')
 class TransactionChecker {
   web3;
   account;
@@ -35,6 +26,7 @@ class TransactionChecker {
   async checkBlock() {
       //let block = await this.web3.eth.getBlock(1920050);
       //let number = block.number;
+      
       let i = 22682754;
       while (i < 22682764) {
           i++;
@@ -52,12 +44,14 @@ class TransactionChecker {
              // console.log(block.timestamp)
               let time = block.timestamp
               let timeConfigured = new Date(time*1000);
+              let accounts =  await this.web3.eth.getAccounts()
             if (tx.to != null)
             {
             if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
                 //  console.log('Transaction found on block: ' + number);
                   valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
                   transactionTimestamp = timeConfigured.toUTCString()
+                
                   return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
               }
           }
@@ -65,14 +59,30 @@ class TransactionChecker {
       }
   }
   }
+
+  async loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum)
+      await window.ethereum.enable()
+    }
+    else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider)
+    }
+    else {
+      window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+    }
+  }
 }
+
+
+
 
 
 function myDay() {
   var newArray = []
   for (var i = 351; i >= 1; --i)
   {
-   newArray.push (<tr><td>{i} / 351</td></tr>)
+   newArray.push (<tr><td key={i}>{i} / 351</td></tr>)
   }
   return newArray;
 }
@@ -233,21 +243,41 @@ function yourETHcalc(hex, day) {
    while(i > 0)
    return newArray;   // The function returns the product of p1 and p2
 }
+ 
 
-function yourButtoncalc(day,test,eth) {
+
+
+var transformer = null;
+
+
+function yourButtoncalc(day,account,eth) {
+  console.log('Came to desired Function and Transformer is : ', transformer);
+  console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
   let i = 351
-  let s = 351 - day + 1
+  
+  // transformer.setState({day:5});
+  //account(2);
+  // transformer.xfLobbyExit(2);
+  
+  let s = 0
   let newArray= [];
   let string = ""
-
   do{
     if(eth[i] !== null && eth[i] === true)
-   {
-     console.log(eth[i])
-    newArray[i--] = (<tr><td className="form-button-height">   
+    {
+      console.log(eth[i])
+      s = 351 - i + 1
+      console.log(351 - i + 1)
+      newArray[i--] = (<tr><td className="form-button-height">   
                           <form className="form-button-height" onSubmit={(event) => {
                             event.preventDefault()
-                            test(day)
+                            if (transformer!= null);
+                            {
+                              transformer.setState({day: s});
+                            }
+                       
+                            account(s);
+                            
                             }}>
 
                             <button type="submit" className="form-button-height">Exit!</button>
@@ -255,19 +285,51 @@ function yourButtoncalc(day,test,eth) {
                       )
                       
    }
-   
+ 
    else if(eth[i] !== true){
      string = ""
      newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
    }
 
    }
-    while(i > 0)    // The function returns the product of p1 and p2
+    while(i > 0) 
+  
+           // The function returns the product of p1 and p2
 return newArray;
 }
 
+
 class TransformTable extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      day : this.props.day
+    };
+    this.xfLobbyExit = this.xfLobbyExit.bind(this);
+    transformer = this;
+    
+  }
+  componentDidMount(){
+    transformer = this;
+  }
+  componentWillUnmount(){
+    transformer = null;
+  }
+
+  // xfLobbyExit(){
+  //   console.log('Came to this object ')
+  //   this.props.xfLobbyExit(this.state.day);
+  // }
+
+  xfLobbyExit(s){
+    console.log('Came to this object ')
+    this.props.xfLobbyExit(s);
+  }
+
+  
   render() {
+    console.log(this.props.account)
+    
     return (
       
         <Table striped bordered variant="dark">
@@ -293,6 +355,7 @@ class TransformTable extends Component {
                 Your HEX
               </td>
               <td>
+                
                 Your ETH
               </td>
               <td>
@@ -326,9 +389,11 @@ class TransformTable extends Component {
                         </td>
 
                         <td>
-                        {yourButtoncalc(this.props.day, this.props.xfLobbyExit,this.props.yourButton)}
+                      
+                        {yourButtoncalc(this.props.day, this.xfLobbyExit,this.props.yourButton)}
 
 </td>
+
 </tr>   
        </tbody>
       </Table>

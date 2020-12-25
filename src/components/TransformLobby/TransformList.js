@@ -4,8 +4,6 @@ import Table from 'react-bootstrap/Table';
 class TransformList extends Component {
 
   render() {
-
-
     return (
       
 

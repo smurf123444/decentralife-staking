@@ -39,6 +39,7 @@ class Main extends Component {
                 amount = this.input.value.toString()
                 amount = window.web3.utils.toWei(amount, 'Ether')
                 this.props.stakeTokens(amount)
+                this.props.exitDay()
               }}>
               <div>
                 <label className="float-left"><b>Stake TIT Tokens</b></label>

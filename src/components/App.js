@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -15,9 +16,11 @@ import TransformList from './TransformLobby/TransformList'
 import './App.css'
 import Logo from '../dai.png'
 
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class App extends Component {
+  
 
   async componentWillMount() {
     await this.loadWeb3()
@@ -104,12 +107,12 @@ i = 351
         i--
       }
 
-      console.log(checkEthByDay)
+
 
  // Load State Variables.
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
-      let yourAddress_ = await tokenFarm.methods.currentDay().call()
+      let yourAddress_ = accounts[0]
       let initSuppl_ = await tokenFarm.methods.initSupply().call()
       this.setState({ totalEthXL:  totalEth.toString()})
       this.setState({ hexToEth:  hexToEth[currentDay].toString()})
@@ -136,6 +139,13 @@ i = 351
     }
   }
 
+  changeFirst = (newValue) => {
+    this.setState({
+      yourButtonDay: newValue,
+    })
+  }
+
+
   stakeTokens = (amount) => {
     this.setState({ loading: true })
     this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
@@ -152,9 +162,11 @@ i = 351
     })
   }
 
-  exitDay = (day) => {
+  exitDay = (day) => {;
+    console.log('Came to ExitDay Function and DAY is ', day);
     this.setState({ loading: true })
-    this.state.tokenFarm.methods.xfLobbyExit(day , '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
+    console.log(day)
+    this.state.tokenFarm.methods.xfLobbyExit(day, '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
   }
@@ -170,19 +182,21 @@ i = 351
       hexToEth: '0',
       yourHex:'0',
       yourEth: '0',
+      changeFirst: '0',
       yourButton: '0',
+      yourButtonDay: '0',
       totalSupply: '0',
       initSupply: '0',
       loading: true
-    }
+    };
+    this.exitDay = this.exitDay.bind(this);
   }
 
   render() {
-    const { account, dappToken, currentDay, tokenFarm, totalEthXL, hexToEth, yourHex, yourEth, yourButton, totalSupply, initSupply, loading} = this.state;
+    const { account, dappToken, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourButton, totalSupply, initSupply, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
-    let currentDay_ = currentDay
-    let account_ = account
+  
 
     let burned =  initSupply_ - totalSupply_ 
 
