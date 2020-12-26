@@ -36,6 +36,7 @@ class App extends Component {
     this.setState({ tokenFarm })
       let i = 351
       let currentDay = await tokenFarm.methods.currentDay().call()
+      let currentDayCopy = currentDay
       let currentReversed = 351 - currentDay
       let totalEth = 0
 
@@ -79,23 +80,25 @@ i = 351
       let yourHex = []
       let yourEth = []
       let tempValue = 0
-
+      let checkCurrentDay = []
 //Check each day for for total Eth spent on that day.
       while (i >= 1)
       {
         //add items to array that include that day as the ID and transferValue for value.
         totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
+        console.log("ABOVE i : " + (i) + " currentDay: " + currentDay)
+
         //if the total Eth variable is 0, then display the amount of ether on that specific day.
-        if(totalEth > 0 || totalEthByDay[i] > 0){
+        if(totalEthByDay[i] > 0){
+     
           //equation to change amount of hex available for the day and personal.
          
-          tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
+        tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
         hexToEth[i] = hexAvailableArray[351 - i] - (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
         yourHex[i] = (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
         yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
        // hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEthByDay, "Ether")
         checkEthByDay[351 - i + 1] = true
-      
       }
       else
       {
@@ -106,9 +109,19 @@ i = 351
       }
         i--
       }
-
-
-
+      i = 351
+      while (i > 0)
+      {
+        if(currentReversed === i)
+        {
+          checkCurrentDay[349 - i + 1] = true
+        }
+        else
+        {
+          checkCurrentDay[349 - i + 1] = false
+        }
+        i--;
+      }
  // Load State Variables.
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
@@ -120,7 +133,8 @@ i = 351
       this.setState({ yourAddress:  yourAddress_.toString()})
       this.setState({ yourHex:  yourHex[currentDay].toString()})
       this.setState({ yourEth:  yourEth[currentDay].toString()})
-      this.setState({ yourButton:  checkEthByDay})
+      this.setState({ yourExitButton:  checkEthByDay})
+      this.setState({ yourEnterButton:  checkCurrentDay})
      
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
@@ -172,6 +186,16 @@ i = 351
     })
   }
 
+  enterDay = (day) => {
+    let s = 351 - day + 1;
+    console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
+    this.setState({ loading: true })
+    console.log(s - this.state.currentDay)
+    this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: '10000000000000000'}).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -184,7 +208,8 @@ i = 351
       yourHex:'0',
       yourEth: '0',
       changeFirst: '0',
-      yourButton: '0',
+      yourExitButton: '0',
+      yourEnterButton: '0',
       yourButtonDay: '0',
       totalSupply: '0',
       initSupply: '0',
@@ -194,7 +219,7 @@ i = 351
   }
 
   render() {
-    const { account, dappToken, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourButton, totalSupply, initSupply, loading} = this.state;
+    const { account, dappToken, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourEnterButton, totalSupply, initSupply, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
   
@@ -298,8 +323,10 @@ i = 351
           yourAddress={account}
           yourHex={yourHex}
           yourEth={yourEth}
-          yourButton={yourButton}
-          xfLobbyExit={this.exitDay}/>
+          yourExitButton={yourExitButton}
+          yourEnterButton={yourEnterButton}
+          xfLobbyExit={this.exitDay}
+          xfLobbyEnter={this.enterDay}/>
           </Route>
           <Route path="/" exact>
             <div>

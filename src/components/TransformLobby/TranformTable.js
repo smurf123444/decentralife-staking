@@ -250,13 +250,14 @@ function yourETHcalc(hex, day) {
 var transformer = null;
 
 
-function yourButtoncalc(day,account,eth) {
+function yourButtoncalc(day,account,eth,currentDay,enterDay) {
 
   console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
   
   let i = 351
   let initial = i + 1;
   var s = 0
+  var temp = day
   s = 351 - day + 1;
 
   let newArray= [];
@@ -272,7 +273,7 @@ function yourButtoncalc(day,account,eth) {
       console.log(eth[i])
       s = 351 - day + 1;
 
-      newArray[i--] = (<tr><td className="form-button-height">   
+      newArray[i] = (<tr><td className="form-button-height">   
                           <form className="form-button-height" id={s} onSubmit={(event) => {
                             
                             event.preventDefault()
@@ -284,15 +285,34 @@ function yourButtoncalc(day,account,eth) {
                             <button type="submit" className="form-button-height">Exit!</button>
                             </form></td></tr>
                       )
-                      
-   }
-   
- 
-   else if(eth[i] !== true){
-     string = ""
-     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+                     
+
+
    }
 
+   if(currentDay[350 - i + 1] === true)
+   {
+
+    newArray[i] = (<tr><td className="form-button-height">   
+                        <form className="form-button-height" id={s} onSubmit={(event) => {
+                          
+                          event.preventDefault()
+
+                          enterDay();
+
+                          }}>
+
+                          <button type="submit" className="form-button-height">Enter!</button>
+                          </form></td></tr>
+                    )
+   }
+
+   else if (eth[i] !== true)
+   {
+    string = ""
+    newArray[i] = (<tr><td className="td-heightDim">{string}</td></tr>)
+   }
+    i--;
    }
     while(i > 0) 
   
@@ -327,6 +347,8 @@ class TransformTable extends Component {
     console.log('Came to this object ')
     this.props.xfLobbyExit(s);
   }
+
+
 
   
   render() {
@@ -392,7 +414,7 @@ class TransformTable extends Component {
 
                         <td>
                       
-                        {yourButtoncalc(this.props.day, this.xfLobbyExit,this.props.yourButton)}
+                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter)}
 
 </td>
 
