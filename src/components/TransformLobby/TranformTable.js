@@ -251,33 +251,34 @@ var transformer = null;
 
 
 function yourButtoncalc(day,account,eth) {
-  console.log('Came to desired Function and Transformer is : ', transformer);
+
   console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
+  
   let i = 351
-  
-  // transformer.setState({day:5});
-  //account(2);
-  // transformer.xfLobbyExit(2);
-  
-  let s = 0
+  let initial = i + 1;
+  var s = 0
+  s = 351 - day + 1;
+
   let newArray= [];
   let string = ""
+  
   do{
+    day++;
+
     if(eth[i] !== null && eth[i] === true)
+
     {
+   
       console.log(eth[i])
-      s = 351 - i + 1
-      console.log(351 - i + 1)
+      s = 351 - day + 1;
+
       newArray[i--] = (<tr><td className="form-button-height">   
-                          <form className="form-button-height" onSubmit={(event) => {
-                            event.preventDefault()
-                            if (transformer!= null);
-                            {
-                              transformer.setState({day: s});
-                            }
-                       
-                            account(s);
+                          <form className="form-button-height" id={s} onSubmit={(event) => {
                             
+                            event.preventDefault()
+
+                            account(parseInt(event.target.getAttribute("id")));
+
                             }}>
 
                             <button type="submit" className="form-button-height">Exit!</button>
@@ -285,6 +286,7 @@ function yourButtoncalc(day,account,eth) {
                       )
                       
    }
+   
  
    else if(eth[i] !== true){
      string = ""

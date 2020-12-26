@@ -161,12 +161,13 @@ i = 351
       this.setState({ loading: false })
     })
   }
-
-  exitDay = (day) => {;
-    console.log('Came to ExitDay Function and DAY is ', day);
+//!!!!!!
+  exitDay = (day) => {
+    let s = 351 - day + 1;
+    console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
     this.setState({ loading: true })
-    console.log(day)
-    this.state.tokenFarm.methods.xfLobbyExit(day, '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
+    console.log(s - this.state.currentDay)
+    this.state.tokenFarm.methods.xfLobbyExit(s - this.state.currentDay, '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
   }
