@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import TransformTable from './TranformTable'
 import Table from 'react-bootstrap/Table';
+import { makeData, Logo, Tips } from "./Utils.js";
+import style from './styles.css'
+import ReactTable from "react-table";
 class TransformList extends Component {
-
   render() {
     return (
       
+<div class="table-scroll">
+<div>
+      </div>
 
-<Table striped bordered variant="dark">
 
   <tbody>
     <tr>
@@ -23,13 +27,14 @@ class TransformList extends Component {
     yourExitButton={this.props.yourExitButton}
     yourEnterButton={this.props.yourEnterButton}
     xfLobbyExit={this.props.xfLobbyExit}
-      xfLobbyEnter={this.props.xfLobbyEnter}/></td>
+    xfLobbyEnter={this.props.xfLobbyEnter}
+    xfLobbyMembers={this.props.xfLobbyMembers}/></td>
     </tr>
 
   </tbody>
 
-</Table>
-     
+
+</div>
 
 
           

@@ -1293,7 +1293,6 @@ contract StakeableToken is GlobalsAndUtility {
         GlobalsCache memory g;
         GlobalsCache memory gSnapshot;
         _globalsLoad(g, gSnapshot);
-
         /* Enforce the minimum stake time */
         require(newStakedDays >= MIN_STAKE_DAYS, "HEX: newStakedDays lower than minimum");
 
@@ -2196,15 +2195,12 @@ contract TokenFarm is TransformableToken{
     string name;
     address myaddress;
     }
-    mapping(address => User) private userStructs;
     using SafeMath for uint256;
      modifier onlyOwner(){
             require(msg.sender == owner);
             _;
         }
     address public owner;
-    string public symbol;
-    string public name;
     uint256 public min_supply;
     uint256 public max_supply;
     mapping(address => uint256) public balanceOf;
@@ -2247,8 +2243,6 @@ constructor() public {
             FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
         );
     owner = msg.sender;
-    userStructs[address(this)].name = "HEX";
-    name = userStructs[address(this)].name;
     balanceOf[msg.sender] = init_supply;
     lastTXtime[msg.sender] = now;
     lastST_TXtime[msg.sender] = now;

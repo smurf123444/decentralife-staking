@@ -4,6 +4,7 @@ import Table from 'react-bootstrap/Table';
 import TokenFarm from '../../assets/TokenFarm.json'
 import Button from 'react-bootstrap/Button';
 import App from "../App";
+import Popup from './Popup';
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
 
@@ -249,10 +250,9 @@ function yourETHcalc(hex, day) {
 
 var transformer = null;
 
+function yourButtoncalc(day,account,eth,currentDay,enterDay,members,pendingDays,dailyData) {
 
-function yourButtoncalc(day,account,eth,currentDay,enterDay) {
-
-  console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
+ // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
   
   let i = 351
   let initial = i + 1;
@@ -270,7 +270,7 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay) {
 
     {
    
-      console.log(eth[i])
+      console.log(members[i])
       s = 351 - day + 1;
 
       newArray[i] = (<tr><td className="form-button-height">   
@@ -289,21 +289,24 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay) {
 
 
    }
-
+   /*
+ <
+    */
    if(currentDay[350 - i + 1] === true)
    {
 
     newArray[i] = (<tr><td className="form-button-height">   
-                        <form className="form-button-height" id={s} onSubmit={(event) => {
-                          
-                          event.preventDefault()
-
-                          enterDay();
-
-                          }}>
-
-                          <button type="submit" className="form-button-height">Enter!</button>
-                          </form></td></tr>
+        <form className="form-button-height" id={s} onSubmit={(event) => {
+                       
+                       event.preventDefault()
+                   
+                       enterDay();
+                   
+                       }}>
+                   
+                       <button type="submit" className="form-button-height">Enter!</button>
+                       </form>
+      </td></tr>
                     )
    }
 
@@ -325,11 +328,18 @@ class TransformTable extends Component {
   constructor(props){
     super(props);
     this.state = {
-      day : this.props.day
+      day : this.props.day,
+      showPopup: false
     };
     this.xfLobbyExit = this.xfLobbyExit.bind(this);
     transformer = this;
     
+  }
+  
+  togglePopup() {
+    this.setState({
+      showPopup: !this.state.showPopup
+    });
   }
   componentDidMount(){
     transformer = this;
@@ -353,7 +363,9 @@ class TransformTable extends Component {
   
   render() {
     console.log(this.props.account)
-    
+
+
+
     return (
       
         <Table striped bordered variant="dark">
@@ -414,7 +426,7 @@ class TransformTable extends Component {
 
                         <td>
                       
-                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter)}
+                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter, this.props.xfLobbyMembers)}
 
 </td>
 

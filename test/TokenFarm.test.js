@@ -1,4 +1,6 @@
 const TokenFarm = artifacts.require('../contracts/TokenFarm.sol')
+const timeMachine = require('ganache-time-traveler');
+const helper = require("./helpers/helpers");
 
 require('chai')
   .use(require('chai-as-promised'))
@@ -10,23 +12,41 @@ function tokens(n) {
 
 contract('TokenFarm', ([owner, investor]) => {
   let tokenFarm
-
+  /*
+  beforeEach(async() => {
+       let snapshot = await timeMachine.takeSnapshot();
+       snapshotId = snapshot['result'];
+   });
+ 
+   afterEach(async() => {
+       await timeMachine.revertToSnapshot(snapshotId);
+   });
+*/
   before(async () => {
     // Load Contracts
 
-    tokenFarm = await TokenFarm.at('0x0c10C469Ea23f24cD7ED71402120D5688C073e9B')
+    tokenFarm = await TokenFarm.at('0x4b702098a8d493E78d3Fc36cD5b90974AFF12Cb6')
 
 
   })
+
+
+  describe('Time Test..', async () => {
+   it('Time Dependent Test', async () => {
+       await timeMachine.advanceTimeAndBlock(86400);
+   });
+  })
+
 
   // Start Testing
   describe('Token Farm deployment', async () => {
     it('has a name', async () => {
       const name = await tokenFarm.name()
-      assert.equal(name, 'TITSASSsuka')
+      assert.equal(name, 'HEX')
     })
   })
 
+/*
   describe('Farming tokens', async () => {
 
     it('Staking to Token Farm', async () => {
@@ -50,7 +70,7 @@ contract('TokenFarm', ([owner, investor]) => {
         result = await tokenFarm.isStaking(owner)
         assert.equal(result.toString(), 'false', 'investor staking status correct after staking')
     })
-/*
+
     it('issuing Stake.', async () => {
       await tokenFarm.issueTokens()
       // Issue Tokens
@@ -77,7 +97,7 @@ contract('TokenFarm', ([owner, investor]) => {
       result = await tokenFarm.isStaking(owner)
       assert.equal(result.toString(), 'false', 'investor staking status correct after staking')
   
-  })*/
+  })
   it('Transfer Tokens Repedetly.', async () => {
     var i, t;
     await tokenFarm.approve(investor, tokens('100000'), { from: investor })
@@ -93,6 +113,5 @@ contract('TokenFarm', ([owner, investor]) => {
     }
 
 })
-
-})
+*/
 })

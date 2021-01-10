@@ -13,18 +13,29 @@ import TokenFarm from '../assets/TokenFarm.json'
 import CanvasJSReact from '../assets/canvasjs.react';
 import Main from './Main'
 import TransformList from './TransformLobby/TransformList'
+//import decodeClaim from './Test'
+
+//import './hexDecoders'
 import './App.css'
 import Logo from '../dai.png'
 
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
+
+let JSONarray = []
 class App extends Component {
-  
+
+  web3;
+  account;
+
+
+    
 
   async componentWillMount() {
     await this.loadWeb3()
     await this.loadBlockchainData()
+
   }
 
   async loadBlockchainData() {
@@ -32,7 +43,7 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x075e4F66C4D53DD2d37b91BD7382b34F3B681B4f')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x4b702098a8d493E78d3Fc36cD5b90974AFF12Cb6')
     this.setState({ tokenFarm })
       let i = 351
       let currentDay = await tokenFarm.methods.currentDay().call()
@@ -70,45 +81,65 @@ i = 351
 
       //variable for totalEthByDay to make array with date and value of that day.
       let totalEthByDay = []
-      let checkEthByDay = []
+      let personalEthByDay = 0
+      let checkTotalEthByDay = []
+      let checkPersonalEthByDay = []
       //total hex for all days available (hardcoded)
       let hexAvailableArray = myTotalHex();
       //variable to convert Eth by day times amount available for whats left to transform on that day.
       let hexToEthDisplay = 0
+      
       //Used to store today's value that has value stored (kinda simplistic)
       let hexToEth = []
       let yourHex = []
       let yourEth = []
+
       let tempValue = 0
       let checkCurrentDay = []
+      personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
 //Check each day for for total Eth spent on that day.
       while (i >= 1)
       {
-        //add items to array that include that day as the ID and transferValue for value.
+        //add items to array that include that day as the ID and t  ransferValue for value.
         totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
-        console.log("ABOVE i : " + (i) + " currentDay: " + currentDay)
-
+        
+       // console.log(personalEthByDay + " : OUTPUTSS")
         //if the total Eth variable is 0, then display the amount of ether on that specific day.
         if(totalEthByDay[i] > 0){
      
           //equation to change amount of hex available for the day and personal.
-         
         tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
+        //one variable is true, other is false
         hexToEth[i] = hexAvailableArray[351 - i] - (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
-        yourHex[i] = (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
+        //both variables are untrue
+     
         yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
        // hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEthByDay, "Ether")
-        checkEthByDay[351 - i + 1] = true
-      }
-      else
-      {
-        hexToEth[i] = hexAvailableArray[351 - i] * 1
-        yourHex[i] = 0
-        yourEth[i] = 0
-        checkEthByDay[351 - i + 1] = false
-      }
+        checkTotalEthByDay[351 - i + 1] = true
+        }
+        else
+        {
+          hexToEth[i] = hexAvailableArray[351 - i] * 1
+
+          yourEth[i] = 0
+          checkTotalEthByDay[351 - i + 1] = false
+          
+        }
+
+        if(personalEthByDay > 0){
+          
+          yourHex[i] = (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(personalEthByDay, "Ether"))
+          checkPersonalEthByDay[351 - i + 1] = true
+        }
+        else{
+          yourHex[i] = 0
+          checkPersonalEthByDay[351 - i + 1] = false
+        }
         i--
       }
+      
+   
+
       i = 351
       while (i > 0)
       {
@@ -122,19 +153,40 @@ i = 351
         }
         i--;
       }
+      i = 351
+      let xfLobbyMembersWrite = []
+      let xfLobbyMembersRead = []
+      while (i > 0)
+      {
+        //xfLobbyMembersRead[i] = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
+        console.log("XfLobbyMembersRead : " + xfLobbyMembersRead[i])
+        if(xfLobbyMembersRead[i] > 0)
+        {
+       
+          xfLobbyMembersWrite[i] = true
+        }
+        else
+        {
+          xfLobbyMembersWrite[i]  = false
+        }
+        i--;
+      }
  // Load State Variables.
+      let personalBalance = await tokenFarm.methods.balanceOf(this.state.account)
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
       let yourAddress_ = accounts[0]
       let initSuppl_ = await tokenFarm.methods.initSupply().call()
+      this.setState({ dappTokenBalance:  personalBalance.toString()})
       this.setState({ totalEthXL:  totalEth.toString()})
       this.setState({ hexToEth:  hexToEth[currentDay].toString()})
       this.setState({ currentDay:  day.toString()})
       this.setState({ yourAddress:  yourAddress_.toString()})
       this.setState({ yourHex:  yourHex[currentDay].toString()})
       this.setState({ yourEth:  yourEth[currentDay].toString()})
-      this.setState({ yourExitButton:  checkEthByDay})
+      this.setState({ yourExitButton:  checkTotalEthByDay})
       this.setState({ yourEnterButton:  checkCurrentDay})
+      this.setState({ xfLobbyMembers:  xfLobbyMembersWrite})
      
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
@@ -152,6 +204,43 @@ i = 351
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   }
+  async checkBlock() {
+
+    //let block = await this.web3.eth.getBlock(1920050);
+    //let number = block.number;
+    let i = 22682745;
+    let to = 0
+    while (i < 22769388 ) {
+        i++;
+        let block = await this.web3.eth.getBlock(i);
+        let number = block.number;
+       // console.log('Searching block ' + number);
+    if (block != null && block.transactions != null) {
+      //  console.log(block.timestamp)
+  
+  
+        for (let txHash of block.transactions) {
+            //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
+            let tx = await this.web3.eth.getTransaction(txHash);
+            let time = block.timestamp
+            let timeConfigured = new Date(time*1000);
+            console.log("SEARCHING...")
+            console.log(this.state.account + " " + tx.from.toLowerCase() + " " + timeConfigured)
+          if (tx.to != null)
+          {
+          if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' === tx.to.toLowerCase() && this.state.account.toLowerCase() === tx.from.toLowerCase()) {
+                console.log('Transaction found on block: ' + number);
+                console.log({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured});
+                JSONarray[to++] = ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured})
+            }
+        }
+      }
+    }
+  }
+
+  //set up new array to use the JSON array and take the timestamp and compare with the timestamp of the contract start day to get a proper day calibration.
+
+  }
 
   changeFirst = (newValue) => {
     this.setState({
@@ -160,10 +249,10 @@ i = 351
   }
 
 
-  stakeTokens = (amount) => {
+  stakeTokens = (amount, day) => {
     this.setState({ loading: true })
     this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-      this.state.tokenFarm.methods.stakeTokens(amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+      this.state.tokenFarm.methods.stakeStart(amount, day).send({ from: this.state.account }).on('transactionHash', (hash) => {
         this.setState({ loading: false })
       })
     })
@@ -201,6 +290,7 @@ i = 351
     this.state = {
       account: '0x0',
       dappToken: {},
+      dappTokenBalance: '0',
       currentDay: '0',
       tokenFarm: {},
       totalEthXL: '0',
@@ -211,15 +301,17 @@ i = 351
       yourExitButton: '0',
       yourEnterButton: '0',
       yourButtonDay: '0',
+      xfLobbyMembers: '0',
       totalSupply: '0',
       initSupply: '0',
       loading: true
     };
     this.exitDay = this.exitDay.bind(this);
+    this.web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
   }
 
   render() {
-    const { account, dappToken, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourEnterButton, totalSupply, initSupply, loading} = this.state;
+    const { account, dappToken, dappTokenBalance, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
   
@@ -250,7 +342,7 @@ i = 351
 			}]
 		}
     let content
-    if(this.state.loading) {
+    if(!this.state.loading) {
       content = <p id="loader" className="text-center">Loading...</p>
     } else {
       content = <Main
@@ -263,6 +355,7 @@ i = 351
     }
 
     return (
+      
       <div>
                       <Router>
         <div>
@@ -326,7 +419,8 @@ i = 351
           yourExitButton={yourExitButton}
           yourEnterButton={yourEnterButton}
           xfLobbyExit={this.exitDay}
-          xfLobbyEnter={this.enterDay}/>
+          xfLobbyEnter={this.enterDay}
+          xfLobbyMembers={xfLobbyMembers}/>
           </Route>
           <Route path="/" exact>
             <div>

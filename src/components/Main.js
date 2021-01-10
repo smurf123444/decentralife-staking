@@ -20,7 +20,8 @@ class Main extends Component {
           </thead>
           <tbody>
             <tr>
-              
+            <td></td>
+              <td scope="col">{this.props.dappTokenBalance}</td>
             </tr>
           </tbody>
 
@@ -36,10 +37,11 @@ class Main extends Component {
             <form className="mb-3" onSubmit={(event) => {
                 event.preventDefault()
                 let amount
+                let day
                 amount = this.input.value.toString()
-                amount = window.web3.utils.toWei(amount, 'Ether')
-                this.props.stakeTokens(amount)
-                this.props.exitDay()
+                amount = window.web3.utils.toWei(amount, 'Szabo')
+                day = this.day.value.toString()
+                this.props.stakeTokens(amount, day)
               }}>
               <div>
                 <label className="float-left"><b>Stake TIT Tokens</b></label>
@@ -56,10 +58,23 @@ class Main extends Component {
                   required />
                 <div className="input-group-append">
                   <div className="input-group-text">
+                    
                     <img src={dai} height='32' alt=""/>
                     &nbsp;&nbsp;&nbsp; Token
                   </div>
                 </div>
+              </div>
+              <div className="input-group-append">
+                  <div className="input-group-text">
+              <label className="float-left"><b>Days</b>&nbsp;</label>
+              <input
+                  type="text"
+                  ref={(input) => { this.day = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
+           
+              </div>
               </div>
               <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
             </form>
