@@ -43,7 +43,7 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x4b702098a8d493E78d3Fc36cD5b90974AFF12Cb6')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xEdFC8F874cb7DB29ddD5C3db52a9D6540B091c24')
     this.setState({ tokenFarm })
       let i = 351
       let currentDay = await tokenFarm.methods.currentDay().call()
@@ -158,7 +158,7 @@ i = 351
       let xfLobbyMembersRead = []
       while (i > 0)
       {
-        //xfLobbyMembersRead[i] = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
+       // xfLobbyMembersRead[i] = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
         console.log("XfLobbyMembersRead : " + xfLobbyMembersRead[i])
         if(xfLobbyMembersRead[i] > 0)
         {
@@ -187,7 +187,6 @@ i = 351
       this.setState({ yourExitButton:  checkTotalEthByDay})
       this.setState({ yourEnterButton:  checkCurrentDay})
       this.setState({ xfLobbyMembers:  xfLobbyMembersWrite})
-     
       this.setState({ totalSupply: totalSupply_.toString()})
       this.setState({ initSupply: initSuppl_.toString() })
   }

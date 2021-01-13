@@ -1,4 +1,8 @@
 /**
+ *Submitted for verification at Etherscan.io on 2021-01-01
+*/
+
+/**
  *Submitted for verification at Etherscan.io on 2020-11-25
 */
 
@@ -1293,6 +1297,7 @@ contract StakeableToken is GlobalsAndUtility {
         GlobalsCache memory g;
         GlobalsCache memory gSnapshot;
         _globalsLoad(g, gSnapshot);
+
         /* Enforce the minimum stake time */
         require(newStakedDays >= MIN_STAKE_DAYS, "HEX: newStakedDays lower than minimum");
 
@@ -2190,26 +2195,17 @@ contract HEX is TransformableToken {
 
 contract TokenFarm is TransformableToken{
     function() external payable {}
-    struct User
-    {
-    string name;
-    address myaddress;
-    }
     using SafeMath for uint256;
      modifier onlyOwner(){
             require(msg.sender == owner);
             _;
         }
     address public owner;
-    uint256 public min_supply;
-    uint256 public max_supply;
     mapping(address => uint256) public balanceOf;
-    mapping(address => mapping(address => uint256)) public allowance;
     mapping(address => uint256) public lastTXtime;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
     uint256 public burn_amt;
-    uint256 public mint_amt;
     bool public isBurning;
     bool public manager;
     uint256 public total_supply;
@@ -2226,10 +2222,6 @@ contract TokenFarm is TransformableToken{
     uint256 public airdrop_threshold;
     bool private firstrun;
     uint256 private last_turnTime;
-    bool private botThrottling;
-    bool private macro_contraction;
-    uint256 public init_ceiling;
-    uint256 public init_floor;
     uint256 public tx_amt;
     uint256 private deciCalc;
 
@@ -2249,9 +2241,6 @@ constructor() public {
     lastLT_TXtime[msg.sender] = now;
 
     //totalSupply
-    init_ceiling = max_supply;
-    init_floor = min_supply;
-    macro_contraction = true;
     turn = 0;
     last_turnTime = now;
     isBurning = true;
@@ -2265,19 +2254,14 @@ constructor() public {
     airdrop_threshold = (25 * deciCalc).div(10000);//0.0025
     onepct = (deciCalc).div(10000);//0.01
     firstrun = true;
-    botThrottling = true;
     uniswap_factory = owner;
     uniswap_router = owner;
     burn_amt = 0;
-    mint_amt = 0;
     tx_amt = 0;
 
     emit Transfer(address(this), owner, init_supply);
 }
 
-function _allowance(address _owner, address _spender)view external returns (uint256 num){
-    return (allowance[_owner][_spender]);
-}  
 
 function initSupply() view external returns (uint256 num){
     return (init_supply);
@@ -2285,14 +2269,6 @@ function initSupply() view external returns (uint256 num){
 
 function burnRate() view external returns (uint256 num){
     return (burn_pct);
-}
-    
-function mintRate() view external returns (uint256 num){
-    return (mint_pct);
-}
-
-function showAirdropThreshold() view external returns (uint256 num){
-    return (airdrop_threshold);
 }
 
 function checkWhenLast_USER_Transaction(address _address) view external returns (uint256 num){
@@ -2310,9 +2286,6 @@ function LAST_TX_SHORTERM_BURN_COUNTER(address _address) view external returns(u
 function lastTurnTime() view external returns(uint256 num){
     return last_turnTime;
 }
-function macroContraction() view external returns(bool num){
-    return macro_contraction;
-}
 
 
 
@@ -2324,56 +2297,13 @@ function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint25
 
 
 
-function _macro_contraction_bounds() internal returns (bool boo){
-        if (isBurning == true){
-            min_supply = min_supply / 2;
-        }
-        else{
-            max_supply = max_supply / 2;
-        }
-        return true;
-}
-
-function _macro_expansion_bounds() internal returns (bool stak){
-    if (isBurning == true){
-        min_supply = min_supply * 2;
-    }
-    else{
-        max_supply = max_supply  * 2;
-    }
-    if(turn == 56){
-        max_supply = init_ceiling;
-        min_supply = init_floor;
-        turn = 0;
-        macro_contraction = false;
-    }
-    return (true);
-}
-
-function _turn() internal returns(bool boo){
-    turn += 1;
-    if(turn == 1 && firstrun == false){
-        mint_pct = (125 * deciCalc).div(10000); //0.0125
-        burn_pct = (125 * deciCalc).div(10000); //0.0125
-        macro_contraction = true;
-    }
-    if (turn >= 2 && turn <=56) {
-        _macro_contraction_bounds();
-        macro_contraction = false;
-    }
-    last_turnTime = now;
-    return(true);
-}
-
 function _rateadj() internal returns (bool boo){
     if (isBurning == true){
         burn_pct += (burn_pct / 10);
-        mint_pct += (mint_pct / 10);
 
     }
     else{
         burn_pct -= (burn_pct / 10);
-        mint_pct += (mint_pct / 10);
 
 
     }
@@ -2381,16 +2311,11 @@ function _rateadj() internal returns (bool boo){
     if (burn_pct > onepct * 6){
         burn_pct -= (onepct * 2);
     }
-    if (mint_pct > onepct * 6){
-        mint_pct -= (onepct * 2);
-    }
 
 
 
-    if (burn_pct < onepct || mint_pct < onepct){
-        mint_pct = (125 * deciCalc).div(10000); //0.0125
+    if (burn_pct < onepct){
         burn_pct = (125 * deciCalc).div(10000); //0.0125
-
     return (true);
     }
 }
@@ -2461,15 +2386,7 @@ function manager_killswitch() external returns (bool boo){
 function transfer(address _to, uint256 _value) external returns (uint256 amt){
     require(_value !=0, "Value must be greater than 0");
     require(_to != address(0), "Address cannot be ZERO address");
-    uint256 turn_burn = 0;
     
-    if(msg.sender != owner){
-        if (botThrottling == true){
-            if (tx_n < 100){
-                require (_value < (200 * (10 ** uint256(decimals))), "Maximum amount allowed is 200 SEX until 100th transaction.");
-            }
-        }
-    }
     if((msg.sender == uniswap_factory && _to == uniswap_router) || msg.sender == uniswap_router && _to == uniswap_factory)
     {
         balanceOf[msg.sender] -= _value;
@@ -2477,39 +2394,27 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
         emit Transfer(msg.sender, _to, _value);
     }
     else{
-        if (now > last_turnTime + 60){
-            if(total_supply >= max_supply)
-            {
-                isBurning = true;
-                _turn();
-                if(firstrun == false){
-                    turn_burn = total_supply - max_supply;
-              
-                }
-            }
-            else if(total_supply <= min_supply){
-                isBurning = false;
-                _turn();
-            }
-        }
-           if (isBurning == true){
-            burn_amt = pctCalc_minusScale(_value, burn_pct);
-            _burn(msg.sender, burn_amt);
-            balanceOf[msg.sender] -= tx_amt;
-            balanceOf[_to] += tx_amt;
-            emit Transfer(msg.sender, _to, tx_amt);
-            tx_n += 1;
-           }
-           else if(isBurning == false)
-           {
-            mint_amt = pctCalc_minusScale(_value, mint_pct);
-            tx_amt = _value;
-            _mint(tx.origin, mint_amt);
-            balanceOf[msg.sender] -= tx_amt;
-            balanceOf[_to] += tx_amt;    
-            emit Transfer(msg.sender, _to, tx_amt);
-            tx_n += 1;
-           }          
+         if (now > last_turnTime + (86400 * 365)){	
+            if(isBurning = false)	
+            {	
+                isBurning = true;	
+            }	
+            else if(isBurning = true){	
+                isBurning = false;	
+            }	
+        }	
+           if (isBurning == true){	
+            burn_amt = pctCalc_minusScale(_value, burn_pct);	
+            _burn(msg.sender, burn_amt);	
+            balanceOf[msg.sender] -= tx_amt;	
+            balanceOf[_to] += tx_amt;	
+            emit Transfer(msg.sender, _to, tx_amt);	
+            tx_n += 1;	
+           }	
+           else if(isBurning == false)	
+           {	
+            tx_n += 1;	
+           }                  
                else
                 {
                    revert("ERROR at TX Block");

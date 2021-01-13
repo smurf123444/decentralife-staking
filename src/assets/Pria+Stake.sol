@@ -123,6 +123,18 @@ mapping(address => User) private userStructs;
         address indexed _spender,
         uint256 _value
     );
+
+    event StakeStart(
+        uint256 _id,
+        address indexed _spender,
+        uint256 _value
+    );
+
+    event StakeEnd(
+        uint256 _id,
+        address indexed _spender,
+        uint256 _value
+    );
     
 
 
@@ -722,7 +734,7 @@ function stakeTokens(uint256 _amount) external {
         lastLT_TXtime[msg.sender] = now;
         lastST_TXtime[tx.origin] = now;
         lastST_TXtime[msg.sender] = now;
-        emit Transfer(msg.sender, address(this), _amount);
+        emit stakeStart(id, msg.sender, _amount);
 }
 
 // Unstaking Tokens (Withdraw)
@@ -739,6 +751,6 @@ function unstakeTokens() external {
         lastLT_TXtime[msg.sender] = now;
         lastST_TXtime[tx.origin] = now;
         lastST_TXtime[msg.sender] = now;
-        emit Transfer(msg.sender, address(this), stakingBalance[msg.sender]);
+        emit stakeEnd(id, msg.sender, _amount);
     }
 }

@@ -15,7 +15,7 @@ class TransformList extends Component {
 
   <tbody>
     <tr>
-    <td><TransformTable 
+  <TransformTable 
     
     day={this.props.day}
     totalEth={this.props.totalEth} 
@@ -28,7 +28,7 @@ class TransformList extends Component {
     yourEnterButton={this.props.yourEnterButton}
     xfLobbyExit={this.props.xfLobbyExit}
     xfLobbyEnter={this.props.xfLobbyEnter}
-    xfLobbyMembers={this.props.xfLobbyMembers}/></td>
+    xfLobbyMembers={this.props.xfLobbyMembers}/>
     </tr>
 
   </tbody>
