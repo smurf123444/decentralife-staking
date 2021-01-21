@@ -1,3 +1,4 @@
+const BigNumber = require('bignumber.js');
 const mask = (w) => (1n << w) - 1n;
 const bnToHex = (bn) => {
     let s = bn.toString(16);

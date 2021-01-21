@@ -15,20 +15,95 @@ import Main from './Main'
 import TransformList from './TransformLobby/TransformList'
 //import decodeClaim from './Test'
 
-//import './hexDecoders'
 import './App.css'
 import Logo from '../dai.png'
-
-
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
+const axios = require('axios');
+const fs = require('fs');
+require('dotenv').config()
+require('console.table')
+//const express = require('express')
+const path = require('path')
+const http = require('http')
+const cors = require('cors')
+//const moment = require('moment-timezone')
+//const numeral = require('numeral')
 
 let JSONarray = []
+
 class App extends Component {
 
   web3;
   account;
+  
+/*
+THIS IS FOR FINDING THE 
+1. XFAMOUNT EARNED.
+{
 
+xfLobbyExits(where: {memberAddr: "0x5bc8bf5a75d221ff30b2c2b2a7235d6aeeff4a84"}){
+  id
+  timestamp
+	xfAmount
+  memberAddr
+  data0
+}
+    
+  
+}
+
+THIS IS FOR FINDING THE 
+1. RAW ETH AMOUNT INPUT FOR XFDAY
+2. THE DAY IT SELF.
+    xfLobbyEnters(where: {memberAddr: "0x5bc8bf5a75d221ff30b2c2b2a7235d6aeeff4a84"}){
+  id
+  timestamp
+  memberAddr
+  data0
+    rawAmount
+    enterDay
+}
+  
+THIS IS FOR FINDING
+1. Staked Days
+2. Amount staked
+3. End Day
+
+  stakeStarts(where: {stakerAddr: "0x5bc8bf5a75d221ff30b2c2b2a7235d6aeeff4a84"}) {
+    id
+    stakerAddr
+    stakeId
+    data0
+    stakedDays
+    stakeShares
+    startDay
+    endDay
+    stakedHearts
+  }
+
+THIS IS FOR FINDING
+1.servedDays 
+2. penalty paid
+3. Stake Payout.
+{
+
+  stakeEnds(where: {stakerAddr: "0x5bc8bf5a75d221ff30b2c2b2a7235d6aeeff4a84"}) {
+    id
+    stakerAddr
+    stakedHearts
+    payout
+    penalty
+    daysLate
+    servedDays
+    stakedHearts
+    stakedShares
+    prevUnlocked
+  }
+}
+
+
+
+*/
 
     
 
@@ -43,13 +118,70 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xEdFC8F874cb7DB29ddD5C3db52a9D6540B091c24')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
     this.setState({ tokenFarm })
       let i = 351
       let currentDay = await tokenFarm.methods.currentDay().call()
       let currentDayCopy = currentDay
       let currentReversed = 351 - currentDay
       let totalEth = 0
+
+      let ethPriceArray = []
+let myAddress = this.state.account
+console.log(myAddress)
+let xfLobbyEntersInfoClassArray = []
+class xfLobbyEntersInfoClass {
+  constructor() {
+    this.memberAddr = "0x0"
+    this.rawAmount = 0
+    this.id = 0
+    this.timestamp = 0
+    this.memberAddr = 0
+    this.data0 = 0
+    this.enterDay = 0
+  }
+}
+async function checkHexInfo() {
+
+  console.log(`Checking xfLobbyExit Info now...\n`)
+  try {
+    await axios.post('https://api.thegraph.com/subgraphs/name/smurf123444/decentralife', {
+        query: `
+        {
+        xfLobbyEnters(where: {memberAddr: "${myAddress}"}){
+          id
+          timestamp
+          memberAddr
+          data0
+          rawAmount
+          enterDay
+        }
+      }
+        `
+      })
+      .then((res) => {
+        console.log(res.data.data)
+        
+        for (const xfLobbyEnters of res.data.data.xfLobbyEnters) {
+          var obj = new xfLobbyEntersInfoClass()
+          obj.rawAmount = parseFloat(xfLobbyEnters.rawAmount)
+          obj.id = xfLobbyEnters.id
+          obj.timestamp = xfLobbyEnters.timestamp
+          obj.memberAddr = xfLobbyEnters.memberAddr
+          obj.data0 = xfLobbyEnters.data0
+          obj.enterDay = xfLobbyEnters.enterDay
+         xfLobbyEntersInfoClassArray.push(obj)
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  } catch (error) {
+    console.error(error)
+    return
+  }
+}
+
 
   function myTotalHex() {
        var newArray = []
@@ -96,6 +228,8 @@ i = 351
 
       let tempValue = 0
       let checkCurrentDay = []
+      checkHexInfo()
+      console.log(xfLobbyEntersInfoClassArray)
       personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
 //Check each day for for total Eth spent on that day.
       while (i >= 1)
@@ -125,10 +259,11 @@ i = 351
           checkTotalEthByDay[351 - i + 1] = false
           
         }
-
-        if(personalEthByDay > 0){
+      //  console.log(personalEthByDay)
+        if(yourEth[i] > 0){
           
-          yourHex[i] = (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(personalEthByDay, "Ether"))
+          yourHex[i] = hexAvailableArray[351 - i] * yourEth[i]
+        //  console.log(yourHex[i])
           checkPersonalEthByDay[351 - i + 1] = true
         }
         else{
@@ -172,7 +307,7 @@ i = 351
         i--;
       }
  // Load State Variables.
-      let personalBalance = await tokenFarm.methods.balanceOf(this.state.account)
+      let personalBalance = await tokenFarm.methods.balanceOf(this.state.account).call()
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
       let yourAddress_ = accounts[0]
@@ -249,16 +384,14 @@ i = 351
 
 
   stakeTokens = (amount, day) => {
-    this.setState({ loading: true })
-    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+//    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.state.tokenFarm.methods.stakeStart(amount, day).send({ from: this.state.account }).on('transactionHash', (hash) => {
         this.setState({ loading: false })
       })
-    })
+ //   })
   }
 
   unstakeTokens = (amount) => {
-    this.setState({ loading: true })
     this.state.tokenFarm.methods.unstakeTokens().send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
@@ -267,7 +400,6 @@ i = 351
   exitDay = (day) => {
     let s = 351 - day + 1;
     console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
-    this.setState({ loading: true })
     console.log(s - this.state.currentDay)
     this.state.tokenFarm.methods.xfLobbyExit(s - this.state.currentDay, '0').send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
@@ -277,7 +409,6 @@ i = 351
   enterDay = (day) => {
     let s = 351 - day + 1;
     console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
-    this.setState({ loading: true })
     console.log(s - this.state.currentDay)
     this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: '10000000000000000'}).on('transactionHash', (hash) => {
       this.setState({ loading: false })

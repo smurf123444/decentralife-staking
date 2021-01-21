@@ -615,7 +615,7 @@ contract GlobalsAndUtility is ERC20 {
 
     /* Time of contract launch (2019-12-03T00:00:00Z) */
     uint256 internal constant LAUNCH_TIME = 1605816016;
-
+    uint256 public burnCounter = 0;
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
 
@@ -643,18 +643,7 @@ contract GlobalsAndUtility is ERC20 {
 
     /* BigPayDay */
     uint256 internal constant BIG_PAY_DAY = CLAIM_PHASE_END_DAY + 1;
-/*
-    /* Root hash of the UTXO Merkle tree 
-    bytes32 internal constant MERKLE_TREE_ROOT = 0x4e831acb4223b66de3b3d2e54a2edeefb0de3d7916e2886a4b134d9764d41bec;
 
-    /* Size of a Satoshi claim uint in a Merkle leaf 
-    uint256 internal constant MERKLE_LEAF_SATOSHI_SIZE = 45;
-
-    /* Zero-fill between BTC address and Satoshis in a Merkle leaf 
-    uint256 internal constant MERKLE_LEAF_FILL_SIZE = 256 - 160 - MERKLE_LEAF_SATOSHI_SIZE;
-    uint256 internal constant MERKLE_LEAF_FILL_BASE = (1 << MERKLE_LEAF_FILL_SIZE) - 1;
-    uint256 internal constant MERKLE_LEAF_FILL_MASK = MERKLE_LEAF_FILL_BASE << MERKLE_LEAF_SATOSHI_SIZE;
-*/
     /* Size of a Satoshi total uint */
     uint256 internal constant SATOSHI_UINT_SIZE = 51;
     uint256 internal constant SATOSHI_UINT_MASK = (1 << SATOSHI_UINT_SIZE) - 1;
@@ -1891,40 +1880,6 @@ contract StakeableToken is GlobalsAndUtility {
         );
     }
 }
-/*
-/**
- * @dev These functions deal with verification of Merkle trees (hash trees),
-
-library MerkleProof {
-    /**
-     * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
-     * defined by `root`. For this, a `proof` must be provided, containing
-     * sibling hashes on the branch from the leaf to the root of the tree. Each
-     * pair of leaves and each pair of pre-images are assumed to be sorted.
-    
-    function verify(bytes32[] memory proof, bytes32 root, bytes32 leaf) internal pure returns (bool) {
-        bytes32 computedHash = leaf;
-
-        for (uint256 i = 0; i < proof.length; i++) {
-            bytes32 proofElement = proof[i];
-
-            if (computedHash < proofElement) {
-                // Hash(current computed hash + current element of the proof)
-                computedHash = keccak256(abi.encodePacked(computedHash, proofElement));
-            } else {
-                // Hash(current element of the proof + current computed hash)
-                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
-            }
-        }
-
-        // Check if the computed hash (root) is equal to the provided root
-        return computedHash == root;
-    }
-}
-
-*/
-
-
 
 contract TransformableToken is StakeableToken {
     /**
@@ -2166,32 +2121,6 @@ contract TransformableToken is StakeableToken {
         );
     }
 }
-/*
-
-contract HEX is TransformableToken {
-
-    constructor()
-        public
-    {
-        // Initialize global shareRate to 1 
-        globals.shareRate = uint40(1 * SHARE_RATE_SCALE);
-
-        // Initialize dailyDataCount to skip pre-claim period 
-        globals.dailyDataCount = uint16(PRE_CLAIM_DAYS);
-
-        // Add all Satoshis from UTXO snapshot to contract 
-        globals.claimStats = _claimStatsEncode(
-            0, // _claimedBtcAddrCount
-            0, // _claimedSatoshisTotal
-            FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
-        );
-    }
-
-    function() external payable {}}
-
-
-*/
-
 
 contract TokenFarm is TransformableToken{
     function() external payable {}
@@ -2211,15 +2140,11 @@ contract TokenFarm is TransformableToken{
     uint256 public total_supply;
     uint256 public turn;
     uint256 public tx_n; 
-    uint256 public init_supply;
-    uint256 public mint_pct;
     uint256 public burn_pct;
     address public uniswap_router;
     address public uniswap_factory;
     uint256 public onepct;
-    uint256 public owner_limit;
     uint256 public inactive_burn;
-    uint256 public airdrop_threshold;
     bool private firstrun;
     uint256 private last_turnTime;
     uint256 public tx_amt;
@@ -2235,7 +2160,6 @@ constructor() public {
             FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
         );
     owner = msg.sender;
-    balanceOf[msg.sender] = init_supply;
     lastTXtime[msg.sender] = now;
     lastST_TXtime[msg.sender] = now;
     lastLT_TXtime[msg.sender] = now;
@@ -2247,55 +2171,25 @@ constructor() public {
     manager = true;
     tx_n = 0;
     deciCalc = 10 ** uint256(decimals);
-    mint_pct = (125 * deciCalc).div(10000);//0.0125
     burn_pct = (125 * deciCalc).div(10000);//0.0125
-    owner_limit = (15 * deciCalc).div(1000);//0.015
     inactive_burn = (25 * deciCalc).div(10000);//0.25
-    airdrop_threshold = (25 * deciCalc).div(10000);//0.0025
     onepct = (deciCalc).div(10000);//0.01
     firstrun = true;
     uniswap_factory = owner;
     uniswap_router = owner;
     burn_amt = 0;
     tx_amt = 0;
-
-    emit Transfer(address(this), owner, init_supply);
 }
 
 
-function initSupply() view external returns (uint256 num){
-    return (init_supply);
+function burnInfo(address _address) view external returns (uint256 burnPct, uint256 burnAmt, uint256 lastTXTime, uint256 lastLTTXtime, uint256 lastSTTXtime, uint256 lastTurnTime){
+    return (burn_pct, burnCounter, lastTXtime[_address], lastLT_TXtime[_address], lastST_TXtime[_address], last_turnTime);
 }
-
-function burnRate() view external returns (uint256 num){
-    return (burn_pct);
-}
-
-function checkWhenLast_USER_Transaction(address _address) view external returns (uint256 num){
-    return (lastTXtime[_address]);
-}
-
-function LAST_TX_LONGTERM_BURN_COUNTER(address _address) view external returns(uint256 num){
-    return lastLT_TXtime[_address];
-}
-
-function LAST_TX_SHORTERM_BURN_COUNTER(address _address) view external returns(uint256 num){
-    return lastST_TXtime[_address];
-}
-
-function lastTurnTime() view external returns(uint256 num){
-    return last_turnTime;
-}
-
-
 
 function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint256 item){
         uint256 res = (_value * _pct).div(10 ** uint256(decimals));
         return res;
 }
-
-
-
 
 function _rateadj() internal returns (bool boo){
     if (isBurning == true){
@@ -2311,8 +2205,6 @@ function _rateadj() internal returns (bool boo){
     if (burn_pct > onepct * 6){
         burn_pct -= (onepct * 2);
     }
-
-
 
     if (burn_pct < onepct){
         burn_pct = (125 * deciCalc).div(10000); //0.0125
@@ -2364,12 +2256,11 @@ function burn_Inactive_Contract(address _address) external returns(bool boo){
     return (true);
 }
 
-function setUniswapFactoryAndRouter(address _uniswapFactory, address _uniswapRouter) external returns(bool boo){
+function setUniswapFactoryAndRouter(address _uniswapFactory, address _uniswapRouter) onlyOwner external returns(bool boo){
         require (manager == true, "ERROR: Manager must be active");
         require (msg.sender != address(0), "Zero Address from sender");
         require (_uniswapFactory != address(0), "uniswap router address is ZERO address");
         require (_uniswapRouter != address(0), "uniswap router address is ZERO address");
-        require (msg.sender == owner, "Owner only can call this function , must be the manager aswell" );
         uniswap_factory = _uniswapFactory;
         uniswap_router = _uniswapRouter;
         return (true);
@@ -2395,15 +2286,18 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
     }
     else{
          if (now > last_turnTime + (86400 * 365)){	
-            if(isBurning = false)	
+            if(isBurning = true)	
             {	
-                isBurning = true;	
-            }	
-            else if(isBurning = true){	
                 isBurning = false;	
             }	
+            else if(isBurning = false){	
+                isBurning = true;	
+            }	
+            last_turnTime = now;
+            turn += 1;
         }	
            if (isBurning == true){	
+            burnCounter += _value;
             burn_amt = pctCalc_minusScale(_value, burn_pct);	
             _burn(msg.sender, burn_amt);	
             balanceOf[msg.sender] -= tx_amt;	

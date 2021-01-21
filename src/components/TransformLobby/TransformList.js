@@ -4,13 +4,14 @@ import Table from 'react-bootstrap/Table';
 import { makeData, Logo, Tips } from "./Utils.js";
 import style from './styles.css'
 import ReactTable from "react-table";
+import { Row } from 'react-bootstrap';
 class TransformList extends Component {
   render() {
     return (
       
-<div class="table-scroll">
+<div class="centered" >
 <div>
-      </div>
+
 
 
   <tbody>
@@ -33,7 +34,7 @@ class TransformList extends Component {
 
   </tbody>
 
-
+  </div>
 </div>
 
 

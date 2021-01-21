@@ -289,6 +289,9 @@ contract ERC20 is Context, IERC20 {
     /**
      * @dev See {IERC20-balanceOf}.
      */
+    function balanceOf(address _spender) public view returns (uint256) {
+        return balanceOf[_spender];
+    }
 
     /**
      * @dev See {IERC20-approve}.

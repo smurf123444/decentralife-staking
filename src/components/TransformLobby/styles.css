@@ -33,3 +33,13 @@
     height: 600px !important;
     overflow: scroll;
 }
+
+.centered {
+    height: 17500px; /* Magic here */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1000px;
+    margin-left: 100px;
+  overflow: auto;
+  }
