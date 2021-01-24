@@ -597,14 +597,14 @@ contract GlobalsAndUtility is ERC20 {
     );
 
     /* Origin address */
-    address internal constant ORIGIN_ADDR = 0x9A6a414D6F3497c05E3b1De90520765fA1E07c03;
+    address internal constant ORIGIN_ADDR = 0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84;
 
     /* Flush address */
-    address payable internal constant FLUSH_ADDR = 0xDEC9f2793e3c17cd26eeFb21C4762fA5128E0399;
+    address payable internal constant FLUSH_ADDR = 0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84;
 
     /* ERC20 constants */
-    string public constant name = "HEX";
-    string public constant symbol = "HEX";
+    string public constant name = "Decentralife";
+    string public constant symbol = "DEF";
     uint8 public constant decimals = 8;
 
     /* Hearts per Satoshi = 10,000 * 1e8 / 1e8 = 1e4 */
@@ -613,9 +613,15 @@ contract GlobalsAndUtility is ERC20 {
     uint256 private constant SATOSHIS_PER_BTC = 1e8;
     uint256 internal constant HEARTS_PER_SATOSHI = HEARTS_PER_HEX / SATOSHIS_PER_BTC * HEX_PER_BTC;
 
+<<<<<<< HEAD
     /* Time of contract launch (2019-12-03T00:00:00Z) */
     uint256 internal constant LAUNCH_TIME = 1605816016;
     uint256 public burnCounter = 0;
+=======
+    /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
+    uint256 internal constant LAUNCH_TIME = 1613953801;
+
+>>>>>>> 0edbf794387f14770c19b3e7ec88734a6f8ddb7a
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
 

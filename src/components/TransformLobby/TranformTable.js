@@ -1,6 +1,7 @@
 import "./styles.css";
 import React, { useState, Component } from 'react'
 import Table from 'react-bootstrap/Table';
+import TokenFarm from '../../assets/TokenFarm.json'
 import Button from 'react-bootstrap/Button';
 import App from "../App";
 import Popup from './Popup';
@@ -13,6 +14,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0x075e4F66C4D53DD2d37b91BD7382b34F3B681B4f')
 class TransactionChecker {
   web3;
   account;

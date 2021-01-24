@@ -1,41 +1,37 @@
 import React, { Component } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
-
+import GetXfEnters from './Loaders/getXfEnters'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  from,
+} from "@apollo/client";
 
 import TokenFarm from '../assets/TokenFarm.json'
 import CanvasJSReact from '../assets/canvasjs.react';
 import Main from './Main'
 import TransformList from './TransformLobby/TransformList'
 //import decodeClaim from './Test'
-
+import { onError } from "@apollo/client/link/error";
 import './App.css'
 import Logo from '../dai.png'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-const axios = require('axios');
-const fs = require('fs');
-require('dotenv').config()
-require('console.table')
-//const express = require('express')
-const path = require('path')
-const http = require('http')
-const cors = require('cors')
-//const moment = require('moment-timezone')
-//const numeral = require('numeral')
+//require('./hexDecoders.js');
 
 let JSONarray = []
-
 class App extends Component {
 
   web3;
   account;
-  
 /*
 THIS IS FOR FINDING THE 
 1. XFAMOUNT EARNED.
@@ -126,63 +122,6 @@ THIS IS FOR FINDING
       let currentReversed = 351 - currentDay
       let totalEth = 0
 
-      let ethPriceArray = []
-let myAddress = this.state.account
-console.log(myAddress)
-let xfLobbyEntersInfoClassArray = []
-class xfLobbyEntersInfoClass {
-  constructor() {
-    this.memberAddr = "0x0"
-    this.rawAmount = 0
-    this.id = 0
-    this.timestamp = 0
-    this.memberAddr = 0
-    this.data0 = 0
-    this.enterDay = 0
-  }
-}
-async function checkHexInfo() {
-
-  console.log(`Checking xfLobbyExit Info now...\n`)
-  try {
-    await axios.post('https://api.thegraph.com/subgraphs/name/smurf123444/decentralife', {
-        query: `
-        {
-        xfLobbyEnters(where: {memberAddr: "${myAddress}"}){
-          id
-          timestamp
-          memberAddr
-          data0
-          rawAmount
-          enterDay
-        }
-      }
-        `
-      })
-      .then((res) => {
-        console.log(res.data.data)
-        
-        for (const xfLobbyEnters of res.data.data.xfLobbyEnters) {
-          var obj = new xfLobbyEntersInfoClass()
-          obj.rawAmount = parseFloat(xfLobbyEnters.rawAmount)
-          obj.id = xfLobbyEnters.id
-          obj.timestamp = xfLobbyEnters.timestamp
-          obj.memberAddr = xfLobbyEnters.memberAddr
-          obj.data0 = xfLobbyEnters.data0
-          obj.enterDay = xfLobbyEnters.enterDay
-         xfLobbyEntersInfoClassArray.push(obj)
-        }
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-  } catch (error) {
-    console.error(error)
-    return
-  }
-}
-
-
   function myTotalHex() {
        var newArray = []
        var amount = ""
@@ -228,8 +167,6 @@ i = 351
 
       let tempValue = 0
       let checkCurrentDay = []
-      checkHexInfo()
-      console.log(xfLobbyEntersInfoClassArray)
       personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
 //Check each day for for total Eth spent on that day.
       while (i >= 1)
@@ -444,7 +381,23 @@ i = 351
     const { account, dappToken, dappTokenBalance, currentDay, changeFirst, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
-  
+    const errorLink = onError(({ graphqlErrors, networkError }) => {
+      if (graphqlErrors) {
+        graphqlErrors.map(({ message, location, path }) => {
+          alert(`Graphql error ${message}`);
+        });
+      }
+    });
+    
+    const link = from([
+      errorLink,
+      new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
+    ]);
+    
+    const client = new ApolloClient({
+      cache: new InMemoryCache(),
+      link: link,
+    });
 
     let burned =  initSupply_ - totalSupply_ 
 
@@ -537,6 +490,9 @@ i = 351
         </div>
           </Route>
           <Route path="/transform">
+          <ApolloProvider client={client}>
+           <GetXfEnters/>
+          </ApolloProvider>
           <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 
@@ -555,6 +511,7 @@ i = 351
           <Route path="/" exact>
             <div>
             <h1>Welcome to Decentralife Prototype v1.0</h1>
+
             </div>
           </Route>
           <Route path="/transfer" exact>

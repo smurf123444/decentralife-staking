@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import TransformTable from './TranformTable'
 import Table from 'react-bootstrap/Table';
-import { makeData, Logo, Tips } from "./Utils.js";
 import style from './styles.css'
 import ReactTable from "react-table";
 import { Row } from 'react-bootstrap';
+
 class TransformList extends Component {
   render() {
     return (
@@ -17,7 +17,6 @@ class TransformList extends Component {
   <tbody>
     <tr>
   <TransformTable 
-    
     day={this.props.day}
     totalEth={this.props.totalEth} 
     hexToEth={this.props.hexToEth} 
@@ -29,9 +28,10 @@ class TransformList extends Component {
     yourEnterButton={this.props.yourEnterButton}
     xfLobbyExit={this.props.xfLobbyExit}
     xfLobbyEnter={this.props.xfLobbyEnter}
-    xfLobbyMembers={this.props.xfLobbyMembers}/>
+    xfLobbyMembers={this.props.xfLobbyMembers}
+    />
     </tr>
-
+{}
   </tbody>
 
   </div>
