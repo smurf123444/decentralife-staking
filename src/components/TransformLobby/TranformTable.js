@@ -2,6 +2,15 @@ import "./styles.css";
 import React, { useState, Component } from 'react'
 import Table from 'react-bootstrap/Table';
 import TokenFarm from '../../assets/TokenFarm.json'
+import GetXfEnters from '../Loaders/getXfEnters'
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  HttpLink,
+  from,
+} from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import Button from 'react-bootstrap/Button';
 import App from "../App";
 import Popup from './Popup';
@@ -25,41 +34,41 @@ class TransactionChecker {
   }
 
   async checkBlock() {
-      //let block = await this.web3.eth.getBlock(1920050);
-      //let number = block.number;
-      
-      let i = 22682754;
-      while (i < 22682764) {
-          i++;
-          let block = await this.web3.eth.getBlock(i);
-          let number = block.number;
+    //let block = await this.web3.eth.getBlock(1920050);
+    //let number = block.number;
+    
+    let i = 22682754;
+    while (i < 22682764) {
+        i++;
+        let block = await this.web3.eth.getBlock(i);
+        let number = block.number;
 
-         // console.log('Searching block ' + number);
-      if (block != null && block.transactions != null) {
-        //  console.log(block.timestamp)
+       // console.log('Searching block ' + number);
+    if (block != null && block.transactions != null) {
+      //  console.log(block.timestamp)
 
 
-          for (let txHash of block.transactions) {
-              //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
-              let tx = await this.web3.eth.getTransaction(txHash);
-             // console.log(block.timestamp)
-              let time = block.timestamp
-              let timeConfigured = new Date(time*1000);
-              let accounts =  await this.web3.eth.getAccounts()
-            if (tx.to != null)
-            {
-            if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
-                //  console.log('Transaction found on block: ' + number);
-                  valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
-                  transactionTimestamp = timeConfigured.toUTCString()
-                
-                  return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
-              }
-          }
+        for (let txHash of block.transactions) {
+            //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
+            let tx = await this.web3.eth.getTransaction(txHash);
+           // console.log(block.timestamp)
+            let time = block.timestamp
+            let timeConfigured = new Date(time*1000);
+            let accounts =  await this.web3.eth.getAccounts()
+          if (tx.to != null)
+          {
+          if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
+              //  console.log('Transaction found on block: ' + number);
+                valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
+                transactionTimestamp = timeConfigured.toUTCString()
+              
+                return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
+            }
         }
       }
-  }
-  }
+    }
+}
+}
 
   async loadWeb3() {
     if (window.ethereum) {
@@ -362,13 +371,10 @@ class TransformTable extends Component {
 
   
   render() {
-    console.log(this.props.account)
-
-
-
     return (
-      
+     
         <Table striped bordered variant="dark">
+                   {console.log(this.props.account)}
 
           <thead>
             <tr>
@@ -400,7 +406,7 @@ class TransformTable extends Component {
             </tr>
           </thead>
           <tbody>
-
+ 
                       <tr>
                         <td>
                         {myDay()}
@@ -433,9 +439,48 @@ class TransformTable extends Component {
 </tr>   
        </tbody>
       </Table>
+      
     );
   }
   
 }
 
 export default TransformTable;
+
+/*
+  async checkBlock() {
+      //let block = await this.web3.eth.getBlock(1920050);
+      //let number = block.number;
+      
+      let i = 22682754;
+      while (i < 22682764) {
+          i++;
+          let block = await this.web3.eth.getBlock(i);
+          let number = block.number;
+
+         // console.log('Searching block ' + number);
+      if (block != null && block.transactions != null) {
+        //  console.log(block.timestamp)
+
+
+          for (let txHash of block.transactions) {
+              //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
+              let tx = await this.web3.eth.getTransaction(txHash);
+             // console.log(block.timestamp)
+              let time = block.timestamp
+              let timeConfigured = new Date(time*1000);
+              let accounts =  await this.web3.eth.getAccounts()
+            if (tx.to != null)
+            {
+            if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
+                //  console.log('Transaction found on block: ' + number);
+                  valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
+                  transactionTimestamp = timeConfigured.toUTCString()
+                
+                  return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
+              }
+          }
+        }
+      }
+  }
+  }*/

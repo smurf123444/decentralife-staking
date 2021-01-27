@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component  } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { LOAD_XFENTERS } from "../Querys/Queries";
+import { xfEnterWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
-
-export function GetXfEnters() {
-  const { error, loading, data } = useQuery(LOAD_XFENTERS);
+import Web3 from 'web3'
+export const GetXfEnters = (props) => {
+  console.log(props)
+  const { error, loading, data } = useQuery(xfEnterWithAccount(props.account));
 
   let i = 0;
   let array = []
@@ -20,25 +21,17 @@ export function GetXfEnters() {
       <thead>
             <tr>
               <td>
-                rawAmount
-              </td>
-              <td>
-                memberAddr
+                Ether Amount Deposited.
               </td>
               <td>
                 enterDay
-              </td>
-              <td>
-                timestamp
               </td>
             </tr>
           </thead>
           {data.xfLobbyEnters.map((data) => (
             <tr key={data.id}>
-                <td>{data.rawAmount}</td>
-                <td>{data.memberAddr}</td>
+                <td>{Web3.utils.fromWei(data.rawAmount, "Ether")}</td>
                 <td>{data.enterDay}</td>
-                <td>{data.timestamp}</td>
           </tr>
         ))}
 

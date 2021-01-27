@@ -26,7 +26,7 @@ class Main extends Component {
           </tbody>
 
 
-
+{console.log(this.props.account)}
         
           </table>
 
