@@ -259,7 +259,7 @@ function yourETHcalc(hex, day) {
 
 var transformer = null;
 
-function yourButtoncalc(day,account,eth,currentDay,enterDay,members,pendingDays,dailyData) {
+function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
 
  // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
   
@@ -268,29 +268,27 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay,members,pendingDays,
   var s = 0
   var temp = day
   s = 351 - day + 1;
-
+  let value = 0
   let newArray= [];
   let string = ""
   
   do{
     day++;
-
+    
     if(eth[i] !== null && eth[i] === true)
 
     {
-   
-      console.log(members[i])
+
       s = 351 - day + 1;
-
+    
       newArray[i] = (<tr><td className="form-button-height">   
-                          <form className="form-button-height" id={s} onSubmit={(event) => {
-                            
-                            event.preventDefault()
 
+                          <form className="form-button-height" id={s} onSubmit={(event) => {
+                          
+                            event.preventDefault()
                             account(parseInt(event.target.getAttribute("id")));
 
                             }}>
-
                             <button type="submit" className="form-button-height">Exit!</button>
                             </form></td></tr>
                       )
@@ -305,14 +303,20 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay,members,pendingDays,
    {
 
     newArray[i] = (<tr><td className="form-button-height">   
+
         <form className="form-button-height" id={s} onSubmit={(event) => {
-                       
+              
                        event.preventDefault()
-                   
+                    
                        enterDay();
                    
                        }}>
-                   
+                               <input
+                  type="text"
+                  ref={(input) => { this.input = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
                        <button type="submit" className="form-button-height">Enter!</button>
                        </form>
       </td></tr>
@@ -365,17 +369,91 @@ class TransformTable extends Component {
   xfLobbyExit(s){
     console.log('Came to this object ')
     this.props.xfLobbyExit(s);
+    
   }
 
 
 
   
   render() {
-    return (
-     
-        <Table striped bordered variant="dark">
-                   {console.log(this.props.account)}
+    function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
 
+      // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
+       
+       let i = 351
+       let initial = i + 1;
+       var s = 0
+       var temp = day
+       s = 351 - day + 1;
+     
+       let newArray= [];
+       let string = ""
+       
+       do{
+         day++;
+         
+         if(eth[i] !== null && eth[i] === true)
+     
+         {
+     
+           s = 351 - day + 1;
+         
+           newArray[i] = (<tr><td className="form-button-height">   
+     
+                               <form className="form-button-height" id={s} onSubmit={(event) => {
+                               
+                                 event.preventDefault()
+                                 
+                                 account(parseInt(event.target.getAttribute("id")));
+     
+                                 }}>
+                                   
+                                 <button type="submit" className="form-button-height">Exit!</button>
+                                 </form></td></tr>
+                           )
+                          
+     
+     
+        }
+        /*
+      <
+         */
+        if(currentDay[350 - i + 1] === true)
+        {
+     
+         newArray[i] = (<tr><td className="form-button-height">   
+     
+             <form className="form-button-height" id={s} onSubmit={(event) => {
+                   
+                            event.preventDefault()
+                        
+                            enterDay();
+                        
+                            }}>
+                                 {popUp}
+                            <button type="submit" className="form-button-height">Enter!</button>
+                            </form>
+           </td></tr>
+                         )
+        }
+     
+        else if (eth[i] !== true)
+        {
+         string = ""
+         newArray[i] = (<tr><td className="td-heightDim">{string}</td></tr>)
+        }
+         i--;
+        }
+         while(i > 0) 
+       
+                // The function returns the product of p1 and p2
+     return newArray;
+     }
+     
+
+    return (
+   
+        <Table striped bordered variant="dark">
           <thead>
             <tr>
               <td>
@@ -432,12 +510,14 @@ class TransformTable extends Component {
 
                         <td>
                       
-                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter, this.props.xfLobbyMembers)}
+                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter, this.popUp)}
+                  
 
 </td>
 
 </tr>   
        </tbody>
+
       </Table>
       
     );

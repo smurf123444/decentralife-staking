@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
 import GetXfEnters from './Loaders/getXfEnters'
@@ -19,16 +19,17 @@ import {
 import TokenFarm from '../assets/TokenFarm.json'
 import CanvasJSReact from '../assets/canvasjs.react';
 import Main from './Main'
-import XfLobby from './XfLobby'
 import TransformList from './TransformLobby/TransformList'
 //import decodeClaim from './Test'
 import { onError } from "@apollo/client/link/error";
 import './App.css'
 import Logo from '../dai.png'
+import Popup from './TransformLobby/Popup';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 //require('./hexDecoders.js');
 
 let JSONarray = []
+
 
 /*
 THIS IS FOR FINDING THE 
@@ -100,8 +101,8 @@ THIS IS FOR FINDING
 */
 
 
-
 class App extends Component {
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -121,11 +122,17 @@ class App extends Component {
       xfLobbyMembers: '0',
       totalSupply: '0',
       initSupply: '0',
-      loading: true
-    };
+      loading: true,
+      showPopup: false 
+      };
     this.exitDay = this.exitDay.bind(this);
     this.web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
   }
+  togglePopup() {  
+    this.setState({  
+         showPopup: !this.state.showPopup  
+    });  
+     }  
   web3;
   account;
   async componentWillMount() {
@@ -216,8 +223,12 @@ class App extends Component {
   }
 
   async initiate(){
+    
     let i = 351
     const web3 = window.web3
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
+    let currentDay = await tokenFarm.methods.currentDay().call()
+    let currentReversed = 351 - currentDay
     function myTotalHex() {
       var newArray = []
       var amount = ""
@@ -244,7 +255,7 @@ class App extends Component {
 }
 i = 351
      //gives total ETH from current day.
-     totalEth = await tokenFarm.methods.xfLobby(currentDay).call()
+    let totalEth = await tokenFarm.methods.xfLobby(currentDay).call()
 
      //variable for totalEthByDay to make array with date and value of that day.
      let totalEthByDay = []
@@ -263,7 +274,7 @@ i = 351
 
      let tempValue = 0
      let checkCurrentDay = []
-     const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
+
      personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
 //Check each day for for total Eth spent on that day.
      while (i >= 1)
@@ -340,9 +351,8 @@ i = 351
        }
        i--;
      }
-     let currentDay = await tokenFarm.methods.currentDay().call()
-     let currentReversed = 351 - currentDay
-     let totalEth = 0
+
+ 
      this.setState({ yourHex:  yourHex[currentDay].toString()})
      this.setState({ yourEth:  yourEth[currentDay].toString()})
      this.setState({ yourExitButton:  checkTotalEthByDay})
@@ -382,11 +392,13 @@ i = 351
     })
   }
 
-  enterDay = (day) => {
+  enterDay = (day, value) => {
     let s = 351 - day + 1;
+
+  
     console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
     console.log(s - this.state.currentDay)
-    this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: '10000000000000000'}).on('transactionHash', (hash) => {
+    this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: value}).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
   }
@@ -405,7 +417,7 @@ i = 351
         });
       }
     });
-    
+
     const link = from([
       errorLink,
       new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
@@ -465,6 +477,23 @@ i = 351
       />
       </ApolloProvider>
     }
+
+
+
+
+    let popUp
+    if(!this.state.loading) {
+      popUp = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      popUp =
+      <div>  
+          <h1> Simple Popup Example </h1>  
+          <button onClick={this.togglePopup.bind(this)}> Click To Open</button>  
+          {this.state.showPopup ? <Popup  text='X' closePopup={this.togglePopup.bind(this)} /> : null }  
+      </div>  
+    }
+
+
 
     return (
       
@@ -533,6 +562,7 @@ i = 351
           yourEnterButton={yourEnterButton}
           xfLobbyExit={this.exitDay}
           xfLobbyEnter={this.enterDay}
+          popUp={popUp}
           xfLobbyMembers={xfLobbyMembers}/>
           </Route>
           <Route path="/" exact>

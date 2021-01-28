@@ -29,6 +29,7 @@ class TransformList extends Component {
     xfLobbyExit={this.props.xfLobbyExit}
     xfLobbyEnter={this.props.xfLobbyEnter}
     xfLobbyMembers={this.props.xfLobbyMembers}
+    popUp={this.props.popUp}
     />
     </tr>
 {}
