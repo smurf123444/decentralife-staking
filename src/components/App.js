@@ -301,7 +301,7 @@ i = 351
         checkCurrentDay[349 - i + 1] = false
       }
        //add items to array that include that day as the ID and t  ransferValue for value.
-  //     totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
+      totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
        
       // console.log(personalEthByDay + " : OUTPUTSS")
        //if the total Eth variable is 0, then display the amount of ether on that specific day.
