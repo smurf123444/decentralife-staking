@@ -503,6 +503,7 @@ i = 351
       <h3>
       <img src={Logo} />
       </h3>
+      <h1 class="margin-right">Day : {this.state.currentDay}</h1>
       <ul className="nav-links">
             <li>
               <Link to="/" exact>Home</Link>
@@ -547,8 +548,11 @@ i = 351
         </div>
           </Route>
           <Route path="/transform">
+            <h1 class="margin-left">Enters</h1>
             {xfLobbyEnters}
+            <h1 class="margin-left">Exits</h1>
             {xfLobbyExits}
+            <h1 class="margin-left-emoji">⬇️Scroll Down⬇️</h1>
           <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 

@@ -3,7 +3,9 @@ import { useQuery, gql } from "@apollo/client";
 import { xfEnterWithAccount, xfExitWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
 import Web3 from 'web3'
+import '../TransformLobby/styles.css';  
 import Popup from '../TransformLobby/Popup';
+
 
 export const GetXfEnters = (props) => {
   console.log(props)
@@ -18,7 +20,8 @@ export const GetXfEnters = (props) => {
   let array = data.xfLobbyEnters.map((data) => (
     <tr key={data.id}>
         <td>{Web3.utils.fromWei(data.rawAmount, "Ether")}</td>
-        <td>{data.enterDay}</td>
+        <td >{data.enterDay}</td>
+        <td class="td-width">{data.id}</td>
   </tr>
   
 ))
@@ -33,6 +36,9 @@ export const GetXfEnters = (props) => {
               </td>
               <td>
                 enterDay
+              </td>
+              <td>
+                ID
               </td>
             </tr>
           </thead>

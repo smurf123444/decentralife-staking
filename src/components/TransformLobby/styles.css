@@ -1,6 +1,9 @@
 .td-height{
     height:49px
 }
+.td-width{
+  width:855px
+}
 .form-button-height{
     height:24px
 }
@@ -35,14 +38,29 @@
 }
 
 .centered {
-    height: 17500px; /* Magic here */
+    height: 17300px; /* Magic here */
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1000px;
+    width: 1600px;
     margin-left: 100px;
   overflow: auto;
   }
+  .margin-right {
+   /* Magic here */
+   float:right;
+    margin-right: 950px;
+  }
+  .margin-left {
+    /* Magic here */
+    float:center;
+     margin-left: 820px;
+   }
+   .margin-left-emoji {
+    /* Magic here */
+    float:center;
+     margin-left: 735px;
+   }
 
   .popup {  
     position: fixed;  

@@ -22,6 +22,7 @@ export const GetXfExits = (props) => {
     <tr key={data.id}>
     <td>{  moment.unix(data.timestamp).format('dddd, MMMM Do, YYYY h:mm:ss A')}</td>
     <td>{data.xfAmount / 1000000000}</td>
+    <td>{data.id}</td>
 </tr>
   
 ))
@@ -32,10 +33,13 @@ export const GetXfExits = (props) => {
           <thead>
             <tr>
               <td>
-                TimeStamp of Exit
+                Date and Time of Tranform Lobby Exit Transaction.
               </td>
               <td>
                 Transform Amount Total (HEX)
+              </td>
+              <td>
+                ID
               </td>
             </tr>
           </thead>
