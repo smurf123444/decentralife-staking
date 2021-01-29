@@ -29,9 +29,10 @@ export const LOAD_XFENTERS = gql`
   }
   `
   */
-  export const LOAD_XFEXITS = gql`
+ export function xfExitWithAccount(tits){
+ const LOAD_XFEXITS = gql`
 {
-  xfLobbyExits(where: {memberAddr: "0x5bc8bf5a75d221ff30b2c2b2a7235d6aeeff4a84"}){
+  xfLobbyExits(where: {memberAddr: "${tits}"}){
     id
     timestamp
     xfAmount
@@ -40,3 +41,5 @@ export const LOAD_XFENTERS = gql`
   }
   }
   `
+  return(LOAD_XFEXITS)
+}

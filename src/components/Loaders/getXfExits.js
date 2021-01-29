@@ -1,13 +1,11 @@
 import React, { useEffect, useState, Component  } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { xfEnterWithAccount, xfExitWithAccount} from "../Querys/Queries";
+import {  xfExitWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
-import Web3 from 'web3'
-import Popup from '../TransformLobby/Popup';
 
-export const GetXfEnters = (props) => {
+export const GetXfExits = (props) => {
   console.log(props)
-  const { error, loading, data } = useQuery(xfEnterWithAccount(props.account));
+  const { error, loading, data } = useQuery(xfExitWithAccount(props.account));
 
   let i = 0;
   let array = []
@@ -15,28 +13,29 @@ export const GetXfEnters = (props) => {
    return(<div>Loading...</div>)
  }
  else{
-  let array = data.xfLobbyEnters.map((data) => (
+  let array = data.xfLobbyExits.map((data) => (
     <tr key={data.id}>
-        <td>{Web3.utils.fromWei(data.rawAmount, "Ether")}</td>
-        <td>{data.enterDay}</td>
-  </tr>
+    <td>{data.timestamp}</td>
+    <td>{data.xfAmount}</td>
+</tr>
   
 ))
   return(
     <>
     <div>
       <Table striped bordered variant="dark">
-      <thead>
+          <thead>
             <tr>
               <td>
-                Ether Amount Deposited.
+                TimeStamp of Exit
               </td>
               <td>
-                enterDay
+                Transform Amount Total (HEX)
               </td>
             </tr>
           </thead>
           {array}
+
 
         </Table>
     </div>
@@ -45,4 +44,4 @@ export const GetXfEnters = (props) => {
  }
 }
 
-export default GetXfEnters;
+export default GetXfExits;

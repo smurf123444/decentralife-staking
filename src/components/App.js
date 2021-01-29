@@ -2,6 +2,7 @@ import React, { Component, useState } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
 import GetXfEnters from './Loaders/getXfEnters'
+import GetXfExits from './Loaders/getXfExits'
 import {
   BrowserRouter as Router,
   Switch,
@@ -275,12 +276,32 @@ i = 351
      let tempValue = 0
      let checkCurrentDay = []
 
-     personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
+     let xfLobbyMembersWrite = []
+     let xfLobbyMembersRead = []
+
+    // personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
 //Check each day for for total Eth spent on that day.
      while (i >= 1)
      {
+      if(xfLobbyMembersRead[i] > 0)
+      {
+     
+        xfLobbyMembersWrite[i] = true
+      }
+      else
+      {
+        xfLobbyMembersWrite[i]  = false
+      }
+      if(currentReversed === i)
+      {
+        checkCurrentDay[349 - i + 1] = true
+      }
+      else
+      {
+        checkCurrentDay[349 - i + 1] = false
+      }
        //add items to array that include that day as the ID and t  ransferValue for value.
-       totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
+  //     totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
        
       // console.log(personalEthByDay + " : OUTPUTSS")
        //if the total Eth variable is 0, then display the amount of ether on that specific day.
@@ -320,37 +341,6 @@ i = 351
      
   
 
-     i = 351
-     while (i > 0)
-     {
-       if(currentReversed === i)
-       {
-         checkCurrentDay[349 - i + 1] = true
-       }
-       else
-       {
-         checkCurrentDay[349 - i + 1] = false
-       }
-       i--;
-     }
-     i = 351
-     let xfLobbyMembersWrite = []
-     let xfLobbyMembersRead = []
-     while (i > 0)
-     {
-      // xfLobbyMembersRead[i] = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
-       console.log("XfLobbyMembersRead : " + xfLobbyMembersRead[i])
-       if(xfLobbyMembersRead[i] > 0)
-       {
-      
-         xfLobbyMembersWrite[i] = true
-       }
-       else
-       {
-         xfLobbyMembersWrite[i]  = false
-       }
-       i--;
-     }
 
  
      this.setState({ yourHex:  yourHex[currentDay].toString()})
@@ -392,12 +382,10 @@ i = 351
     })
   }
 
-  enterDay = (day, value) => {
-    let s = 351 - day + 1;
+  enterDay = (value) => {
+    
 
-  
-    console.log('Came to ExitDay Function and DAY is ', s - this.state.currentDay);
-    console.log(s - this.state.currentDay)
+
     this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: value}).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
@@ -466,13 +454,24 @@ i = 351
         account={this.state.account}
       />
     }
-    let xfLobby
+    let xfLobbyEnters
     if(!this.state.loading) {
-      xfLobby = <p id="loader" className="text-center">Loading...</p>
+      xfLobbyEnters = <p id="loader" className="text-center">Loading...</p>
     } else {
-      xfLobby =
+      xfLobbyEnters =
       <ApolloProvider client={client}>
         <GetXfEnters
+        account={this.state.account}
+      />
+      </ApolloProvider>
+    }
+    let xfLobbyExits
+    if(!this.state.loading) {
+      xfLobbyExits = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      xfLobbyExits =
+      <ApolloProvider client={client}>
+        <GetXfExits
         account={this.state.account}
       />
       </ApolloProvider>
@@ -548,7 +547,8 @@ i = 351
         </div>
           </Route>
           <Route path="/transform">
-            {xfLobby}
+            {xfLobbyEnters}
+            {xfLobbyExits}
           <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 

@@ -258,7 +258,7 @@ function yourETHcalc(hex, day) {
 
 
 var transformer = null;
-
+/*
 function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
 
  // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
@@ -296,9 +296,7 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
 
 
    }
-   /*
- <
-    */
+
    if(currentDay[350 - i + 1] === true)
    {
 
@@ -335,14 +333,15 @@ function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
            // The function returns the product of p1 and p2
 return newArray;
 }
-
+*/
 
 class TransformTable extends Component {
   constructor(props){
     super(props);
     this.state = {
       day : this.props.day,
-      showPopup: false
+      showPopup: false,
+      loading: false
     };
     this.xfLobbyExit = this.xfLobbyExit.bind(this);
     transformer = this;
@@ -376,7 +375,21 @@ class TransformTable extends Component {
 
   
   render() {
-    function yourButtoncalc(day,account,eth,currentDay,enterDay,popUp) {
+
+
+
+
+
+
+    let popUp =
+      <div>  
+          <button type="popup" onClick={this.togglePopup.bind(this)}> Enter     </button>  
+          {this.state.showPopup ? <Popup  text='X' closePopup={this.togglePopup.bind(this)} fun={this.props.xfLobbyEnter} account={this.props.yourAddress}/> : null }  
+      
+      </div>  
+    
+
+    function yourButtoncalc(day,account,eth,currentDay,enterDay) {
 
       // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
        
@@ -421,18 +434,9 @@ class TransformTable extends Component {
         if(currentDay[350 - i + 1] === true)
         {
      
-         newArray[i] = (<tr><td className="form-button-height">   
-     
-             <form className="form-button-height" id={s} onSubmit={(event) => {
-                   
-                            event.preventDefault()
-                        
-                            enterDay();
-                        
-                            }}>
-                                 {popUp}
-                            <button type="submit" className="form-button-height">Enter!</button>
-                            </form>
+         newArray[i] = ( <tr><td className="form-button-height">   
+                            {popUp}
+       
            </td></tr>
                          )
         }
@@ -510,8 +514,7 @@ class TransformTable extends Component {
 
                         <td>
                       
-                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter, this.popUp)}
-                  
+                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter)}
 
 </td>
 
