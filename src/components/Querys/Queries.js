@@ -30,7 +30,7 @@ export const LOAD_XFENTERS = gql`
   `
   */
  export function xfExitWithAccount(tits){
- const LOAD_XFEXITS = gql`
+  const LOAD_XFEXITS = gql`
 {
   xfLobbyExits(where: {memberAddr: "${tits}"}){
     id
@@ -42,4 +42,43 @@ export const LOAD_XFENTERS = gql`
   }
   `
   return(LOAD_XFEXITS)
+}
+
+export function stakeEndWithAccount(tits){
+  const LOAD_STAKEEND = gql`
+  {
+    stakeEnds(where: {stakerAddr: "${tits}"}) {
+      id
+      stakerAddr
+      stakedHearts
+      payout
+      penalty
+      daysLate
+      servedDays
+      stakedHearts
+      stakedShares
+      prevUnlocked
+    }
+  }
+  `
+  return(LOAD_STAKEEND)
+}
+
+export function stakeStartWithAccount(tits){
+  const LOAD_STAKESTART = gql`
+  {
+  stakeStarts(where: {stakerAddr: "${tits}"}) {
+    id
+    stakerAddr
+    stakeId
+    data0
+    stakedDays
+    stakeTShares
+    startDay
+    endDay
+    stakedHearts
+  }
+}
+  `
+  return(LOAD_STAKESTART)
 }

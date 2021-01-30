@@ -3,6 +3,8 @@ import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
 import GetXfEnters from './Loaders/getXfEnters'
 import GetXfExits from './Loaders/getXfExits'
+import GetStakeStart from './Loaders/getStakeStart'
+import GetStakeEnd from './Loaders/getStakeEnd'
 import {
   BrowserRouter as Router,
   Switch,
@@ -150,7 +152,6 @@ class App extends Component {
     const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
     this.setState({ tokenFarm })
       let i = 351
-
 
  // Load State Variables.
       let personalBalance = await tokenFarm.methods.balanceOf(this.state.account).call()
@@ -366,9 +367,10 @@ i = 351
       })
  //   })
   }
+  
 
-  unstakeTokens = (amount) => {
-    this.state.tokenFarm.methods.unstakeTokens().send({ from: this.state.account }).on('transactionHash', (hash) => {
+  unstakeTokens = (stakeIDparam, stakeID) => {
+    this.state.tokenFarm.methods.stakeEnd(stakeIDparam, stakeID).send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
   }
@@ -476,6 +478,26 @@ i = 351
       />
       </ApolloProvider>
     }
+    let stakeStarts
+    if(!this.state.loading) {
+      stakeStarts = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      stakeStarts =
+      <ApolloProvider client={client}>
+        <GetStakeStart account={this.state.account}/>
+      
+      </ApolloProvider>
+    }
+
+    let stakeEnds
+    if(!this.state.loading) {
+      stakeEnds = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      stakeEnds =
+      <ApolloProvider client={client}>
+        <GetStakeEnd account={this.state.account}/>
+      </ApolloProvider>
+    }
 
 
 
@@ -524,6 +546,8 @@ i = 351
 
               <Switch>
           <Route path="/stake">
+            {stakeStarts}
+            {stakeEnds}
           <div className="container-fluid mt-5">
           <div className="row">
 

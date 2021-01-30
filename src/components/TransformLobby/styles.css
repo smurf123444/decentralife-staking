@@ -22,6 +22,14 @@
     margin: auto;  
     background-color: rgba(0,0,0, 0.5);  
   }  
+  .float-centerHead{
+    margin-left: 215px;
+    float:center;
+  }
+  .float-centerLine{
+    margin-left: 130px;
+    float:center;
+  }
   .popup\_inner {  
     position: absolute;  
     left: 25%;  
@@ -85,4 +93,7 @@
   }
   .h1_popup{
     color:black;
+  }
+  .red{
+    color:red;
   }

@@ -483,7 +483,7 @@ class TransformTable extends Component {
                 Your ETH
               </td>
               <td>
-
+                Enter/Exit
               </td>
             </tr>
           </thead>

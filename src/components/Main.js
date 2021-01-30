@@ -1,17 +1,10 @@
 import React, { Component } from 'react'
 import dai from '../dai.png'
-
+import './TransformLobby/styles.css';  
 class Main extends Component {
   render() {
 
-    
-
-
-
-    return (
-      <div id="content" className="mt-3">
-
-        <table className="table table-borderless text-muted text-center">
+    /*        <table className="table table-borderless text-muted text-center">
           <thead>
             <tr>
               <th scope="col">Staking Balance</th>
@@ -28,7 +21,14 @@ class Main extends Component {
 
 {console.log(this.props.account)}
         
-          </table>
+          </table>*/
+
+
+
+    return (
+      <div id="content" className="mt-3">
+
+
 
         <div className="card mb-4" >
 
@@ -78,15 +78,41 @@ class Main extends Component {
               </div>
               <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
             </form>
-            <button
-              type="submit"
-              className="btn btn-link btn-block btn-sm"
-              onClick={(event) => {
+            <form onSubmit={(event) => {
                 event.preventDefault()
-                this.props.unstakeTokens()
+                let tits
+                let tits2
+                tits = this.tits.value.toString()
+                tits2 = this.tits2.value.toString()
+                this.props.unstakeTokens(tits, tits2)
               }}>
+                <label className="float-centerHead"><b>⚠️Warning⚠️ </b></label>
+                <br/>
+                <label className="float-centerLine"><b>Unstaking early imposes a penalty!</b></label>
+                <br />
+              
+                <label className="float-centerLine"><b> Be sure its <bold class="red">DUE</bold> for Exit...</b></label>
+                <label className="float-left"><b>"Index of Stake" within <span>&nbsp;&nbsp;</span>⬆️ <span>&nbsp;&nbsp;</span> StakeList <span>&nbsp;&nbsp;</span>⬆️ <span>&nbsp;&nbsp;<b>{"\n"}(Located Above)</b></span></b></label>
+            <input
+                  type="text"
+                  ref={(input) => { this.tits = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
+                  <label className="float-left"><b>"Stake ID" within <span>&nbsp;&nbsp;</span>⬆️ <span>&nbsp;&nbsp;</span> StakeList <span>&nbsp;&nbsp;</span>⬆️ <span>&nbsp;&nbsp;<b>{"\n"}(Located Above)</b></span></b></label>
+                    <input
+                  type="text"
+                  ref={(input) => { this.tits2 = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
+                              <button
+              type="submit"
+              className="btn btn-primary btn-block btn-lg">
                 UN-STAKE...
               </button>
+            </form>
+
           </div>
         </div>
         <div>
