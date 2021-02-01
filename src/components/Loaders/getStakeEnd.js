@@ -6,13 +6,11 @@ import Table from 'react-bootstrap/Table';
 import moment from 'moment';
 moment().format();
 
-export const GetStakeStart = (props) => {
+export const GetStakeEnd = (props) => {
   console.log(props)
   const { error, loading, data } = useQuery(stakeEndWithAccount(props.account));
 
-  let i = 0;
-  let array = []
-  var d = new Date(0)
+
 
  if(loading){
    return(<div>Loading...</div>)
@@ -73,4 +71,4 @@ export const GetStakeStart = (props) => {
  }
 }
 
-export default GetStakeStart;
+export default GetStakeEnd;

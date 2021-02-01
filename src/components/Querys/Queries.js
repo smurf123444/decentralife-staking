@@ -82,3 +82,34 @@ export function stakeStartWithAccount(tits){
   `
   return(LOAD_STAKESTART)
 }
+
+export function stakeStartAndEndWithAccount(tits){
+  const LOAD_STAKESTARTANDEND = gql`
+  {
+  stakeStarts(where: {stakerAddr: "${tits}"}) {
+    id
+    stakerAddr
+    stakeId
+    data0
+    stakedDays
+    stakeTShares
+    startDay
+    endDay
+    stakedHearts
+  }
+  stakeEnds(where: {stakerAddr: "${tits}"}) {
+    id
+    stakerAddr
+    stakedHearts
+    payout
+    penalty
+    daysLate
+    servedDays
+    stakedHearts
+    stakedShares
+    prevUnlocked
+  }
+}
+  `
+  return(LOAD_STAKESTARTANDEND)
+}

@@ -5,6 +5,8 @@ import GetXfEnters from './Loaders/getXfEnters'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeStart from './Loaders/getStakeStart'
 import GetStakeEnd from './Loaders/getStakeEnd'
+import GetStakeDisplay from './Loaders/getStakeDisplay'
+import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import {
   BrowserRouter as Router,
   Switch,
@@ -258,7 +260,7 @@ class App extends Component {
 i = 351
      //gives total ETH from current day.
     let totalEth = await tokenFarm.methods.xfLobby(currentDay).call()
-
+    
      //variable for totalEthByDay to make array with date and value of that day.
      let totalEthByDay = []
      let personalEthByDay = 0
@@ -499,6 +501,15 @@ i = 351
       </ApolloProvider>
     }
 
+    let compareStakes
+    if(!this.state.loading) {
+      stakeEnds = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      stakeEnds =
+      <ApolloProvider client={client}>
+        <GetStakeDisplay account={this.state.account}/>
+      </ApolloProvider>
+    }
 
 
 
@@ -555,7 +566,7 @@ i = 351
 
               <div className="content mr-auto ml-auto">
 
-
+              
 
                 {content}
                 <h1>Amount in Circulation</h1>
