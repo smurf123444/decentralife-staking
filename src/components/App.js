@@ -3,9 +3,7 @@ import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
 import GetXfEnters from './Loaders/getXfEnters'
 import GetXfExits from './Loaders/getXfExits'
-import GetStakeStart from './Loaders/getStakeStart'
 import GetStakeEnd from './Loaders/getStakeEnd'
-import GetStakeDisplay from './Loaders/getStakeDisplay'
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import {
   BrowserRouter as Router,
@@ -480,16 +478,6 @@ i = 351
       />
       </ApolloProvider>
     }
-    let stakeStarts
-    if(!this.state.loading) {
-      stakeStarts = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      stakeStarts =
-      <ApolloProvider client={client}>
-        <GetStakeStart account={this.state.account}/>
-      
-      </ApolloProvider>
-    }
 
     let stakeEnds
     if(!this.state.loading) {
@@ -511,15 +499,7 @@ i = 351
       </ApolloProvider>
     }
 
-    let compareStakes
-    if(!this.state.loading) {
-      compareStakes = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      compareStakes =
-      <ApolloProvider client={client}>
-        <GetStakeDisplay account={this.state.account}/>
-      </ApolloProvider>
-    }
+
 
 
 
