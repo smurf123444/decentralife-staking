@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client'
 
-export function xfEnterWithAccount(tits){
+export function xfEnterAndExitWithAccount(tits){
   const LOAD_XFENTERS = gql`
 {
     xfLobbyEnters(where: {memberAddr: "${tits}"}){
@@ -10,6 +10,13 @@ export function xfEnterWithAccount(tits){
       data0
       rawAmount
       enterDay
+    }
+    xfLobbyExits(where: {memberAddr: "${tits}"}){
+      id
+      timestamp
+      xfAmount
+      memberAddr
+      data0
     }
   }
   `

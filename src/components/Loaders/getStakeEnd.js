@@ -7,7 +7,7 @@ import moment from 'moment';
 moment().format();
 
 export const GetStakeEnd = (props) => {
-  console.log(props)
+ // console.log(props)
   const { error, loading, data } = useQuery(stakeEndWithAccount(props.account));
 
 

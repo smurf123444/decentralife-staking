@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react'
 import Web3 from 'web3'
 import Button from 'react-bootstrap/Button';
-import GetXfEnters from './Loaders/getXfEnters'
+import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
@@ -385,9 +385,6 @@ i = 351
   }
 
   enterDay = (value) => {
-    
-
-
     this.state.tokenFarm.methods.xfLobbyEnter(this.state.account).send({ from: this.state.account, value: value}).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
@@ -462,7 +459,7 @@ i = 351
     } else {
       xfLobbyEnters =
       <ApolloProvider client={client}>
-        <GetXfEnters
+        <GetXfCompEntersAndExit
         account={this.state.account}
       />
       </ApolloProvider>
@@ -600,7 +597,11 @@ i = 351
             {xfLobbyEnters}
             <h1 class="margin-left">Exits</h1>
             {xfLobbyExits}
-            <h1 class="margin-left-emoji">⬇️Scroll Down⬇️</h1>
+            <div>
+              <center>
+            <h1 class="margin-right-emoji">⬇️Scroll Down to Day {this.state.currentDay}⬇️</h1>
+            </center>
+            </div>
           <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 

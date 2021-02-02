@@ -7,7 +7,7 @@ import moment from 'moment';
 moment().format();
 
 export const GetXfExits = (props) => {
-  console.log(props)
+ // console.log(props)
   const { error, loading, data } = useQuery(xfExitWithAccount(props.account));
 
   let i = 0;

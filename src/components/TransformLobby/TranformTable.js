@@ -2,7 +2,6 @@ import "./styles.css";
 import React, { useState, Component } from 'react'
 import Table from 'react-bootstrap/Table';
 import TokenFarm from '../../assets/TokenFarm.json'
-import GetXfEnters from '../Loaders/getXfEnters'
 import {
   ApolloClient,
   InMemoryCache,
@@ -142,13 +141,13 @@ function myTotalEth(eth, day) {
   var newArray = []
   let i = 351
   let s = 351 - day + 1
-  console.log(day)
+  //console.log(day)
 do{
     if(s >= i && s <= i){
    newArray[i--] = <tr><td className="td-height">{eth}</td></tr>
     }
     else{
-    newArray[i--] = <tr><td className="td-height"></td></tr>
+    newArray[i--] = <tr><td className="td-heightDim"></td></tr>
     }
   }
   while(i > 0)
@@ -162,13 +161,13 @@ function hexToETHfunc(eth, day) {
   var newArray = []
   let i = 351
   let s = 351 - day + 1
-  console.log(day)
+  //console.log(day)
 do{
     if(s >= i && s <= i){
    newArray[i--] = <tr><td className="td-height">{eth} HEX / 1 ETH</td></tr>
     }
     else{
-    newArray[i--] = <tr><td className="td-heightDim">Closed</td></tr>
+    newArray[i--] = <tr><td className="td-heightDim"></td></tr>
     }
   }
   while(i > 0)
@@ -182,17 +181,17 @@ function closingBool(day) {
   var newArray = []
   let i = 351
   let s = 351 - day + 1
-  console.log(day)
+  //console.log(day)
   let string = ""
   do{
    if(s >= i && s <= i)
   {
     string = "Open"
-    console.log(s)
+    //console.log(s)
     newArray[i--] = (<tr><td className="td-height">{string}</td></tr>)
   }
   else{
-    string = "Closed"
+    string = ""
     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
 
   }
@@ -472,9 +471,7 @@ class TransformTable extends Component {
               <td>
                 HEX/ETH
               </td>
-              <td>
-                Closing
-              </td>
+
               <td>
                 Your HEX
               </td>
@@ -501,9 +498,6 @@ class TransformTable extends Component {
                         </td>
                         <td>
                           {hexToETHfunc(this.props.hexToEth, this.props.day)} 
-                        </td>
-                        <td>
-                         {closingBool(this.props.day)}
                         </td>
                         <td>
                           {yourHEXcalc(this.props.yourHex, this.props.day)}
