@@ -501,11 +501,21 @@ i = 351
       </ApolloProvider>
     }
 
+    let stakeComp
+    if(!this.state.loading) {
+      stakeComp = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      stakeComp =
+      <ApolloProvider client={client}>
+        <GetStakeCompStartAndEnd account={this.state.account}/>
+      </ApolloProvider>
+    }
+
     let compareStakes
     if(!this.state.loading) {
-      stakeEnds = <p id="loader" className="text-center">Loading...</p>
+      compareStakes = <p id="loader" className="text-center">Loading...</p>
     } else {
-      stakeEnds =
+      compareStakes =
       <ApolloProvider client={client}>
         <GetStakeDisplay account={this.state.account}/>
       </ApolloProvider>
@@ -556,9 +566,32 @@ i = 351
     </div>
 
               <Switch>
+
+
           <Route path="/stake">
-            {stakeStarts}
-            {stakeEnds}
+
+
+
+
+        <div>
+          <center>
+
+            <h3>Current Stakes</h3>
+          </center>
+        </div>
+        {stakeComp}
+        <div>
+          <center>
+
+            <h3>Ended Stakes</h3>
+          </center>
+        </div>
+         {stakeEnds}
+
+
+
+
+
           <div className="container-fluid mt-5">
           <div className="row">
 

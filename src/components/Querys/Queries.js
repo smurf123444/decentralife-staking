@@ -100,6 +100,7 @@ export function stakeStartAndEndWithAccount(tits){
   stakeEnds(where: {stakerAddr: "${tits}"}) {
     id
     stakerAddr
+    stakeId
     stakedHearts
     payout
     penalty

@@ -10,7 +10,7 @@ let i = 0
 const GetStakeDisplay = (props) => {
   const array = GetStakeCompStartAndEnd(props.account)
 
-  console.log(array.toString())
+
 
 
 
@@ -42,7 +42,7 @@ let stakeEnd = array.stakeEnds.map((data) => (
     <>
     <div>
 
-
+    {array}
 
     </div>
 
