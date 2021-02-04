@@ -1,6 +1,32 @@
 const TokenFarm = artifacts.require('../contracts/TokenFarm.sol')
 const timeMachine = require('ganache-time-traveler');
 const helper = require("./helpers/helpers");
+  /*
+
+Deploy COntract
+
+Start Day 1
+
+Deposit ether to contract
+
+Wait 1 day (day 2)
+
+Exit from contract lobby
+
+Stake tokens to contract
+
+Wait another day (day 3)
+
+Unstake Tokens
+
+Check balance of tokens
+
+Send some to another address
+
+Send it back to main address 
+
+Repeat last 2 steps 100 times in a loop.
+*/
 
 require('chai')
   .use(require('chai-as-promised'))
@@ -10,25 +36,13 @@ function tokens(n) {
   return web3.utils.toWei(n, 'ether');
 }
 
-contract('TokenFarm', ([owner, investor]) => {
+contract('TokenFarm', ([owner, investor, patron]) => {
   let tokenFarm
-  /*
-  beforeEach(async() => {
-       let snapshot = await timeMachine.takeSnapshot();
-       snapshotId = snapshot['result'];
-   });
- 
-   afterEach(async() => {
-       await timeMachine.revertToSnapshot(snapshotId);
-   });
-*/
   before(async () => {
     // Load Contracts
 //step 1
-    tokenFarm = await TokenFarm.at('0x4b702098a8d493E78d3Fc36cD5b90974AFF12Cb6')
-
-
-  })
+    tokenFarm = await TokenFarm.at('0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
+})
 
 
 describe('Test Sequence Begin: ', async () => {
@@ -37,55 +51,54 @@ it('Time Dependent Test', async () => {
        await timeMachine.advanceTimeAndBlock(86400);
 });
 
-
+//step 3
 it('Enter the XF lobby with 1 token (ether)', async () => {
     var i, t;
-    await tokenFarm.xfLobbyEnter(owner, { value: tokens(1)})
+    await tokenFarm.xfLobbyEnter(owner, { value: tokens('1')})
 });
-
+//step 4
 it('Advance 1 day into future for exit of XF lobby (Day 2)', async () => {
   await timeMachine.advanceTimeAndBlock(86400);
 });
-
+//step 5
 it('Exit XF lobby with proper values', async () => {
   var i, t;
-  await tokenFarm.xfLobbyExit(1, 0,{ from: owner })
+  await tokenFarm.xfLobbyExit('1', '0',{ from: owner })
 });
-
+//step 6
 it('Start the Staking process', async () => {
   var i, t;
-  await tokenFarm.stakeStart(1, 0,{ from: owner })
+  await tokenFarm.stakeStart(tokens('.0001'), 1,{ from: owner })
 });
-
+//step 7
 it('Advance 1 day into future for exit of Stake (Day 3)', async () => {
   await timeMachine.advanceTimeAndBlock(86400);
 });
-
-it('Start the Staking process', async () => {
+//step 8
+it('End the Staking process', async () => {
   var i, t;
-  await tokenFarm.stakeEnd(0, 1,{ from: owner })
+  await tokenFarm.stakeEnd('0', '1',{ from: owner })
 });
-
-it('Start the Staking process', async () => {
+//step 9
+it(' Check Balance if greater than 0', async () => {
   result = await tokenFarm.balanceOf(owner)
-  assert.equal(result.toString(), (tokens('1') > 0), 'investor Mock DAI wallet balance correct after staking')
+  assert.equal(result.toString(), '68078631041488049', 'owner has some tokens (YAY!)')
 })
 
 });
 
 
-
+//step 10
 it('Transfer Tokens Repedetly.', async () => {
     var i, t;
+    t = .0001;
+    await tokenFarm.approve(investor, '1', { from: owner })
+    await tokenFarm.transfer(investor, '1', { from: owner })
+    /*await tokenFarm.approve(owner, '1', { from: investor })
     for(i = 0; i < 100; i++){
-      t = 100;
-      await tokenFarm._transfer(investor, tokens((t--).toString()), { from: owner })
-      await tokenFarm._transfer(owner, tokens((t--).toString()), { from: investor })
-      if (t === 0)
-      {
-        t = 100;
-      }
-    }
+      await tokenFarm.transfer(investor, tokens('1'), { from: patron })
+     await tokenFarm.transfer(patron, tokens('1'), { from: investor })
+    }*/
 
 })
 
@@ -97,7 +110,14 @@ it('Transfer Tokens Repedetly.', async () => {
       assert.equal(name, 'HEX')
     })
   })
-
+  beforeEach(async() => {
+       let snapshot = await timeMachine.takeSnapshot();
+       snapshotId = snapshot['result'];
+   });
+ 
+   afterEach(async() => {
+       await timeMachine.revertToSnapshot(snapshotId);
+   });
 
   describe('Farming tokens', async () => {
 

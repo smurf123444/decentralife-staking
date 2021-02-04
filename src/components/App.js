@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react'
 import Web3 from 'web3'
-import Button from 'react-bootstrap/Button';
+
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
@@ -30,7 +30,6 @@ import Logo from '../dai.png'
 import Popup from './TransformLobby/Popup';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 //require('./hexDecoders.js');
-
 let JSONarray = []
 
 
@@ -149,25 +148,25 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
+ 
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
     this.setState({ tokenFarm })
       let i = 351
 
  // Load State Variables.
       let personalBalance = await tokenFarm.methods.balanceOf(this.state.account).call()
+     
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
       let yourAddress_ = accounts[0]
-      
-      let initSuppl_ = await tokenFarm.methods.initSupply().call()
+      let burned = await tokenFarm.methods.burnInfo(accounts[0]).call()
+      console.log(burned)
       this.setState({ account: yourAddress_.toString()})
-      this.setState({ dappTokenBalance:  personalBalance.toString()})
-
+      this.setState({ dappTokenBalance:  (personalBalance / 100000000).toString()})
       this.setState({ currentDay:  day.toString()})
       this.setState({ yourAddress:  yourAddress_.toString()})
 
       this.setState({ totalSupply: totalSupply_.toString()})
-      this.setState({ initSupply: initSuppl_.toString() })
 
   }
 
@@ -228,8 +227,10 @@ class App extends Component {
     
     let i = 351
     const web3 = window.web3
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
+    
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
     let currentDay = await tokenFarm.methods.currentDay().call()
+    
     let currentReversed = 351 - currentDay
     function myTotalHex() {
       var newArray = []
@@ -341,8 +342,6 @@ i = 351
      }
      
   
-
-
  
      this.setState({ yourHex:  yourHex[currentDay].toString()})
      this.setState({ yourEth:  yourEth[currentDay].toString()})
@@ -396,7 +395,7 @@ i = 351
     const { account, dappToken, dappTokenBalance, currentDay, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
-
+    console.log(this.state.currentDay)
     const errorLink = onError(({ graphqlErrors, networkError }) => {
       if (graphqlErrors) {
         graphqlErrors.map(({ message, location, path }) => {

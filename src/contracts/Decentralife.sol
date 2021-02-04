@@ -274,7 +274,7 @@ library SafeMath {
 contract ERC20 is Context, IERC20 {
     using SafeMath for uint256;
 
-    mapping (address => uint256) private _balances;
+    mapping (address => uint256) internal _balances;
 
     mapping (address => mapping (address => uint256)) private _allowances;
 
@@ -288,7 +288,7 @@ contract ERC20 is Context, IERC20 {
     }
 
     /**
-     * @dev See {IERC20-balanceOf}.
+     * @dev See {IERC20-_balances}.
      */
     function balanceOf(address account) public view returns (uint256) {
         return _balances[account];
@@ -621,10 +621,8 @@ contract GlobalsAndUtility is ERC20 {
 
 
 
-    uint256 public burnCounter = 0;
-
     /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
-    uint256 internal constant LAUNCH_TIME = 1612345420;
+    uint256 internal constant LAUNCH_TIME = 1612467491;
 
 
     /* Size of a Hearts or Shares uint */
@@ -2141,7 +2139,7 @@ contract TokenFarm is TransformableToken{
             _;
         }
     address public owner;
-    mapping(address => uint256) public _balanceOf;
+
     mapping(address => uint256) public lastTXtime;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
@@ -2160,7 +2158,7 @@ contract TokenFarm is TransformableToken{
     uint256 private last_turnTime;
     uint256 public tx_amt;
     uint256 private deciCalc;
-
+    uint256 public burnCounter;
 
 constructor() public {
     globals.shareRate = uint40(1 * SHARE_RATE_SCALE);
@@ -2179,6 +2177,7 @@ constructor() public {
     turn = 0;
     last_turnTime = now;
     isBurning = true;
+    burnCounter = 0;
     manager = true;
     tx_n = 0;
     deciCalc = 10 ** uint256(decimals);
@@ -2198,7 +2197,7 @@ function burnInfo(address _address) view external returns (uint256 burnPct, uint
 }
 
 function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint256 item){
-        uint256 res = (_value * _pct).div(10 ** uint256(decimals));
+        uint256 res = (_value * _pct).div(deciCalc);
         return res;
 }
 
@@ -2217,12 +2216,12 @@ function burn_Inactive_Address(address _address) external returns(bool boo){
 
         require((now > lastST_TXtime[_address] + 302400) || (now > lastLT_TXtime[_address] + 518400), "Unable to burn, the address has been active.");
         if (now > lastST_TXtime[_address] + 3024000){
-            inactive_bal = pctCalc_minusScale(_balanceOf[_address], inactive_burn);
+            inactive_bal = pctCalc_minusScale(balanceOf(_address), inactive_burn);
             _burn(_address, inactive_bal);
             lastST_TXtime[_address] = now;
         }
         else if (now > (lastLT_TXtime[_address] + 5184000)){
-            _burn(_address, _balanceOf[_address]);
+            _burn(_address, balanceOf(_address));
         }
     return (true);
 }
@@ -2235,12 +2234,12 @@ function burn_Inactive_Contract(address _address) external returns(bool boo){
     uint256 inactive_bal = 0;
     require(now > lastST_TXtime[_address] + 5259486 || now > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
     if(now > lastST_TXtime[_address] + 5259486){
-        inactive_bal = pctCalc_minusScale(_balanceOf[_address], inactive_burn);
+        inactive_bal = pctCalc_minusScale(balanceOf(_address), inactive_burn);
         _burn(_address, inactive_bal);
         lastST_TXtime[_address] = now;
     }
     else if(now > lastLT_TXtime[_address] + 7802829){
-        _burn(_address, _balanceOf[_address]);
+        _burn(_address, balanceOf(_address));
         lastLT_TXtime[_address] = now;
     }
     return (true);
@@ -2267,11 +2266,11 @@ function manager_killswitch() external returns (bool boo){
 function transfer(address _to, uint256 _value) external returns (uint256 amt){
     require(_value !=0, "Value must be greater than 0");
     require(_to != address(0), "Address cannot be ZERO address");
+    //require(_balances[msg.sender] >= _value, "Not enough Balance");
     
     if((msg.sender == uniswap_factory && _to == uniswap_router) || msg.sender == uniswap_router && _to == uniswap_factory)
     {
-        _balanceOf[msg.sender] -= _value;
-        _balanceOf[_to] += _value;
+        _transfer(msg.sender, _to, _value);
         emit Transfer(msg.sender, _to, _value);
     }
     else{
@@ -2290,15 +2289,15 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
             burn_amt = pctCalc_minusScale(_value, burn_pct);
             burnCounter += burn_amt;
             _burn(msg.sender, burn_amt);
-            _balanceOf[msg.sender] -=  _value;
-            _balanceOf[_to] += _value - burn_amt;
+            _transfer(msg.sender, _to, burn_amt);
             emit Transfer(msg.sender, _to, tx_amt);	
             tx_n += 1;	
            }	
            else if(isBurning == false)	
            {	
-            _balanceOf[msg.sender] -= _value;
-            _balanceOf[_to] += _value;
+           _transfer(msg.sender, _to, _value);
+                lastTXtime[tx.origin] = now;
+
             emit Transfer(msg.sender, _to, _value);
             tx_n += 1;	
            }                  
@@ -2308,7 +2307,6 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
                 }
 
     }
-    lastTXtime[tx.origin] = now;
     lastTXtime[msg.sender] = now;
     lastTXtime[_to] = now;
     lastLT_TXtime[tx.origin] = now;
