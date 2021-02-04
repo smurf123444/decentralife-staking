@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
-const tokenFarm = new web3.eth.Contract(TokenFarm, '0x075e4F66C4D53DD2d37b91BD7382b34F3B681B4f')
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
 class TransactionChecker {
   web3;
   account;
@@ -32,42 +32,6 @@ class TransactionChecker {
       this.account = account.toLowerCase();
   }
 
-  async checkBlock() {
-    //let block = await this.web3.eth.getBlock(1920050);
-    //let number = block.number;
-    
-    let i = 22682754;
-    while (i < 22682764) {
-        i++;
-        let block = await this.web3.eth.getBlock(i);
-        let number = block.number;
-
-       // console.log('Searching block ' + number);
-    if (block != null && block.transactions != null) {
-      //  console.log(block.timestamp)
-
-
-        for (let txHash of block.transactions) {
-            //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
-            let tx = await this.web3.eth.getTransaction(txHash);
-           // console.log(block.timestamp)
-            let time = block.timestamp
-            let timeConfigured = new Date(time*1000);
-            let accounts =  await this.web3.eth.getAccounts()
-          if (tx.to != null)
-          {
-          if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
-              //  console.log('Transaction found on block: ' + number);
-                valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
-                transactionTimestamp = timeConfigured.toUTCString()
-              
-                return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
-            }
-        }
-      }
-    }
-}
-}
 
   async loadWeb3() {
     if (window.ethereum) {
@@ -174,38 +138,6 @@ do{
   return newArray;   // The function returns the product of p1 and p2
 }
 
-
-
-
-function closingBool(day) {
-  var newArray = []
-  let i = 351
-  let s = 351 - day + 1
-  //console.log(day)
-  let string = ""
-  do{
-   if(s >= i && s <= i)
-  {
-    string = "Open"
-    //console.log(s)
-    newArray[i--] = (<tr><td className="td-height">{string}</td></tr>)
-  }
-  else{
-    string = ""
-    newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
-
-  }
-
-  }
-  while(i > 0)
-
-  return newArray;   // The function returns the product of p1 and p2
-}
-
-
-
-
-
 function yourHEXcalc(hex, day) {
   let i = 351
   let s = 351 - day + 1
@@ -214,9 +146,11 @@ function yourHEXcalc(hex, day) {
 
   let string3 = ""
   //slet string3 = ""
-  let txChecker = new TransactionChecker(process.env.INFURA_ID, '0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84');
+  /*
+  let txChecker = new TransactionChecker(process.env.INFURA_ID, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a');
 
     txChecker.checkBlock();
+    */
   do{
    if(s >= i && s <= i)
   {

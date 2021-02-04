@@ -17,15 +17,11 @@ class Popup extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     const web3 = window.web3
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
     this.setState({ tokenFarm })
   }
   
 enterDay = (value) =>{
-
-
-  
-
     this.state.tokenFarm.methods.xfLobbyEnter(this.props.account).send({ from: this.props.account, value: value})
   
   }

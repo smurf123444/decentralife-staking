@@ -24,6 +24,7 @@ pragma solidity 0.5.13;
  *
  * This contract is only required for intermediate, library-like contracts.
  */
+ 
 contract Context {
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
@@ -289,6 +290,9 @@ contract ERC20 is Context, IERC20 {
     /**
      * @dev See {IERC20-balanceOf}.
      */
+    function balanceOf(address account) public view returns (uint256) {
+        return _balances[account];
+    }
 
     /**
      * @dev See {IERC20-approve}.
@@ -431,6 +435,7 @@ contract ERC20 is Context, IERC20 {
     function _approve(address owner, address spender, uint256 amount) internal {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
+        require(amount > 0, "ERC20: approve to the zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
@@ -613,15 +618,15 @@ contract GlobalsAndUtility is ERC20 {
     uint256 private constant SATOSHIS_PER_BTC = 1e8;
     uint256 internal constant HEARTS_PER_SATOSHI = HEARTS_PER_HEX / SATOSHIS_PER_BTC * HEX_PER_BTC;
 
-<<<<<<< HEAD
-    /* Time of contract launch (2019-12-03T00:00:00Z) */
-    uint256 internal constant LAUNCH_TIME = 1605816016;
-    uint256 public burnCounter = 0;
-=======
-    /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
-    uint256 internal constant LAUNCH_TIME = 1613953801;
 
->>>>>>> 0edbf794387f14770c19b3e7ec88734a6f8ddb7a
+
+
+    uint256 public burnCounter = 0;
+
+    /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
+    uint256 internal constant LAUNCH_TIME = 1612345420;
+
+
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
 
@@ -2136,7 +2141,7 @@ contract TokenFarm is TransformableToken{
             _;
         }
     address public owner;
-    mapping(address => uint256) public balanceOf;
+    mapping(address => uint256) public _balanceOf;
     mapping(address => uint256) public lastTXtime;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
@@ -2197,27 +2202,6 @@ function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint25
         return res;
 }
 
-function _rateadj() internal returns (bool boo){
-    if (isBurning == true){
-        burn_pct += (burn_pct / 10);
-
-    }
-    else{
-        burn_pct -= (burn_pct / 10);
-
-
-    }
-
-    if (burn_pct > onepct * 6){
-        burn_pct -= (onepct * 2);
-    }
-
-    if (burn_pct < onepct){
-        burn_pct = (125 * deciCalc).div(10000); //0.0125
-    return (true);
-    }
-}
-
 function isContract(address _addr) internal view returns (bool boo){
   uint32 size;
   assembly {
@@ -2228,35 +2212,35 @@ function isContract(address _addr) internal view returns (bool boo){
 
 function burn_Inactive_Address(address _address) external returns(bool boo){
     require(_address != address(0), "This is a zero address. Use the burn inactive contract function instead.");
-    require(isContract(_address) != false, "This is a contract address. Use the burn inactive contract function instead.");
+    require(isContract(_address) == false, "This is a contract address. Use the burn inactive contract function instead.");
     uint256 inactive_bal = 0;
 
         require((now > lastST_TXtime[_address] + 302400) || (now > lastLT_TXtime[_address] + 518400), "Unable to burn, the address has been active.");
         if (now > lastST_TXtime[_address] + 3024000){
-            inactive_bal = pctCalc_minusScale(balanceOf[_address], inactive_burn);
+            inactive_bal = pctCalc_minusScale(_balanceOf[_address], inactive_burn);
             _burn(_address, inactive_bal);
             lastST_TXtime[_address] = now;
         }
         else if (now > (lastLT_TXtime[_address] + 5184000)){
-            _burn(_address, balanceOf[_address]);
+            _burn(_address, _balanceOf[_address]);
         }
     return (true);
 }
 
 function burn_Inactive_Contract(address _address) external returns(bool boo){
     require(_address != address(0), "zero address");
-    require(isContract(_address) != false, "Not a Contract");
+    require(isContract(_address) == false, "Not a Contract");
     require(_address != uniswap_factory, "BAD BOY!");
     require(_address != uniswap_router, "NAUGHTY BOY! Dont make me stick a dildo in you.");
     uint256 inactive_bal = 0;
     require(now > lastST_TXtime[_address] + 5259486 || now > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
     if(now > lastST_TXtime[_address] + 5259486){
-        inactive_bal = pctCalc_minusScale(balanceOf[_address], inactive_burn);
+        inactive_bal = pctCalc_minusScale(_balanceOf[_address], inactive_burn);
         _burn(_address, inactive_bal);
         lastST_TXtime[_address] = now;
     }
     else if(now > lastLT_TXtime[_address] + 7802829){
-        _burn(_address, balanceOf[_address]);
+        _burn(_address, _balanceOf[_address]);
         lastLT_TXtime[_address] = now;
     }
     return (true);
@@ -2286,8 +2270,8 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
     
     if((msg.sender == uniswap_factory && _to == uniswap_router) || msg.sender == uniswap_router && _to == uniswap_factory)
     {
-        balanceOf[msg.sender] -= _value;
-        balanceOf[_to] += _value;
+        _balanceOf[msg.sender] -= _value;
+        _balanceOf[_to] += _value;
         emit Transfer(msg.sender, _to, _value);
     }
     else{
@@ -2303,16 +2287,19 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
             turn += 1;
         }	
            if (isBurning == true){	
-            burnCounter += _value;
-            burn_amt = pctCalc_minusScale(_value, burn_pct);	
-            _burn(msg.sender, burn_amt);	
-            balanceOf[msg.sender] -= tx_amt;	
-            balanceOf[_to] += tx_amt;	
+            burn_amt = pctCalc_minusScale(_value, burn_pct);
+            burnCounter += burn_amt;
+            _burn(msg.sender, burn_amt);
+            _balanceOf[msg.sender] -=  _value;
+            _balanceOf[_to] += _value - burn_amt;
             emit Transfer(msg.sender, _to, tx_amt);	
             tx_n += 1;	
            }	
            else if(isBurning == false)	
            {	
+            _balanceOf[msg.sender] -= _value;
+            _balanceOf[_to] += _value;
+            emit Transfer(msg.sender, _to, _value);
             tx_n += 1;	
            }                  
                else

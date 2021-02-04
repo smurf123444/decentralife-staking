@@ -149,7 +149,7 @@ class App extends Component {
 
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -228,7 +228,7 @@ class App extends Component {
     
     let i = 351
     const web3 = window.web3
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x14227a7Be27826a54a402791f96dada8A5b1DCf9')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
     let currentDay = await tokenFarm.methods.currentDay().call()
     let currentReversed = 351 - currentDay
     function myTotalHex() {
@@ -521,7 +521,7 @@ i = 351
         <div>
     <nav>
       <h3>
-      <img src={Logo} />
+
       </h3>
       <h1 class="margin-right">Day : {this.state.currentDay}</h1>
       <ul className="nav-links">

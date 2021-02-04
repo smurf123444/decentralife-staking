@@ -7,11 +7,7 @@ import moment from 'moment';
 moment().format();
 
 export const GetStakeEnd = (props) => {
- // console.log(props)
   const { error, loading, data } = useQuery(stakeEndWithAccount(props.account));
-
-
-
  if(loading){
    return(<div>Loading...</div>)
  }
@@ -27,7 +23,6 @@ export const GetStakeEnd = (props) => {
     <td>{data.stakedShares/1000000000000}  </td>
     <td>{data.prevUnlocked}  </td>
 </tr>
-  //moment.unix(data.timestamp).format('dddd, MMMM Do, YYYY h:mm:ss A')
 ))
   return(
     <>
@@ -36,7 +31,7 @@ export const GetStakeEnd = (props) => {
           <thead>
             <tr>
               <td>
-              Staked Hex
+              Staked DTE
               </td>
               <td>
               Gross payout
@@ -62,8 +57,6 @@ export const GetStakeEnd = (props) => {
             </tr>
           </thead>
           {array}
-
-
         </Table>
     </div>
 </>

@@ -115,7 +115,7 @@ while (i < tits.length)
                 End Day
               </td>
               <td>
-                Staked HEX
+                Staked DTE
               </td>
             </tr>
           </thead>

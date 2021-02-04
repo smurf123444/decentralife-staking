@@ -2,7 +2,7 @@ const Web3 = require('web3');
 
 const compiledContractABI = require('../abis/TokenFarm.json');
 
-const hexAddr = "0x14227a7Be27826a54a402791f96dada8A5b1DCf9";
+const hexAddr = "0x97173aF5c1D06B3C24A55E071745a890d55f021e";
 
 const findStakeAndIndex = async (addr, stakeId) => {
     let stakes = await hex.stakeList(addr);

@@ -24,20 +24,72 @@ contract('TokenFarm', ([owner, investor]) => {
 */
   before(async () => {
     // Load Contracts
-
+//step 1
     tokenFarm = await TokenFarm.at('0x4b702098a8d493E78d3Fc36cD5b90974AFF12Cb6')
 
 
   })
 
 
-  describe('Time Test..', async () => {
-   it('Time Dependent Test', async () => {
+describe('Test Sequence Begin: ', async () => {
+//step 2
+it('Time Dependent Test', async () => {
        await timeMachine.advanceTimeAndBlock(86400);
-   });
-  })
+});
 
 
+it('Enter the XF lobby with 1 token (ether)', async () => {
+    var i, t;
+    await tokenFarm.xfLobbyEnter(owner, { value: tokens(1)})
+});
+
+it('Advance 1 day into future for exit of XF lobby (Day 2)', async () => {
+  await timeMachine.advanceTimeAndBlock(86400);
+});
+
+it('Exit XF lobby with proper values', async () => {
+  var i, t;
+  await tokenFarm.xfLobbyExit(1, 0,{ from: owner })
+});
+
+it('Start the Staking process', async () => {
+  var i, t;
+  await tokenFarm.stakeStart(1, 0,{ from: owner })
+});
+
+it('Advance 1 day into future for exit of Stake (Day 3)', async () => {
+  await timeMachine.advanceTimeAndBlock(86400);
+});
+
+it('Start the Staking process', async () => {
+  var i, t;
+  await tokenFarm.stakeEnd(0, 1,{ from: owner })
+});
+
+it('Start the Staking process', async () => {
+  result = await tokenFarm.balanceOf(owner)
+  assert.equal(result.toString(), (tokens('1') > 0), 'investor Mock DAI wallet balance correct after staking')
+})
+
+});
+
+
+
+it('Transfer Tokens Repedetly.', async () => {
+    var i, t;
+    for(i = 0; i < 100; i++){
+      t = 100;
+      await tokenFarm._transfer(investor, tokens((t--).toString()), { from: owner })
+      await tokenFarm._transfer(owner, tokens((t--).toString()), { from: investor })
+      if (t === 0)
+      {
+        t = 100;
+      }
+    }
+
+})
+
+/*
   // Start Testing
   describe('Token Farm deployment', async () => {
     it('has a name', async () => {
@@ -46,7 +98,7 @@ contract('TokenFarm', ([owner, investor]) => {
     })
   })
 
-/*
+
   describe('Farming tokens', async () => {
 
     it('Staking to Token Farm', async () => {
@@ -98,20 +150,7 @@ contract('TokenFarm', ([owner, investor]) => {
       assert.equal(result.toString(), 'false', 'investor staking status correct after staking')
   
   })
-  it('Transfer Tokens Repedetly.', async () => {
-    var i, t;
-    await tokenFarm.approve(investor, tokens('100000'), { from: investor })
-    await tokenFarm.approve(owner, tokens('100000'), { from: owner})
-    for(i = 0; i < 1000000; i++){
-      t = 100;
-      await tokenFarm._transfer(investor, tokens((t--).toString()), { from: owner })
-      await tokenFarm._transfer(owner, tokens((t--).toString()), { from: investor })
-      if (t === 0)
-      {
-        t = 100;
-      }
-    }
+  */
 
-})
-*/
+
 })

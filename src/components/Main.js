@@ -59,7 +59,7 @@ class Main extends Component {
                 <div className="input-group-append">
                   <div className="input-group-text">
                     
-                    <img src={dai} height='32' alt=""/>
+                    DTE
                     &nbsp;&nbsp;&nbsp; Token
                   </div>
                 </div>

@@ -10,10 +10,6 @@ export const GetXfExits = (props) => {
  // console.log(props)
   const { error, loading, data } = useQuery(xfExitWithAccount(props.account));
 
-  let i = 0;
-  let array = []
-  var d = new Date(0)
-
  if(loading){
    return(<div>Loading...</div>)
  }
@@ -36,7 +32,7 @@ export const GetXfExits = (props) => {
                 Date and Time of Tranform Lobby Exit Transaction.
               </td>
               <td>
-                Transform Amount Total (HEX)
+                Transform Amount Total (DTE)
               </td>
               <td>
                 ID
