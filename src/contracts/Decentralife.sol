@@ -2158,6 +2158,7 @@ contract TokenFarm is TransformableToken{
     uint256 private last_turnTime;
     uint256 public tx_amt;
     uint256 private deciCalc;
+    uint256 private sum;
     uint256 public burnCounter;
 
 constructor() public {
@@ -2286,6 +2287,7 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
             turn += 1;
         }	
            if (isBurning == true){	
+               /* ISSUE IS HERE */
             burn_amt = pctCalc_minusScale(_value, burn_pct);
             burnCounter += burn_amt;
             _burn(msg.sender, burn_amt);
