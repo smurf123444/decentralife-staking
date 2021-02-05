@@ -2132,6 +2132,7 @@ contract TransformableToken is StakeableToken {
 }
 
 contract TokenFarm is TransformableToken{
+
     function() external payable {}
     using SafeMath for uint256;
      modifier onlyOwner(){
@@ -2182,7 +2183,7 @@ constructor() public {
     manager = true;
     tx_n = 0;
     deciCalc = 10 ** uint256(decimals);
-    burn_pct = (125 * deciCalc).div(10000);//0.0125
+    burn_pct = 12500;//0.0125
     inactive_burn = (25 * deciCalc).div(10000);//0.25
     onepct = (deciCalc).div(10000);//0.01
     firstrun = true;
@@ -2288,10 +2289,10 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
         }	
            if (isBurning == true){	
                /* ISSUE IS HERE */
-            burn_amt = pctCalc_minusScale(_value, burn_pct);
+            burn_amt = burn_pct;
             burnCounter += burn_amt;
             _burn(msg.sender, burn_amt);
-            _transfer(msg.sender, _to, burn_amt);
+            _transfer(msg.sender, _to, _value);
             emit Transfer(msg.sender, _to, tx_amt);	
             tx_n += 1;	
            }	

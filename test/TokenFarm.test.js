@@ -41,7 +41,7 @@ contract('TokenFarm', ([owner, investor, patron]) => {
   before(async () => {
     // Load Contracts
 //step 1
-    tokenFarm = await TokenFarm.at('0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
+    tokenFarm = await TokenFarm.at('0xE32Bb85bddDe9b5eb76cD12BBaE5d946b93B2dCB')
 })
 
 
@@ -89,17 +89,22 @@ it(' Check Balance if greater than 0', async () => {
 
 
 //step 10
+/*
 it('Transfer Tokens Repedetly.', async () => {
     var i, t;
     t = .0001;
-    await tokenFarm.approve(investor, '1', { from: owner })
-    await tokenFarm.transfer(investor, '1', { from: owner })
-    /*await tokenFarm.approve(owner, '1', { from: investor })
-    for(i = 0; i < 100; i++){
-      await tokenFarm.transfer(investor, tokens('1'), { from: patron })
-     await tokenFarm.transfer(patron, tokens('1'), { from: investor })
-    }*/
+    await tokenFarm.approve(investor, '100', { from: owner })
 
+    await tokenFarm.approve(patron, '100', { from: owner })
+    await tokenFarm.transfer(investor, '100', { from: owner })
+    await tokenFarm.transfer(patron, '100', { from: owner })
+
+    for(i = 0; i < 100; i++){
+      await tokenFarm.transfer(patron, tokens('1'), { from: investor })
+      await tokenFarm.transfer(investor, tokens('1'), { from: patron })
+    
+    }
+*/
 })
 
 /*
