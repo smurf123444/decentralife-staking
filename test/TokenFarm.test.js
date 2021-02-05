@@ -41,7 +41,7 @@ contract('TokenFarm', ([owner, investor, patron]) => {
   before(async () => {
     // Load Contracts
 //step 1
-    tokenFarm = await TokenFarm.at('0xE32Bb85bddDe9b5eb76cD12BBaE5d946b93B2dCB')
+    tokenFarm = await TokenFarm.at('0x8846fB1CA2EC21925A743cFd149942489d2E0635')
 })
 
 
@@ -104,9 +104,9 @@ it('Transfer Tokens Repedetly.', async () => {
       await tokenFarm.transfer(investor, tokens('1'), { from: patron })
     
     }
-*/
-})
 
+})
+*/
 /*
   // Start Testing
   describe('Token Farm deployment', async () => {

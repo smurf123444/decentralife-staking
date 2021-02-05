@@ -84,6 +84,7 @@ while (i < tits.length)
      <td> {/*endDay*/tits[i][5] }</td>
 
      <td> {/*stakedHearts*/tits[i][6] }</td>
+     <td> { props.func() }</td>
       </tr>
       </>
      )
@@ -106,6 +107,7 @@ while (i < tits.length)
                 stakedDays
               </td>
               <td>
+                
                 stakeTShares
               </td>
               <td>
@@ -116,6 +118,9 @@ while (i < tits.length)
               </td>
               <td>
                 Staked DTE
+              </td>
+              <td>
+                Exit Stake (Button)
               </td>
             </tr>
           </thead>

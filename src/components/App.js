@@ -111,6 +111,7 @@ class App extends Component {
       account: '0x0',
       dappToken: {},
       dappTokenBalance: '0',
+      burned: '0',
       currentDay: '0',
       tokenFarm: {},
       totalEthXL: '0',
@@ -149,7 +150,7 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
  
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -160,12 +161,12 @@ class App extends Component {
       let day = await tokenFarm.methods.currentDay().call()
       let yourAddress_ = accounts[0]
       let burned = await tokenFarm.methods.burnInfo(accounts[0]).call()
-      console.log(burned)
+      console.log(burned[1])
       this.setState({ account: yourAddress_.toString()})
       this.setState({ dappTokenBalance:  (personalBalance / 100000000).toString()})
       this.setState({ currentDay:  day.toString()})
       this.setState({ yourAddress:  yourAddress_.toString()})
-
+      this.setState({ burned: (burned[1] / 100000000).toString() })
       this.setState({ totalSupply: totalSupply_.toString()})
 
   }
@@ -228,7 +229,7 @@ class App extends Component {
     let i = 351
     const web3 = window.web3
     
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xCc2Ad1a952Fa5Eff37bcd9E226A7F304D1D2efE3')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
     let currentDay = await tokenFarm.methods.currentDay().call()
     
     let currentReversed = 351 - currentDay
@@ -392,7 +393,7 @@ i = 351
   
 
   render() {
-    const { account, dappToken, dappTokenBalance, currentDay, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
+    const { account, dappToken, burned, currentDay, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
     console.log(this.state.currentDay)
@@ -414,7 +415,7 @@ i = 351
       link: link,
     });
 
-    let burned =  initSupply_ - totalSupply_ 
+   
 
     const options = {
 			theme: "light",
@@ -491,7 +492,7 @@ i = 351
     } else {
       stakeComp =
       <ApolloProvider client={client}>
-        <GetStakeCompStartAndEnd account={this.state.account}/>
+        <GetStakeCompStartAndEnd account={this.state.account} func={this.unstakeTokens}/>
       </ApolloProvider>
     }
 

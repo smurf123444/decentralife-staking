@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
-const tokenFarm = new web3.eth.Contract(TokenFarm, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a')
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
 class TransactionChecker {
   web3;
   account;

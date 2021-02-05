@@ -2289,7 +2289,7 @@ function transfer(address _to, uint256 _value) external returns (uint256 amt){
         }	
            if (isBurning == true){	
                /* ISSUE IS HERE */
-            burn_amt = burn_pct;
+            burn_amt = pctCalc_minusScale(_value, burn_pct);
             burnCounter += burn_amt;
             _burn(msg.sender, burn_amt);
             _transfer(msg.sender, _to, _value);

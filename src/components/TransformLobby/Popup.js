@@ -17,7 +17,7 @@ class Popup extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     const web3 = window.web3
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x39624C280035c472b2370c9b3E797F6F3026FE95')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
     this.setState({ tokenFarm })
   }
   
