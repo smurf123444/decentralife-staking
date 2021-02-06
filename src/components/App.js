@@ -151,7 +151,7 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
  
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xBB9DF2dB3fccE41fA4129dA70931fA6cE17De787')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x691F261b92146bD2b88DFb2CEE9344D2393918a7')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -230,7 +230,7 @@ class App extends Component {
     let i = 351
     const web3 = window.web3
     
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xBB9DF2dB3fccE41fA4129dA70931fA6cE17De787')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x691F261b92146bD2b88DFb2CEE9344D2393918a7')
     let currentDay = await tokenFarm.methods.currentDay().call()
     
     let currentReversed = 351 - currentDay
@@ -505,15 +505,7 @@ i = 351
       </ApolloProvider>
     }
 
-    let stakeEnds
-    if(!this.state.loading) {
-      stakeEnds = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      stakeEnds =
-      <ApolloProvider client={client}>
-        <GetStakeEnd account={this.state.account}/>
-      </ApolloProvider>
-    }
+
 
     let stakeComp
     if(!this.state.loading) {
@@ -526,7 +518,15 @@ i = 351
     }
 
 
-
+    let stakeEnds
+    if(!this.state.loading) {
+      stakeEnds = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      stakeEnds =
+      <ApolloProvider client={client}>
+        <GetStakeEnd account={this.state.account}/>
+      </ApolloProvider>
+    }
 
 
 
