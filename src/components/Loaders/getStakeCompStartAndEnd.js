@@ -3,6 +3,7 @@ import { useQuery, gql } from "@apollo/client";
 import { stakeStartAndEndWithAccount } from "../Querys/Queries";
 import Web3 from 'web3'
 import Table from 'react-bootstrap/Table';
+import PopupStakeEnd from './PopupStakeEnd';
 import moment from 'moment';
 moment().format();
 
@@ -19,12 +20,12 @@ moment().format();
     let i = 0;
 
     data.stakeStarts.map((data) => {
-     tits[i] = [data.id, data.stakeId, data.stakedDays, data.stakeTShares, data.startDay,data.endDay, (data.stakedHearts / 1000000000)]
+     tits[i] = [data.id, data.stakeId, data.stakedDays, data.stakeTShares, data.startDay,data.endDay, (data.stakedHearts / 100000000)]
     i++
     })
     i = 0;
     data.stakeEnds.map((data) => {
-      ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 1000000000), (data.payout   / 1000000000), (data.penalty / 1000000000 ), (data.payout / 1000000000)- (data.penalty  / 1000000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
+      ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 100000000), (data.payout   / 100000000), (data.penalty / 100000000 ), (data.payout / 100000000)- (data.penalty  / 100000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
     i++
     })
    }
@@ -71,7 +72,7 @@ while (i < tits.length)
       <>
       <tr key={data.id}>
 
-     <td> {s++}</td>
+     <td> {s}</td>
 
      <td>{/*stakedID*/tits[i][1]}</td>
 
@@ -84,7 +85,7 @@ while (i < tits.length)
      <td> {/*endDay*/tits[i][5] }</td>
 
      <td> {/*stakedHearts*/tits[i][6] }</td>
-     <td> { props.func() }</td>
+     <td> { props.func(s++, tits[i][1]) }</td>
       </tr>
       </>
      )

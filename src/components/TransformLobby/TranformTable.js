@@ -12,7 +12,7 @@ import {
 import { onError } from "@apollo/client/link/error";
 import Button from 'react-bootstrap/Button';
 import App from "../App";
-import Popup from './Popup';
+import PopupXf from './PopupXf';
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
 
@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
-const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0x752A2B1C0Da8E07da1a78c512A576106b57DCc23')
 class TransactionChecker {
   web3;
   account;
@@ -314,10 +314,10 @@ class TransformTable extends Component {
 
 
 
-    let popUp =
+    let popUpXf =
       <div>  
           <button type="popup" onClick={this.togglePopup.bind(this)}> Enter     </button>  
-          {this.state.showPopup ? <Popup  text='X' closePopup={this.togglePopup.bind(this)} fun={this.props.xfLobbyEnter} account={this.props.yourAddress}/> : null }  
+          {this.state.showPopup ? <PopupXf  text='X' closePopup={this.togglePopup.bind(this)} fun={this.props.xfLobbyEnter} account={this.props.yourAddress}/> : null }  
       
       </div>  
     
@@ -368,7 +368,7 @@ class TransformTable extends Component {
         {
      
          newArray[i] = ( <tr><td className="form-button-height">   
-                            {popUp}
+                            {popUpXf}
        
            </td></tr>
                          )

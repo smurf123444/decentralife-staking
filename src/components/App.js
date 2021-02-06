@@ -27,7 +27,8 @@ import TransformList from './TransformLobby/TransformList'
 import { onError } from "@apollo/client/link/error";
 import './App.css'
 import Logo from '../dai.png'
-import Popup from './TransformLobby/Popup';
+import PopupXf from './TransformLobby/PopupXf';
+import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 //require('./hexDecoders.js');
 let JSONarray = []
@@ -150,7 +151,7 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
  
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xBB9DF2dB3fccE41fA4129dA70931fA6cE17De787')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -229,7 +230,7 @@ class App extends Component {
     let i = 351
     const web3 = window.web3
     
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xb68dC892D2546F6DDc022492406508e86E35611A')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0xBB9DF2dB3fccE41fA4129dA70931fA6cE17De787')
     let currentDay = await tokenFarm.methods.currentDay().call()
     
     let currentReversed = 351 - currentDay
@@ -391,6 +392,20 @@ i = 351
   }
 
   
+  getPopup = (input1, input2) => {
+    let popUpStakeEnd
+    if(!this.state.loading) {
+      popUpStakeEnd = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      popUpStakeEnd =
+      <div>  
+          <button onClick={this.togglePopup.bind(this)}> <center>End </center></button>  
+          {this.state.showPopup ? <PopupStakeEnd  text='X' closePopup={this.togglePopup.bind(this)} func={this.unstakeTokens} stakeIndex={input1} stakeID={input2}/> : null }  
+      </div>  
+    }
+    return popUpStakeEnd
+  }
+
 
   render() {
     const { account, dappToken, burned, currentDay, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
@@ -404,7 +419,7 @@ i = 351
         });
       }
     });
-
+//https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
     const link = from([
       errorLink,
       new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
@@ -440,6 +455,20 @@ i = 351
 				]
 			}]
 		}
+
+    let popUpXf
+    if(!this.state.loading) {
+      popUpXf = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      popUpXf =
+      <div>  
+          <h1> Simple Popup Example </h1>  
+          <button onClick={this.togglePopup.bind(this)}> Click To Open</button>  
+          {this.state.showPopup ? <PopupXf  text='X' closePopup={this.togglePopup.bind(this)} /> : null }  
+      </div>  
+    }
+
+
     let content
     if(!this.state.loading) {
       content = <p id="loader" className="text-center">Loading...</p>
@@ -492,25 +521,13 @@ i = 351
     } else {
       stakeComp =
       <ApolloProvider client={client}>
-        <GetStakeCompStartAndEnd account={this.state.account} func={this.unstakeTokens}/>
+        <GetStakeCompStartAndEnd account={this.state.account} func={this.getPopup} func2={this.unstakeTokens} />
       </ApolloProvider>
     }
 
 
 
 
-
-    let popUp
-    if(!this.state.loading) {
-      popUp = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      popUp =
-      <div>  
-          <h1> Simple Popup Example </h1>  
-          <button onClick={this.togglePopup.bind(this)}> Click To Open</button>  
-          {this.state.showPopup ? <Popup  text='X' closePopup={this.togglePopup.bind(this)} /> : null }  
-      </div>  
-    }
 
 
 
@@ -615,7 +632,6 @@ i = 351
           yourEnterButton={yourEnterButton}
           xfLobbyExit={this.exitDay}
           xfLobbyEnter={this.enterDay}
-          popUp={popUp}
           xfLobbyMembers={xfLobbyMembers}/>
           </Route>
           <Route path="/" exact>

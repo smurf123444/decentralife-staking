@@ -41,7 +41,7 @@ contract('TokenFarm', ([owner, investor, patron]) => {
   before(async () => {
     // Load Contracts
 //step 1
-    tokenFarm = await TokenFarm.at('0x8846fB1CA2EC21925A743cFd149942489d2E0635')
+    tokenFarm = await TokenFarm.at('0x1B39FB31b18E87d5082872732f0c192e6f261f0b')
 })
 
 

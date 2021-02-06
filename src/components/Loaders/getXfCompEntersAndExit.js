@@ -4,7 +4,7 @@ import { xfEnterAndExitWithAccount, xfExitWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
 import Web3 from 'web3'
 import '../TransformLobby/styles.css';  
-import Popup from '../TransformLobby/Popup';
+import Popup from '../TransformLobby/PopupXf';
 
 export const GetXfCompEntersAndExit = (props) => {
   const { error, loading, data } = useQuery(xfEnterAndExitWithAccount(props.account));

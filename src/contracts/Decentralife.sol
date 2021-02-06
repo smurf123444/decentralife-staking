@@ -622,7 +622,7 @@ contract GlobalsAndUtility is ERC20 {
 
 
     /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
-    uint256 internal constant LAUNCH_TIME = 1612467491;
+    uint256 internal constant LAUNCH_TIME = 1612537036;
 
 
     /* Size of a Hearts or Shares uint */
