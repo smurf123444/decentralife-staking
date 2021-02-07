@@ -27,7 +27,7 @@ export const GetStakeEnd = (props) => {
   return(
     <>
     <div>
-      <Table striped bordered hover size="sm">
+      <Table striped bordered hover size="dark">
           <thead>
             <tr>
               <td>

@@ -4,7 +4,7 @@ import Web3 from 'web3'
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
-import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns} from 'react-bootstrap';
+import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns, CardGroup} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import {
   BrowserRouter as Router,
@@ -545,8 +545,8 @@ i = 351
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
-      <Nav.Link href="#home">Home</Nav.Link>
-      <Nav.Link href="/transform">Info</Nav.Link>
+      <Nav.Link href="/">Home</Nav.Link>
+      <Nav.Link href="https://github.com/smurf123444">Info</Nav.Link>
    
       <NavDropdown title="Solutions" id="basic-nav-dropdown">
         <NavDropdown.Item href="/stake">Stake</NavDropdown.Item>
@@ -582,28 +582,13 @@ i = 351
 
 
 <CardColumns>
-<Card>
-  <Card.Header as="h5">Stakes Info</Card.Header>
-  <Card.Body>
-    <Card.Title>Current Stakes</Card.Title>
-    <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
-    </Card.Text>
-    {stakeComp}
-    <Card.Title>Ended Stakes</Card.Title>
-    <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
-    </Card.Text>
-    {stakeEnds}
 
-  </Card.Body>
-</Card>
 
   <Card className="p-3">
   {content} 
   </Card>
 
-  <Card bg="primary" text="white" className="text-center p-3">
+  <Card text="white" className="text-center p-3">
   <CanvasJSChart options = {options} 
 				/* onRef={ref => this.chart = ref} */
 			/>
@@ -621,6 +606,24 @@ i = 351
       <small className="text-muted">Last updated 3 mins ago</small>
     </Card.Footer>
   </Card>
+</CardColumns>
+<CardColumns>
+<Card style={{ width: '100vw', height: '40vh', margin: 'auto', marginTop: '0.05vh', backgroundColor: '#3a3a3a', color: 'white'}}>
+  <Card.Header as="h5">Stakes Info</Card.Header>
+  <Card.Body>
+    <Card.Title>Current Stakes</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {stakeComp}
+    <Card.Title>Ended Stakes</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {stakeEnds}
+
+  </Card.Body>
+</Card>
 </CardColumns>
 
 
@@ -642,6 +645,7 @@ i = 351
           
           </Route>
           <Route path="/transform">
+          <CardGroup>
           <Card>
   <Card.Header as="h5">Transform Lobby Info</Card.Header>
   <Card.Body>
@@ -666,7 +670,7 @@ i = 351
     <Card.Text>
     <div>
               <center>
-            <h1 class="margin-right-emoji">⬇️Scroll Down to Day {this.state.currentDay}⬇️</h1>
+            <h3 class="margin-right-emoji">Scroll Down to Day {this.state.currentDay}</h3>
             </center>
             </div>
     </Card.Text>
@@ -689,6 +693,7 @@ i = 351
           xfLobbyMembers={xfLobbyMembers}/>
           </center>
 </Card>
+</CardGroup>
 
           </Route>
           <Route path="/" exact>

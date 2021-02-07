@@ -72,10 +72,6 @@ while (i < tits.length)
       <>
       <tr key={data.id}>
 
-     <td> {s}</td>
-
-     <td>{/*stakedID*/tits[i][1]}</td>
-
      <td> {/*stakedDays*/tits[i][2]}</td>
 
      <td> {/*stakeTShares*/tits[i][3] }</td>
@@ -95,15 +91,10 @@ while (i < tits.length)
    return(
     <>
     <div>
-      <Table striped bordered hover size="sm">
+      <Table striped bordered hover size="dark">
           <thead>
             <tr>
-              <td>
-                Index of Stake
-              </td>
-              <td>
-                Stake ID
-              </td>
+
               <td>
                 stakedDays
               </td>

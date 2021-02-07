@@ -390,7 +390,7 @@ class TransformTable extends Component {
 
     return (
    
-        <Table striped bordered variant="dark">
+        <Table striped bordered variant="light">
           <thead>
             <tr>
               <td>

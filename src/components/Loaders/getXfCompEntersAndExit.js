@@ -5,7 +5,8 @@ import Table from 'react-bootstrap/Table';
 import Web3 from 'web3'
 import '../TransformLobby/styles.css';  
 import Popup from '../TransformLobby/PopupXf';
-
+import moment from 'moment';
+moment().format();
 export const GetXfCompEntersAndExit = (props) => {
   const { error, loading, data } = useQuery(xfEnterAndExitWithAccount(props.account));
   let ass = []
@@ -55,21 +56,28 @@ if(tits[i] === 0)
 }
 else
 {
+  /*
+
+    id
+      timestamp
+      memberAddr
+      data0
+      rawAmount
+      enterDay
+      */
   array[i] = (
     <>
     <tr key={data.id}>
 
-   <td>{/*stakedID*/tits[i][1]}</td>
+   <td>{/*timestamp*/
+   moment(tits[i][1] * 1000).format('L')}</td>
 
-   <td> {/*timestamp*/tits[i][2]}</td>
+   <td> {/*memberaddr*/tits[i][2]}</td>
 
-   <td> {/*memberAddr*/tits[i][3] }</td>
+   <td>{/*rawAmount*/tits[i][4] }</td>
 
-   <td>{/*data0*/tits[i][4] }</td>
+   <td> {/*enterDay*/tits[i][5] }</td>
 
-   <td> {/*rawAmount*/tits[i][5] }</td>
-
-   <td> {/*enterDay*/tits[i][6] }</td>
     </tr>
     </>
    )
@@ -83,19 +91,16 @@ else
         <thead>
           <tr>
             <td>
-            timestamp
+            Date Entered
             </td>
             <td>
             memberAddr
             </td>
             <td>
-            data0
-            </td>
-            <td>
              rawAmount
             </td>
             <td>
-              enterDay
+              Exit Available on Day:
             </td>
           </tr>
         </thead>
