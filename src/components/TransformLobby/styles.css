@@ -44,6 +44,9 @@
 .table-scroll{
     height: 600px !important;
     overflow: scroll;
+    margin-right: auto;
+    margin-left: auto;
+
 }
 
 .centered {
@@ -52,23 +55,24 @@
     justify-content: center;
     align-items: center;
     width: 1600px;
-    margin-left: 100px;
+    margin-left: auto;
   overflow: auto;
+  display: inline-block;
   }
   .margin-right {
    /* Magic here */
    float:right;
-    margin-right: 950px;
+    margin-right: auto;
   }
   .margin-left {
     /* Magic here */
     float:center;
-     margin-left: 820px;
+     margin-left: auto;
    }
    .margin-right-emoji {
     /* Magic here */
     float:center;
-     margin-right: 100px;
+     margin-right: auto;
    }
 
   .popup {  

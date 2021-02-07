@@ -4,6 +4,7 @@ import Web3 from 'web3'
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
+import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import {
   BrowserRouter as Router,
@@ -438,7 +439,7 @@ i = 351
 			exportFileName: "TITY",
 			exportEnabled: true,
 			title:{
-				text: "Token Burn Pie Chart"
+			
 			},
 			data: [{
         type: "pie",
@@ -537,24 +538,33 @@ i = 351
                       <Router>
         <div>
     <nav>
-      <h3>
 
-      </h3>
-      <h1 class="margin-right">Day : {this.state.currentDay}</h1>
-      <ul className="nav-links">
-            <li>
-              <Link to="/" exact>Home</Link>
-            </li>
-            <li>
-              <Link to="/stake">Stake</Link>
-            </li>
-            <li>
-              <Link to="/transform">Transform</Link>
-            </li>
-            <li>
-              <Link to="/transfer">Transfer</Link>
-            </li>
-      </ul>
+
+      <Navbar bg="light" expand="lg">
+  <Navbar.Brand href="#home">Decentralife</Navbar.Brand>
+  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+  <Navbar.Collapse id="basic-navbar-nav">
+    <Nav className="mr-auto">
+      <Nav.Link href="#home">Home</Nav.Link>
+      <Nav.Link href="/transform">Info</Nav.Link>
+   
+      <NavDropdown title="Solutions" id="basic-nav-dropdown">
+        <NavDropdown.Item href="/stake">Stake</NavDropdown.Item>
+        <NavDropdown.Item href="/transform">Transform</NavDropdown.Item>
+        <NavDropdown.Item href="/transfer">Transfer</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Trade</NavDropdown.Item>
+      </NavDropdown>
+    </Nav>
+    <Nav>
+    <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
+    <Nav.Link href="#deets">More deets</Nav.Link>
+    </Nav>
+  </Navbar.Collapse>
+</Navbar>
+
+
+
     </nav>
 
     </div>
@@ -567,59 +577,103 @@ i = 351
 
 
 
-        <div>
-          <center>
-
-            <h3>Current Stakes</h3>
-          </center>
-        </div>
-        {stakeComp}
-        <div>
-          <center>
-
-            <h3>Ended Stakes</h3>
-          </center>
-        </div>
-         {stakeEnds}
 
 
 
 
+<CardColumns>
+<Card>
+  <Card.Header as="h5">Stakes Info</Card.Header>
+  <Card.Body>
+    <Card.Title>Current Stakes</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {stakeComp}
+    <Card.Title>Ended Stakes</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {stakeEnds}
 
-          <div className="container-fluid mt-5">
-          <div className="row">
+  </Card.Body>
+</Card>
 
-            <main role="main" className="col-lg-12 ml-auto mr-auto" style={{ maxWidth: '600px' }}>
+  <Card className="p-3">
+  {content} 
+  </Card>
 
-              <div className="content mr-auto ml-auto">
-
-              
-
-                {content}
-                <h1>Amount in Circulation</h1>
-                <h1>{ totalSupply_ } </h1>
-			<CanvasJSChart options = {options} 
+  <Card bg="primary" text="white" className="text-center p-3">
+  <CanvasJSChart options = {options} 
 				/* onRef={ref => this.chart = ref} */
 			/>
+  </Card>
+  <Card>
+    <Card.Img variant="top" src='../dai.png'/>
+    <Card.Body>
+      <Card.Title>Amount in Circulation</Card.Title>
+      <Card.Text>
+      <small className="text-muted">DTE: </small>
+      <small> { totalSupply_ } </small>
+      </Card.Text>
+    </Card.Body>
+    <Card.Footer>
+      <small className="text-muted">Last updated 3 mins ago</small>
+    </Card.Footer>
+  </Card>
+</CardColumns>
+
+
+
+
+
+            <main role="main" className="col-lg-12 " style={{ maxWidth: '600px' }}>
+
+                    
+              </main>
+
+              <div className="content mr-auto ml-auto">
+                
+
+
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
 
               </div>
-
-            </main>
-          </div>
-        </div>
+          
           </Route>
           <Route path="/transform">
-            <h1 class="margin-left">Enters</h1>
-            {xfLobbyEnters}
-            <h1 class="margin-left">Exits</h1>
-            {xfLobbyExits}
-            <div>
+          <Card>
+  <Card.Header as="h5">Transform Lobby Info</Card.Header>
+  <Card.Body>
+    <Card.Title>Enters</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {xfLobbyEnters}
+    <Card.Title>Exits</Card.Title>
+    <Card.Text>
+      With supporting text below as a natural lead-in to additional content.
+    </Card.Text>
+    {xfLobbyExits}
+
+  </Card.Body>
+</Card>
+
+            <Card>
+  <Card.Header as="h5">Transform</Card.Header>
+  <Card.Body>
+    <Card.Title>Enters</Card.Title>
+    <Card.Text>
+    <div>
               <center>
             <h1 class="margin-right-emoji">⬇️Scroll Down to Day {this.state.currentDay}⬇️</h1>
             </center>
             </div>
-          <TransformList 
+    </Card.Text>
+
+  </Card.Body>
+  <center>
+  <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 
           totalEth={Web3.utils.fromWei(totalEthXL, "ether")} 
@@ -633,6 +687,9 @@ i = 351
           xfLobbyExit={this.exitDay}
           xfLobbyEnter={this.enterDay}
           xfLobbyMembers={xfLobbyMembers}/>
+          </center>
+</Card>
+
           </Route>
           <Route path="/" exact>
             <div>

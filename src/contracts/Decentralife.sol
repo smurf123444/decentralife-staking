@@ -1500,7 +1500,7 @@ contract StakeableToken is GlobalsAndUtility {
         /* Ensure newStakedHearts is enough for at least one stake share */
         require(newStakeShares != 0, "HEX: newStakedHearts must be at least minimum shareRate");
         /* Keep the dumpers from dumping on BPD */
-        if(newStakedDays >= BIG_PAY_DAY)
+        if(newStakedDays >= BIG_PAY_DAY - _currentDay())
         {
             require(newStakedDays >= (BIG_PAY_DAY + 365), "HEX: Must stake for at least a year past BPD");
         }

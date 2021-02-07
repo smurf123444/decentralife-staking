@@ -25,7 +25,7 @@ export const GetXfExits = (props) => {
   return(
     <>
     <div>
-      <Table striped bordered variant="dark">
+      <Table striped bordered hover size="sm">
           <thead>
             <tr>
               <td>
