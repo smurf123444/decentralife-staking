@@ -30,37 +30,99 @@ moment().format();
     })
    }
    let i = 0
-
    let vag = []
-   
-   while (i < tits.length) {
-    while (i < ass.length) {
-
-      if(tits[i][0].indexOf("0x") >= 0 && ass[i][0].indexOf("0x") >= 0){
-        if(tits[i][1] === ass[i][1]){
-         // console.log("StakeID " + tits[i][1] + " MATCHED")
-          vag.push(tits[i])
-        }
+   if (ass.length < tits.length)
+   {
+      while (i < tits.length - 1)
+      {
+        //console.log(tits)
+        //console.log(ass)
+        ass.push([])
         i++
       }
-     }
-      i++
-     // console.log("searching...")
-}
+   }
+   if (ass.length > tits.length)
+   {
+      while (i < ass.length - 1)
+      {
+       // console.log(tits)
+       // console.log(ass)
+        tits.push([])
+        i++
+      }
+   }
 
 i = 0
-   while (i < vag.length) {
-      if(vag[i][1] === tits[i][1]){
-        //console.log(vag[i][1] === tits[i][1])
+let t = 0
+  while (i < ass.length) {
+   // console.log(tits[i])
+  //  console.log(ass[0].includes(tits))
+  //console.log(ass[t].includes(tits[i][0]))
+  const found = ass.some(r=> tits.indexOf(r) >= 0)
+  console.log(found)
+    if(tits[2].includes(ass[i][1])){
+      console.log(tits[i][1])
+        vag.push(tits[i])
+        console.log("Fire")
+      i++
+    }
+    if(tits[0].includes(ass[i][1])){
+      console.log(tits[i][1])
+        vag.push(tits[i])
+        console.log("Fire")
+      i++
+    }
+    else {
+      vag.push([])
+      i++
+    }
+  }
+i = 0
+   while (i < tits.length) {
+   //console.log(vag[i][1] === tits[i][1])
+      if(vag[i][1] === tits[i][1]){      
         tits[i] = 0
       }
-
       i++
      }
 i = 0
 let array = []
 let s = 0
-while (i < tits.length)
+//console.log(vag)
+if (tits.length > ass.length)
+{
+  while (i < tits.length)
+  {
+    if(tits[i] === 0)
+    {
+      i++
+    }
+    else
+    {
+      array[i] = (
+        <>
+        <tr key={data.id}>
+  
+       <td> {/*stakedDays*/tits[i][2]}</td>
+  
+       <td> {/*stakeTShares*/tits[i][3] }</td>
+  
+       <td>{/*startDay*/tits[i][4] }</td>
+  
+       <td> {/*endDay*/tits[i][5] }</td>
+  
+       <td> {/*stakedHearts*/tits[i][6] }</td>
+       {console.log(s, tits[i][1])}
+       <td> { props.func(s++, tits[i][1]) }</td>
+        </tr>
+        </>
+       )
+       i++
+    }
+  }
+}
+else{
+  while (i < ass.length)
 {
   if(tits[i] === 0)
   {
@@ -81,6 +143,7 @@ while (i < tits.length)
      <td> {/*endDay*/tits[i][5] }</td>
 
      <td> {/*stakedHearts*/tits[i][6] }</td>
+     
      <td> { props.func(s++, tits[i][1]) }</td>
       </tr>
       </>
@@ -88,6 +151,8 @@ while (i < tits.length)
      i++
   }
 }
+}
+
    return(
     <>
     <div>

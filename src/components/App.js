@@ -608,7 +608,7 @@ i = 351
   </Card>
 </CardColumns>
 <CardColumns>
-<Card style={{ width: '100vw', height: '40vh', margin: 'auto', marginTop: '0.05vh', backgroundColor: '#3a3a3a', color: 'white'}}>
+<Card style={{ width: '100vw', height: 'auto', margin: 'auto', marginTop: '0.05vh', backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Stakes Info</Card.Header>
   <Card.Body>
     <Card.Title>Current Stakes</Card.Title>
