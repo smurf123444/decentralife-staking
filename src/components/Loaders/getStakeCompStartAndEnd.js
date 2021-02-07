@@ -58,28 +58,21 @@ let t = 0
    // console.log(tits[i])
   //  console.log(ass[0].includes(tits))
   //console.log(ass[t].includes(tits[i][0]))
-  const found = ass.some(r=> tits.indexOf(r) >= 0)
+  let found = ass[i].some(r=> tits[i].includes(r) >= 0)
   console.log(found)
-    if(tits[2].includes(ass[i][1])){
-      console.log(tits[i][1])
+    if(found){
+      console.log(tits[i])
         vag.push(tits[i])
         console.log("Fire")
       i++
     }
-    if(tits[0].includes(ass[i][1])){
-      console.log(tits[i][1])
-        vag.push(tits[i])
-        console.log("Fire")
-      i++
-    }
-    else {
-      vag.push([])
-      i++
-    }
+
+    vag.push(0)
+    i++
   }
 i = 0
    while (i < tits.length) {
-   //console.log(vag[i][1] === tits[i][1])
+   console.log(vag[i][1] === tits[i][1])
       if(vag[i][1] === tits[i][1]){      
         tits[i] = 0
       }
@@ -91,9 +84,9 @@ let s = 0
 //console.log(vag)
 if (tits.length > ass.length)
 {
-  while (i < tits.length)
+  while (i < vag.length)
   {
-    if(tits[i] === 0)
+    if(vag[i] === 0)
     {
       i++
     }
@@ -102,17 +95,17 @@ if (tits.length > ass.length)
       array[i] = (
         <>
         <tr key={data.id}>
+        <td> {s}</td>
+        <td> {/*stakeID*/vag[i][1]}</td>
+       <td> {/*stakedDays*/vag[i][2]}</td>
   
-       <td> {/*stakedDays*/tits[i][2]}</td>
-  
-       <td> {/*stakeTShares*/tits[i][3] }</td>
+       <td> {/*stakeTShares*/vag[i][3] }</td>
   
        <td>{/*startDay*/tits[i][4] }</td>
   
        <td> {/*endDay*/tits[i][5] }</td>
   
        <td> {/*stakedHearts*/tits[i][6] }</td>
-       {console.log(s, tits[i][1])}
        <td> { props.func(s++, tits[i][1]) }</td>
         </tr>
         </>
@@ -124,7 +117,7 @@ if (tits.length > ass.length)
 else{
   while (i < ass.length)
 {
-  if(tits[i] === 0)
+  if(vag[i] === 0)
   {
     i++
   }
@@ -133,18 +126,19 @@ else{
     array[i] = (
       <>
       <tr key={data.id}>
+      <td> {s}</td>
+        <td> {/*stakeID*/vag[i][1]}</td>
+     <td> {/*stakedDays*/vag[i][2]}</td>
 
-     <td> {/*stakedDays*/tits[i][2]}</td>
+     <td> {/*stakeTShares*/vag[i][3] }</td>
 
-     <td> {/*stakeTShares*/tits[i][3] }</td>
+     <td>{/*startDay*/vag[i][4] }</td>
 
-     <td>{/*startDay*/tits[i][4] }</td>
+     <td> {/*endDay*/vag[i][5] }</td>
 
-     <td> {/*endDay*/tits[i][5] }</td>
-
-     <td> {/*stakedHearts*/tits[i][6] }</td>
+     <td> {/*stakedHearts*/vag[i][6] }</td>
      
-     <td> { props.func(s++, tits[i][1]) }</td>
+     <td> { props.func(s++, vag[i][1]) }</td>
       </tr>
       </>
      )
@@ -159,7 +153,12 @@ else{
       <Table striped bordered hover size="dark">
           <thead>
             <tr>
-
+            <td>
+                Index of Stake
+              </td>
+            <td>
+                Stake ID
+              </td>
               <td>
                 stakedDays
               </td>
