@@ -14,6 +14,7 @@ export const GetStakeEnd = (props) => {
  else{
   let array = data.stakeEnds.map((data) => (
     <tr key={data.id}>
+      <td>{data.stakeId}</td>
     <td>{data.stakedHearts / 1000000000}  </td>
     <td>{data.payout / 1000000000}  </td>
     <td>{data.penalty  / 1000000000   }  </td>
@@ -30,6 +31,7 @@ export const GetStakeEnd = (props) => {
       <Table striped bordered hover size="dark">
           <thead>
             <tr>
+              <td>Stake ID</td>
               <td>
               Staked DTE
               </td>

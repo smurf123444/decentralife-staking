@@ -1,192 +1,142 @@
 import React, { useEffect, useState, Component  } from "react";
 import { useQuery, gql } from "@apollo/client";
-import { stakeStartAndEndWithAccount } from "../Querys/Queries";
-import Web3 from 'web3'
+import { xfEnterAndExitWithAccount, xfExitWithAccount, stakeStartAndEndWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
-import PopupStakeEnd from './PopupStakeEnd';
+import Web3 from 'web3'
+import '../TransformLobby/styles.css';  
+import Popup from '../TransformLobby/PopupXf';
 import moment from 'moment';
 moment().format();
+export const GetStakeCompStartAndEnd = (props) => {
+  const { error, loading, data } = useQuery(stakeStartAndEndWithAccount(props.account));
+  let ass = []
+  let tits = []
+ if(loading){
+   return(<div>Loading...</div>)
+ }
+ else{
+  let i = 0;
+  data.stakeStarts.map((data) => {
+    tits[i] = [data.id, data.stakeId, data.stakedDays, data.stakeTShares, data.startDay,data.endDay, (data.stakedHearts / 100000000)]
+   i++
+   })
+   i = 0;
+   data.stakeEnds.map((data) => {
+     ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 100000000), (data.payout   / 100000000), (data.penalty / 100000000 ), (data.payout / 100000000)- (data.penalty  / 100000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
+   i++
+  })
+ }
+ let i = 0
+ let vag = []
+ let a, b;
+ console.log(tits)
+ console.log(ass)
 
+ function checkIfArrayIncludes(arr1, arr2) {
+  console.log(arr1)
+  console.log(arr2)
+  return arr2 === arr1;
+}
 
-  export const GetStakeCompStartAndEnd = (props) => {
-    //console.log(props)
-    const { error, loading, data } = useQuery(stakeStartAndEndWithAccount(props.account));
-    let ass = []
-    let tits = []
-   if(loading){
-     return(<div>Loading...</div>)
-   }
-   else{
-    let i = 0;
-
-    data.stakeStarts.map((data) => {
-     tits[i] = [data.id, data.stakeId, data.stakedDays, data.stakeTShares, data.startDay,data.endDay, (data.stakedHearts / 100000000)]
+ t = 0
+ while (i < tits.length) {
+     //ßass[t].some(r=> tits[i].includes(r) >= 0)
+     let found = checkIfArrayIncludes(tits, ass)
+    console.log(found)
+    if(!found){
+        vag.push(tits[i])
+      console.log(tits[i])
+    }
+    t++
     i++
-    })
-    i = 0;
-    data.stakeEnds.map((data) => {
-      ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 100000000), (data.payout   / 100000000), (data.penalty / 100000000 ), (data.payout / 100000000)- (data.penalty  / 100000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
-    i++
-    })
    }
-   let i = 0
-   let vag = []
-   if (ass.length < tits.length)
-   {
-      while (i < tits.length - 1)
-      {
-        //console.log(tits)
-        //console.log(ass)
-        ass.push([])
-        i++
-      }
-   }
-   if (ass.length > tits.length)
-   {
-      while (i < ass.length - 1)
-      {
-       // console.log(tits)
-       // console.log(ass)
-        tits.push([])
-        i++
-      }
-   }
-
+   
+console.log(vag)
 i = 0
 let t = 0
-  while (i < ass.length) {
-   // console.log(tits[i])
-  //  console.log(ass[0].includes(tits))
-  //console.log(ass[t].includes(tits[i][0]))
-  let found = ass[i].some(r=> tits[i].includes(r) >= 0)
-  console.log(found)
-    if(found){
-      console.log(tits[i])
-        vag.push(tits[i])
-        console.log("Fire")
-      i++
-    }
-
-    vag.push(0)
-    i++
-  }
-i = 0
-   while (i < tits.length) {
+ while (i < vag.length) {
+   while(t < vag.length){
    console.log(vag[i][1] === tits[i][1])
-      if(vag[i][1] === tits[i][1]){      
-        tits[i] = 0
-      }
-      i++
-     }
+    if(vag[i][1] === tits[t][1]){
+      vag[i] = []
+    }
+    t++
+  }
+  t = 0
+  i++
+}
 i = 0
 let array = []
 let s = 0
-//console.log(vag)
-if (tits.length > ass.length)
+while (i < vag.length)
 {
-  while (i < vag.length)
-  {
-    if(vag[i] === 0)
-    {
-      i++
-    }
-    else
-    {
-      array[i] = (
-        <>
-        <tr key={data.id}>
-        <td> {s}</td>
-        <td> {/*stakeID*/vag[i][1]}</td>
-       <td> {/*stakedDays*/vag[i][2]}</td>
-  
-       <td> {/*stakeTShares*/vag[i][3] }</td>
-  
-       <td>{/*startDay*/tits[i][4] }</td>
-  
-       <td> {/*endDay*/tits[i][5] }</td>
-  
-       <td> {/*stakedHearts*/tits[i][6] }</td>
-       <td> { props.func(s++, tits[i][1]) }</td>
-        </tr>
-        </>
-       )
-       i++
-    }
-  }
-}
-else{
-  while (i < ass.length)
+if(vag[i] === 0)
 {
-  if(vag[i] === 0)
-  {
-    i++
-  }
-  else
-  {
-    array[i] = (
-      <>
-      <tr key={data.id}>
-      <td> {s}</td>
-        <td> {/*stakeID*/vag[i][1]}</td>
-     <td> {/*stakedDays*/vag[i][2]}</td>
-
-     <td> {/*stakeTShares*/vag[i][3] }</td>
-
-     <td>{/*startDay*/vag[i][4] }</td>
-
-     <td> {/*endDay*/vag[i][5] }</td>
-
-     <td> {/*stakedHearts*/vag[i][6] }</td>
-     
-     <td> { props.func(s++, vag[i][1]) }</td>
-      </tr>
-      </>
-     )
-     i++
-  }
+  i++
 }
-}
+else
+{
+  /*
 
-   return(
+    id
+      timestamp
+      memberAddr
+      data0
+      rawAmount
+      enterDay
+      */
+  array[i] = (
     <>
-    <div>
-      <Table striped bordered hover size="dark">
-          <thead>
-            <tr>
+    <tr key={data.id}>
+      <td>{s}</td>
+   <td>{/*stakeId*/tits[i][1]}</td>
+
+   <td> {/*stakedDays*/tits[i][2]}</td>
+
+   <td>{/*stakeTShares*/tits[i][3] }</td>
+
+   <td>{/*staked Days*/tits[i][4] }</td>
+
+   <td> {/*startDay*/tits[i][5] }</td>
+   <td> { props.func(s++, tits[i][1]) }</td>
+    </tr>
+    </>
+   )
+   i++
+}
+}
+s=0
+ return(
+  <>
+  <div>
+    <Table striped bordered hover size="dark">
+        <thead>
+          <tr>
+            <td>Index of Stake</td>
             <td>
-                Index of Stake
-              </td>
+            stakeId
+            </td>
             <td>
-                Stake ID
-              </td>
-              <td>
-                stakedDays
-              </td>
-              <td>
-                
-                stakeTShares
-              </td>
-              <td>
-                startDay
-              </td>
-              <td>
-                End Day
-              </td>
-              <td>
-                Staked DTE
-              </td>
-              <td>
-                Exit Stake (Button)
-              </td>
-            </tr>
-          </thead>
-          {array}
+            stakedDays
+            </td>
+            <td>
+            T-Shares
+            </td>
+            <td>
+              Days Staked
+            </td>
+            <td>
+              Exit Available on Day:
+            </td>
+          </tr>
+        </thead>
+        {array}
 
 
-        </Table>
-    </div>
+      </Table>
+  </div>
 </>
-  )
-  }
+)
+}
 
 export default GetStakeCompStartAndEnd;

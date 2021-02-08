@@ -27,6 +27,7 @@ export const GetXfCompEntersAndExit = (props) => {
   })
  }
  let i = 0
+
  let vag = []
  while (i < tits.length) {
   while (i < ass.length) {

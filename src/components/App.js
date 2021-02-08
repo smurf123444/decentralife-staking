@@ -545,13 +545,13 @@ i = 351
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
-      <Nav.Link href="/">Home</Nav.Link>
+    <Nav.Link as={Link} to="/" >Home</Nav.Link>
       <Nav.Link href="https://github.com/smurf123444">Info</Nav.Link>
    
       <NavDropdown title="Solutions" id="basic-nav-dropdown">
-        <NavDropdown.Item href="/stake">Stake</NavDropdown.Item>
-        <NavDropdown.Item href="/transform">Transform</NavDropdown.Item>
-        <NavDropdown.Item href="/transfer">Transfer</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/stake">Stake</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/transform">Transform</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/transfer">Transfer</NavDropdown.Item>
         <NavDropdown.Divider />
         <NavDropdown.Item href="#action/3.4">Trade</NavDropdown.Item>
       </NavDropdown>
