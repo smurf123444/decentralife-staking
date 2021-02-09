@@ -11,11 +11,13 @@ export const GetStakeCompStartAndEnd = (props) => {
   const { error, loading, data } = useQuery(stakeStartAndEndWithAccount(props.account));
   let ass = []
   let tits = []
+  let uniqueStake=[]
  if(loading){
    return(<div>Loading...</div>)
  }
  else{
   let i = 0;
+  
   data.stakeStarts.map((data) => {
     tits[i] = [data.id, data.stakeId, data.stakedDays, data.stakeTShares, data.startDay,data.endDay, (data.stakedHearts / 100000000)]
    i++
@@ -25,86 +27,14 @@ export const GetStakeCompStartAndEnd = (props) => {
      ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 100000000), (data.payout   / 100000000), (data.penalty / 100000000 ), (data.payout / 100000000)- (data.penalty  / 100000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
    i++
   })
+  console.log('stakeeee',data)
+   uniqueStake = data.stakeStarts.filter(({ id }) =>
+  !data.stakeEnds.some(exclude => exclude.id === id)
+);
  }
- let i = 0
- let vag = []
- let a, b;
- console.log(tits)
- console.log(ass)
 
- function checkIfArrayIncludes(arr1, arr2) {
-  console.log(arr1)
-  console.log(arr2)
-  return arr2 === arr1;
-}
-
- t = 0
- while (i < tits.length) {
-     //ßass[t].some(r=> tits[i].includes(r) >= 0)
-     let found = checkIfArrayIncludes(tits, ass)
-    console.log(found)
-    if(!found){
-        vag.push(tits[i])
-      console.log(tits[i])
-    }
-    t++
-    i++
-   }
-   
-console.log(vag)
-i = 0
-let t = 0
- while (i < vag.length) {
-   while(t < vag.length){
-   console.log(vag[i][1] === tits[i][1])
-    if(vag[i][1] === tits[t][1]){
-      vag[i] = []
-    }
-    t++
-  }
-  t = 0
-  i++
-}
-i = 0
-let array = []
 let s = 0
-while (i < vag.length)
-{
-if(vag[i] === 0)
-{
-  i++
-}
-else
-{
-  /*
 
-    id
-      timestamp
-      memberAddr
-      data0
-      rawAmount
-      enterDay
-      */
-  array[i] = (
-    <>
-    <tr key={data.id}>
-      <td>{s}</td>
-   <td>{/*stakeId*/tits[i][1]}</td>
-
-   <td> {/*stakedDays*/tits[i][2]}</td>
-
-   <td>{/*stakeTShares*/tits[i][3] }</td>
-
-   <td>{/*staked Days*/tits[i][4] }</td>
-
-   <td> {/*startDay*/tits[i][5] }</td>
-   <td> { props.func(s++, tits[i][1]) }</td>
-    </tr>
-    </>
-   )
-   i++
-}
-}
 s=0
  return(
   <>
@@ -130,9 +60,24 @@ s=0
             </td>
           </tr>
         </thead>
-        {array}
-
-
+        <tbody>
+        {uniqueStake.map(data=>(
+          <tr key={data.id}>
+          <td>{s}</td>
+       <td>{data.stakeId}</td>
+    
+       <td>{data.stakedDays}</td>
+    
+       <td>{data.stakeTShares}</td>
+    
+       <td>{data.stakedDays}</td>
+    
+       <td>{data.endDay}</td>
+       <td> { props.func(s++, data.stakeId) }</td>
+        </tr>
+          
+        ))}
+</tbody>
       </Table>
   </div>
 </>
