@@ -56,12 +56,14 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "2.1.3",
     "react-table": "^7.6.2",
+    "run": "^1.4.0",
     "sha3": "2.0.2",
     "web3": "",
     "web3-provider-engine": ""
   },
   "scripts": {
     "start": "react-scripts start",
+    "deploy": "yarn run build && now ./build --name=myapp-spa",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

@@ -78,6 +78,23 @@ class Main extends Component {
               </div>
               <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
             </form>
+
+
+          </div>
+        </div>
+        <div>
+          
+        </div>
+
+      </div>
+    );
+  }
+}
+
+export default Main;
+
+
+/*
             <form onSubmit={(event) => {
                 event.preventDefault()
                 let tits
@@ -112,16 +129,4 @@ class Main extends Component {
                 UN-STAKE...
               </button>
             </form>
-
-          </div>
-        </div>
-        <div>
-          
-        </div>
-
-      </div>
-    );
-  }
-}
-
-export default Main;
+            */

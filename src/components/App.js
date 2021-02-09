@@ -31,6 +31,7 @@ import Logo from '../dai.png'
 import PopupXf from './TransformLobby/PopupXf';
 import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const queryString = require('query-string');
 //require('./hexDecoders.js');
 let JSONarray = []
 
@@ -344,7 +345,6 @@ i = 351
        i--
      }
      
-  
  
      this.setState({ yourHex:  yourHex[currentDay].toString()})
      this.setState({ yourEth:  yourEth[currentDay].toString()})
@@ -535,7 +535,7 @@ i = 351
     return (
       
       <div>
-                      <Router>
+                      <Router basename="/frontend">
         <div>
     <nav>
 
@@ -546,7 +546,7 @@ i = 351
   <Navbar.Collapse id="basic-navbar-nav">
     <Nav className="mr-auto">
     <Nav.Link as={Link} to="/" >Home</Nav.Link>
-      <Nav.Link href="https://github.com/smurf123444">Info</Nav.Link>
+      <Nav.Link href="https://decentralife.medium.com/decentralife-token-846cfd424901">Info</Nav.Link>
    
       <NavDropdown title="Solutions" id="basic-nav-dropdown">
         <NavDropdown.Item as={Link} to="/stake">Stake</NavDropdown.Item>
@@ -709,7 +709,14 @@ i = 351
 
       </div>
     );
+
   }
+  
+}
+const params = queryString.parse(document.location.search);
+const redirect = params.redirect; // this would be "abcdefg" if the query was "?redirect=abcdefg"
+if (document.location.pathname === '/' && redirect) {
+  document.location.assign(`${document.location.origin}/${redirect}`);
 }
 
 export default App;
