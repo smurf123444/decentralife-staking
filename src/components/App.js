@@ -520,9 +520,9 @@ i = 351
       </NavDropdown>
     </Nav>
     <Nav>
-    <Wallet />
+  
     <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
-    <Nav.Link href="#deets">More deets</Nav.Link>
+    <Nav.Link href="#deets">  <Wallet /></Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Navbar>
