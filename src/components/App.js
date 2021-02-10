@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react'
 import Web3 from 'web3'
-
+import { withWeb3 } from 'react-web3-provider';
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
@@ -29,6 +29,7 @@ import { onError } from "@apollo/client/link/error";
 import './App.css'
 import Logo from '../dai.png'
 import PopupXf from './TransformLobby/PopupXf';
+import Wallet from './metamask'
 import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const queryString = require('query-string');
@@ -176,8 +177,6 @@ class App extends Component {
 
   
   async loadWeb3() {
-    
-    console.log(this.state.account)
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
@@ -189,43 +188,7 @@ class App extends Component {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
   }
-  async checkBlock() {
 
-    //let block = await this.web3.eth.getBlock(1920050);
-    //let number = block.number;
-    let i = 22682745;
-    let to = 0
-    while (i < 22769388 ) {
-        i++;
-        let block = await this.web3.eth.getBlock(i);
-        let number = block.number;
-       // console.log('Searching block ' + number);
-    if (block != null && block.transactions != null) {
-      //  console.log(block.timestamp)
-  
-  
-        for (let txHash of block.transactions) {
-            //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
-            let tx = await this.web3.eth.getTransaction(txHash);
-            let time = block.timestamp
-            let timeConfigured = new Date(time*1000);
-            console.log("SEARCHING...")
-            console.log(this.state.account + " " + tx.from.toLowerCase() + " " + timeConfigured)
-          if (tx.to != null)
-          {
-          if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' === tx.to.toLowerCase() && this.state.account.toLowerCase() === tx.from.toLowerCase()) {
-                console.log('Transaction found on block: ' + number);
-                console.log({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured});
-                JSONarray[to++] = ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured})
-            }
-        }
-      }
-    }
-  }
-
-  //set up new array to use the JSON array and take the timestamp and compare with the timestamp of the contract start day to get a proper day calibration.
-
-  }
 
   async initiate(){
     
@@ -557,6 +520,7 @@ i = 351
       </NavDropdown>
     </Nav>
     <Nav>
+    <Wallet />
     <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
     <Nav.Link href="#deets">More deets</Nav.Link>
     </Nav>
@@ -594,7 +558,7 @@ i = 351
 			/>
   </Card>
   <Card>
-    <Card.Img variant="top" src='../dai.png'/>
+  
     <Card.Body>
       <Card.Title>Amount in Circulation</Card.Title>
       <Card.Text>
@@ -699,7 +663,7 @@ i = 351
           <Route path="/" exact>
             <div>
             <h1>Welcome to Decentralife Prototype v1.0</h1>
-
+              <Wallet />
             </div>
           </Route>
           <Route path="/transfer" exact>
@@ -720,3 +684,43 @@ if (document.location.pathname === '/' && redirect) {
 }
 
 export default App;
+
+/*
+  async checkBlock() {
+
+    //let block = await this.web3.eth.getBlock(1920050);
+    //let number = block.number;
+    let i = 22682745;
+    let to = 0
+    while (i < 22769388 ) {
+        i++;
+        let block = await this.web3.eth.getBlock(i);
+        let number = block.number;
+       // console.log('Searching block ' + number);
+    if (block != null && block.transactions != null) {
+      //  console.log(block.timestamp)
+  
+  
+        for (let txHash of block.transactions) {
+            //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
+            let tx = await this.web3.eth.getTransaction(txHash);
+            let time = block.timestamp
+            let timeConfigured = new Date(time*1000);
+            console.log("SEARCHING...")
+            console.log(this.state.account + " " + tx.from.toLowerCase() + " " + timeConfigured)
+          if (tx.to != null)
+          {
+          if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' === tx.to.toLowerCase() && this.state.account.toLowerCase() === tx.from.toLowerCase()) {
+                console.log('Transaction found on block: ' + number);
+                console.log({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured});
+                JSONarray[to++] = ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), timestamp: timeConfigured})
+            }
+        }
+      }
+    }
+  }
+
+  //set up new array to use the JSON array and take the timestamp and compare with the timestamp of the contract start day to get a proper day calibration.
+
+  }
+  */

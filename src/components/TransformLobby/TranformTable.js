@@ -102,10 +102,25 @@ function resolveAfter2Seconds(x) {
 
 
 function myTotalEth(eth, day) {
-  var newArray = []
   let i = 351
   let s = 351 - day + 1
-  //console.log(day)
+  let newArray= [];
+  let string = ""
+
+  do{
+    
+    if(s >= i && s <= i)
+   {
+     
+     newArray[i--] = (<tr><td className="td-height">{eth}</td></tr>)
+   }
+   else{
+     string = ""
+     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+   }
+   }
+   while(i > 0)
+   return newArray; 
 do{
     if(s >= i && s <= i){
    newArray[i--] = <tr><td className="td-height">{eth}</td></tr>
@@ -116,26 +131,41 @@ do{
   }
   while(i > 0)
   return newArray;   // The function returns the product of p1 and p2
+  
 }
 
 
 
 
 function hexToETHfunc(eth, day) {
-  var newArray = []
+
   let i = 351
   let s = 351 - day + 1
-  //console.log(day)
-do{
-    if(s >= i && s <= i){
-   newArray[i--] = <tr><td className="td-height">{eth} HEX / 1 ETH</td></tr>
-    }
-    else{
-    newArray[i--] = <tr><td className="td-heightDim"></td></tr>
-    }
+  let newArray= [];
+  let string = ""
+
+  let string3 = ""
+  //slet string3 = ""
+  /*
+  let txChecker = new TransactionChecker(process.env.INFURA_ID, '0xF1dAD82B3E55C31bce17E5aB8c640E052f52611a');
+
+    txChecker.checkBlock();
+     */
+
+  do{
+    
+   if(s >= i && s <= i)
+  {
+    string = eth
+    newArray[i--] = (<tr><td className="td-height">{string + " HEX / 1 ETH"}</td></tr>)
+  }
+  else{
+    string = ""
+    newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+  }
   }
   while(i > 0)
-  return newArray;   // The function returns the product of p1 and p2
+  return newArray;   
 }
 
 function yourHEXcalc(hex, day) {
