@@ -44,7 +44,7 @@ class Main extends Component {
                 this.props.stakeTokens(amount, day)
               }}>
               <div>
-                <label className="float-left"><b>Stake TIT Tokens</b></label>
+                <label className="float-left"><b>Stake DEF Tokens</b></label>
                 <span className="float-right text-muted">
                   Balance: {this.props.dappTokenBalance}
                 </span>
@@ -76,7 +76,7 @@ class Main extends Component {
            
               </div>
               </div>
-              <button type="submit" className="btn btn-primary btn-block btn-lg">STAKE!</button>
+              <button type="submit" className="btn btn-secondary btn-block btn-lg">STAKE!</button>
             </form>
 
 

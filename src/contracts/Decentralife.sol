@@ -602,10 +602,10 @@ contract GlobalsAndUtility is ERC20 {
     );
 
     /* Origin address */
-    address internal constant ORIGIN_ADDR = 0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84;
+    address internal constant ORIGIN_ADDR = 0x9A6a414D6F3497c05E3b1De90520765fA1E07c03;
 
     /* Flush address */
-    address payable internal constant FLUSH_ADDR = 0x5bC8bf5A75D221fF30b2c2B2a7235D6aeEFF4A84;
+    address payable internal constant FLUSH_ADDR = 0xDEC9f2793e3c17cd26eeFb21C4762fA5128E0399;
 
     /* ERC20 constants */
     string public constant name = "Decentralife";
@@ -618,12 +618,8 @@ contract GlobalsAndUtility is ERC20 {
     uint256 private constant SATOSHIS_PER_BTC = 1e8;
     uint256 internal constant HEARTS_PER_SATOSHI = HEARTS_PER_HEX / SATOSHIS_PER_BTC * HEX_PER_BTC;
 
-
-
-
-    /* Time of contract launch (Sunday, February 21, 2021 7:30:01 PM) */
-    uint256 internal constant LAUNCH_TIME = 1612537036;
-
+    /* Time of contract launch (2019-12-03T00:00:00Z) */
+    uint256 internal constant LAUNCH_TIME = 1612889758;
 
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
@@ -652,7 +648,18 @@ contract GlobalsAndUtility is ERC20 {
 
     /* BigPayDay */
     uint256 internal constant BIG_PAY_DAY = CLAIM_PHASE_END_DAY + 1;
+/*
+    /* Root hash of the UTXO Merkle tree 
+    bytes32 internal constant MERKLE_TREE_ROOT = 0x4e831acb4223b66de3b3d2e54a2edeefb0de3d7916e2886a4b134d9764d41bec;
 
+    /* Size of a Satoshi claim uint in a Merkle leaf 
+    uint256 internal constant MERKLE_LEAF_SATOSHI_SIZE = 45;
+
+    /* Zero-fill between BTC address and Satoshis in a Merkle leaf 
+    uint256 internal constant MERKLE_LEAF_FILL_SIZE = 256 - 160 - MERKLE_LEAF_SATOSHI_SIZE;
+    uint256 internal constant MERKLE_LEAF_FILL_BASE = (1 << MERKLE_LEAF_FILL_SIZE) - 1;
+    uint256 internal constant MERKLE_LEAF_FILL_MASK = MERKLE_LEAF_FILL_BASE << MERKLE_LEAF_SATOSHI_SIZE;
+*/
     /* Size of a Satoshi total uint */
     uint256 internal constant SATOSHI_UINT_SIZE = 51;
     uint256 internal constant SATOSHI_UINT_MASK = (1 << SATOSHI_UINT_SIZE) - 1;
@@ -1500,7 +1507,7 @@ contract StakeableToken is GlobalsAndUtility {
         /* Ensure newStakedHearts is enough for at least one stake share */
         require(newStakeShares != 0, "HEX: newStakedHearts must be at least minimum shareRate");
         /* Keep the dumpers from dumping on BPD */
-        if(newStakedDays >= BIG_PAY_DAY - _currentDay())
+        if(newStakedDays >= BIG_PAY_DAY)
         {
             require(newStakedDays >= (BIG_PAY_DAY + 365), "HEX: Must stake for at least a year past BPD");
         }
@@ -1889,6 +1896,40 @@ contract StakeableToken is GlobalsAndUtility {
         );
     }
 }
+/*
+/**
+ * @dev These functions deal with verification of Merkle trees (hash trees),
+
+library MerkleProof {
+    /**
+     * @dev Returns true if a `leaf` can be proved to be a part of a Merkle tree
+     * defined by `root`. For this, a `proof` must be provided, containing
+     * sibling hashes on the branch from the leaf to the root of the tree. Each
+     * pair of leaves and each pair of pre-images are assumed to be sorted.
+    
+    function verify(bytes32[] memory proof, bytes32 root, bytes32 leaf) internal pure returns (bool) {
+        bytes32 computedHash = leaf;
+
+        for (uint256 i = 0; i < proof.length; i++) {
+            bytes32 proofElement = proof[i];
+
+            if (computedHash < proofElement) {
+                // Hash(current computed hash + current element of the proof)
+                computedHash = keccak256(abi.encodePacked(computedHash, proofElement));
+            } else {
+                // Hash(current element of the proof + current computed hash)
+                computedHash = keccak256(abi.encodePacked(proofElement, computedHash));
+            }
+        }
+
+        // Check if the computed hash (root) is equal to the provided root
+        return computedHash == root;
+    }
+}
+
+*/
+
+
 
 contract TransformableToken is StakeableToken {
     /**

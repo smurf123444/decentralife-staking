@@ -17,7 +17,7 @@ class PopupXf extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     const web3 = window.web3
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x752A2B1C0Da8E07da1a78c512A576106b57DCc23')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
     this.setState({ tokenFarm })
   }
   

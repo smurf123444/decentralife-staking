@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
-const tokenFarm = new web3.eth.Contract(TokenFarm, '0x752A2B1C0Da8E07da1a78c512A576106b57DCc23')
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
 class TransactionChecker {
   web3;
   account;
@@ -55,7 +55,7 @@ function myDay() {
   var newArray = []
   for (var i = 351; i >= 1; --i)
   {
-   newArray.push (<tr><td key={i}>{i} / 351</td></tr>)
+   newArray.push (<tr><td key={i}>{i}</td></tr>)
   }
   return newArray;
 }
@@ -121,16 +121,7 @@ function myTotalEth(eth, day) {
    }
    while(i > 0)
    return newArray; 
-do{
-    if(s >= i && s <= i){
-   newArray[i--] = <tr><td className="td-height">{eth}</td></tr>
-    }
-    else{
-    newArray[i--] = <tr><td className="td-heightDim"></td></tr>
-    }
-  }
-  while(i > 0)
-  return newArray;   // The function returns the product of p1 and p2
+  // The function returns the product of p1 and p2
   
 }
 
@@ -421,33 +412,6 @@ class TransformTable extends Component {
     return (
    
         <Table striped bordered variant="light">
-          <thead>
-            <tr>
-              <td>
-                Day
-              </td>
-              <td>
-                Available Hex
-              </td>
-              <td>
-                Total ETH
-              </td>
-              <td>
-                HEX/ETH
-              </td>
-
-              <td>
-                Your HEX
-              </td>
-              <td>
-                
-                Your ETH
-              </td>
-              <td>
-                Enter/Exit
-              </td>
-            </tr>
-          </thead>
           <tbody>
  
                       <tr>

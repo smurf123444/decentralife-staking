@@ -63,6 +63,7 @@
     "sha3": "2.0.2",
     "use-wallet": "^0.8.1",
     "web3": "",
+    "react-toastify": "^6.2.0",
     "web3-provider-engine": ""
   },
   "scripts": {

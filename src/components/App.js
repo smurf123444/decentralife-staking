@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react'
 import Web3 from 'web3'
 import { withWeb3 } from 'react-web3-provider';
+import { toast } from "react-toastify";
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
@@ -155,7 +156,7 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
  
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x691F261b92146bD2b88DFb2CEE9344D2393918a7')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -188,6 +189,31 @@ class App extends Component {
     else {
       window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
     }
+    if (window.ethereum) {
+      this.web3 = new Web3(window.ethereum);
+      try {
+        await window.ethereum.enable().then((accounts) => {
+          this.connectMainnet(accounts);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      this.web3 = new Web3(Web3.currentProvider);
+      try {
+        await this.web3.eth.getAccounts().then((accounts) => {
+          this.connectMainnet(accounts);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      toast.error(
+        "Non-Ethereum browser detected. You should consider trying MetaMask!"
+      );
+    }
   }
 
 
@@ -196,7 +222,7 @@ class App extends Component {
     let i = 351
     const web3 = window.web3
     
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x691F261b92146bD2b88DFb2CEE9344D2393918a7')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
     let currentDay = await tokenFarm.methods.currentDay().call()
     
     let currentReversed = 351 - currentDay
@@ -324,7 +350,22 @@ i = 351
       yourButtonDay: newValue,
     })
   }
+  transfer = (amount, day) => {
+    //    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+          this.state.tokenFarm.methods.transfer(amount, day).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+          })
+     //   })
+      }
 
+
+  stakeTokens = (amount, day) => {
+    //    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
+          this.state.tokenFarm.methods.stakeStart(amount, day).send({ from: this.state.account }).on('transactionHash', (hash) => {
+            this.setState({ loading: false })
+          })
+     //   })
+      }
 
   stakeTokens = (amount, day) => {
 //    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
@@ -400,7 +441,7 @@ i = 351
     const options = {
 			theme: "light",
 			animationEnabled: true,
-			exportFileName: "TITY",
+			exportFileName: "Snapshot of DEF Burnchart",
 			exportEnabled: true,
 			title:{
 			
@@ -414,8 +455,8 @@ i = 351
 				indexLabel: "{y}",
 				indexLabelPlacement: "inside",
 				dataPoints: [
-          { y: totalSupply_, label: "In Circulating Supply" },
-          { y: burned, label: "Burned" },
+          { y: totalSupply_},
+          { y: burned },
 
 				]
 			}]
@@ -521,7 +562,7 @@ i = 351
       </NavDropdown>
     </Nav>
     <Nav>
-  
+    <Nav.Link href="#Kovan42">KOVAN TESTNET</Nav.Link>
     <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
     <Nav.Link href="#deets"> <Wallet /></Nav.Link>
     </Nav>
@@ -642,30 +683,30 @@ i = 351
 
   </Card.Body>
   <center>
-  <Table striped bordered variant="sm light" style={{width: '38vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
+  <Table striped bordered variant="sm light" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
   <thead style={{color: "black", marginLeft: "100px"}} >
             <tr>
-              <td style={{color: "black", width: "38vw"}}>
+              <td style={{color: "black", width: "20vw"}}>
               &nbsp;&nbsp;&nbsp;&nbsp;  Day
               </td>
-              <td style={{color: "black",width: "38vw"}}>
-              &nbsp;&nbsp;&nbsp;&nbsp;Available Hex
+              <td style={{color: "black",width: "10vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;Available
               </td>
-              <td style={{color: "black", width: "38vw"}}>
-              &nbsp;&nbsp;&nbsp;&nbsp;Total ETH&nbsp;
+              <td style={{color: "black", width: "10vw"}}>
+              All (ETH)
               </td>
-              <td style={{color: "black", width: "38vw"}}>
-              &nbsp;&nbsp;  HEX/ETH&nbsp;
+              <td style={{color: "black", width: "50vw", marginRight: "500vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEF / 1 ETH
               </td>
 
-              <td style={{color: "black", width: "38vw"}}> 
-                Your HEX
+              <td style={{color: "black", width: "20vw"}}> 
+              Your DEF
               </td>
-              <td style={{color: "black", width: "38vw"}}>
+              <td style={{color: "black", width: "15vw"}}>
                 
                 Your ETH
               </td>
-              <td >
+              <td style={{color: "black", width: "15vw"}}>
                 Enter/Exit
               </td>
             </tr>
@@ -697,6 +738,56 @@ i = 351
             </div>
           </Route>
           <Route path="/transfer" exact>
+            <Card>
+            <Card.Body> 
+          <form className="mb-3" onSubmit={(event) => {
+                event.preventDefault()
+                let address
+                let amount
+                address = this.input.value.toString()
+                amount = this.amount.value.toString()
+                amount = (amount * 100000000).toString()
+                this.transfer(address, amount)
+              }}>
+              <div>
+                <label className="float-left"><b>Transfer DEF Tokens</b></label>
+                <span className="float-right text-muted">
+                  Balance: {this.state.dappTokenBalance}
+                </span>
+              </div>
+              <div className="input-group mb-4">
+                <input
+                  type="text"
+                  ref={(input) => { this.input = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
+                <div className="input-group-append">
+                  <div className="input-group-text">
+                    Ethereum
+                    Address
+                  </div>
+                </div>
+              </div>
+              <div className="input-group mb-4">
+              <div className="input-group-append">
+                  <div className="input-group-text">
+              <label className="float-left"><b>Amount</b>&nbsp;</label>
+              <input
+                  type="text"
+                  ref={(input) => { this.amount = input }}
+                  className="form-control form-control-lg"
+                  placeholder="0"
+                  required />
+           
+              </div>
+              </div>
+              </div>
+              <button type="submit" className="btn btn-secondary btn-block btn-lg">TRANSFER</button>
+            </form>
+            </Card.Body>
+            </Card>
+
           </Route>
         </Switch>
         </Router>
