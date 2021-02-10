@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
+import { PieChart } from 'react-minimal-pie-chart';
 import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns, CardGroup} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import Table from 'react-bootstrap/Table';
@@ -449,7 +450,7 @@ i = 351
 			data: [{
         type: "pie",
         startAngle:  90,
-				showInLegend: true,
+				showInLegend: false,
 				legendText: "{label}",
 				toolTipContent: "{label}: <strong>{y}</strong>",
 				indexLabel: "{y}",
@@ -540,12 +541,13 @@ i = 351
     return (
       
       <div>
+        <body>
                       <Router basename="/frontend">
         <div>
     <nav>
 
 
-      <Navbar bg="light" expand="lg">
+      <Navbar  bg="dark" variant="dark">
   <Navbar.Brand href="#home">Decentralife</Navbar.Brand>
   <Navbar.Toggle aria-controls="basic-navbar-nav" />
   <Navbar.Collapse id="basic-navbar-nav">
@@ -587,24 +589,27 @@ i = 351
 
 
 
-<CardColumns>
+<CardColumns >
 
 
-  <Card className="p-3">
+  <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   {content} 
   </Card>
 
-  <Card text="white" className="text-center p-3">
-  <CanvasJSChart options = {options} 
-				/* onRef={ref => this.chart = ref} */
-			/>
+  <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+<PieChart
+  data={[
+    { title: 'One', value: totalSupply_, color: '#E38627' },
+    { title: 'Two', value: burned, color: '#C13C37' },
+  ]}
+/>
   </Card>
-  <Card>
+  <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   
     <Card.Body>
       <Card.Title>Amount in Circulation</Card.Title>
       <Card.Text>
-      <small className="text-muted">DTE: </small>
+      <small className="text-muted">DEF: </small>
       <small> { totalSupply_ } </small>
       </Card.Text>
     </Card.Body>
@@ -652,7 +657,7 @@ i = 351
           </Route>
           <Route path="/transform">
           <CardGroup>
-          <Card>
+          <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Transform Lobby Info</Card.Header>
   <Card.Body>
     <Card.Title>Enters</Card.Title>
@@ -669,7 +674,7 @@ i = 351
   </Card.Body>
 </Card>
 
-            <Card>
+            <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Transform</Card.Header>
   <Card.Body>
     <Card.Title>Enters</Card.Title>
@@ -738,7 +743,7 @@ i = 351
             </div>
           </Route>
           <Route path="/transfer" exact>
-            <Card>
+            <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
             <Card.Body> 
           <form className="mb-3" onSubmit={(event) => {
                 event.preventDefault()
@@ -791,7 +796,7 @@ i = 351
           </Route>
         </Switch>
         </Router>
-
+        </body>
       </div>
     );
 

@@ -23,3 +23,13 @@
     margin-right:auto;
     size:1px;
   }
+
+  body {
+    margin: 0;
+    font-family: "Helvetica" !important;
+    background: linear-gradient(
+      -90deg,
+      rgb(112, 64, 64),
+      rgba(16, 16, 20, 0.94)
+    );
+  }

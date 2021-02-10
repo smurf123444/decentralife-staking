@@ -25,14 +25,14 @@ export const GetXfExits = (props) => {
   return(
     <>
     <div>
-      <Table striped bordered hover size="sm">
+      <Table striped bordered hover size="dark">
           <thead>
             <tr>
               <td>
                 Date and Time of Tranform Lobby Exit Transaction.
               </td>
               <td>
-                Transform Amount Total (DTE)
+                Transform Amount Total (DEF)
               </td>
               <td>
                 ID

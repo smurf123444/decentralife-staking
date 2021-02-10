@@ -175,7 +175,7 @@ else{
                 End Day
               </td>
               <td>
-                Staked DTE
+                Staked DEF
               </td>
               <td>
                 Exit Stake (Button)

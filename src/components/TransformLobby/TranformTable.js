@@ -410,8 +410,8 @@ class TransformTable extends Component {
      
 
     return (
-   
-        <Table striped bordered variant="light">
+      
+        <Table striped bordered variant="sm light" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
           <tbody>
  
                       <tr>

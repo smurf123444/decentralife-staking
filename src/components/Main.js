@@ -32,7 +32,7 @@ class Main extends Component {
 
         <div className="card mb-4" >
 
-          <div className="card-body">
+          <div className="card-body" style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
 
             <form className="mb-3" onSubmit={(event) => {
                 event.preventDefault()
@@ -59,7 +59,7 @@ class Main extends Component {
                 <div className="input-group-append">
                   <div className="input-group-text">
                     
-                    DTE
+                    DEF
                     &nbsp;&nbsp;&nbsp; Token
                   </div>
                 </div>

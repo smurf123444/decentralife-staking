@@ -33,7 +33,7 @@ export const GetStakeEnd = (props) => {
             <tr>
               <td>Stake ID</td>
               <td>
-              Staked DTE
+              Staked DEF
               </td>
               <td>
               Gross payout

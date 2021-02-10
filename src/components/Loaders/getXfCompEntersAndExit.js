@@ -88,7 +88,7 @@ else
  return(
   <>
   <div>
-    <Table striped bordered hover size="sm">
+    <Table striped bordered hover variant="dark">
         <thead>
           <tr>
             <td>
