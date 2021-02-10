@@ -6,6 +6,7 @@ import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
 import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns, CardGroup} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
+import Table from 'react-bootstrap/Table';
 import {
   BrowserRouter as Router,
   Switch,
@@ -522,7 +523,7 @@ i = 351
     <Nav>
   
     <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
-    <Nav.Link href="#deets">  <Wallet /></Nav.Link>
+    <Nav.Link href="#deets"> <Wallet /></Nav.Link>
     </Nav>
   </Navbar.Collapse>
 </Navbar>
@@ -641,6 +642,35 @@ i = 351
 
   </Card.Body>
   <center>
+  <Table striped bordered variant="sm light" style={{width: '38vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
+  <thead style={{color: "black", marginLeft: "100px"}} >
+            <tr>
+              <td style={{color: "black", width: "38vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;  Day
+              </td>
+              <td style={{color: "black",width: "38vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;Available Hex
+              </td>
+              <td style={{color: "black", width: "38vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;Total ETH&nbsp;
+              </td>
+              <td style={{color: "black", width: "38vw"}}>
+              &nbsp;&nbsp;  HEX/ETH&nbsp;
+              </td>
+
+              <td style={{color: "black", width: "38vw"}}> 
+                Your HEX
+              </td>
+              <td style={{color: "black", width: "38vw"}}>
+                
+                Your ETH
+              </td>
+              <td >
+                Enter/Exit
+              </td>
+            </tr>
+          </thead>
+          </Table>
   <TransformList 
           day={currentDay}
           ethTransformed={this.props.ethTransformed} 
