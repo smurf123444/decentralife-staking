@@ -72,13 +72,16 @@ module.exports = {
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
       },
 
-    goerli: {
+    mainnet: {
         provider: () => {
-          return new HDWalletProvider(mnemonic, 'https://kovan.infura.io/v3/e272d9d07a2e489d94cee678fede6768')
+          return new HDWalletProvider(mnemonic, 'https://mainnet.infura.io/v3/e272d9d07a2e489d94cee678fede6768')
         },
-        network_id: '5', // eslint-disable-line camelcase
-        gas: 7500000,
-        gasPrice: 10000000000,
+        network_id: 1,
+        gas: 6500000,           // Default gas to send per transaction
+        gasPrice: 1000000000,  // 10 gwei (default: 20 gwei)
+        confirmations: 0,       // # of confs to wait between deployments. (default: 0)
+        timeoutBlocks: 200,     // # of blocks before a deployment times out  (minimum/default: 50)
+        skipDryRun: false        // Skip dry run before migrations? (default: false for public nets )
       },
     // Useful for private networks
     private: {

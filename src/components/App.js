@@ -157,7 +157,7 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts()
     this.setState({ account: accounts[0] })
  
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x4587D1BCd8eC397A473D4Ae31F5862705bA67f7D')
     this.setState({ tokenFarm })
       let i = 351
 
@@ -223,7 +223,7 @@ class App extends Component {
     let i = 351
     const web3 = window.web3
     
-    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
+    const tokenFarm = new web3.eth.Contract(TokenFarm, '0x4587D1BCd8eC397A473D4Ae31F5862705bA67f7D')
     let currentDay = await tokenFarm.methods.currentDay().call()
     
     let currentReversed = 351 - currentDay
@@ -570,28 +570,12 @@ i = 351
     </Nav>
   </Navbar.Collapse>
 </Navbar>
-
-
-
     </nav>
 
     </div>
-
               <Switch>
-
-
           <Route path="/stake">
-
-
-
-
-
-
-
-
 <CardColumns >
-
-
   <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   {content} 
   </Card>
@@ -636,24 +620,11 @@ i = 351
   </Card.Body>
 </Card>
 </CardColumns>
-
-
-
-
-
-            <main role="main" className="col-lg-12 " style={{ maxWidth: '600px' }}>
-
-                    
+            <main role="main" className="col-lg-12 " style={{ maxWidth: '600px' }}>                 
               </main>
-
               <div className="content mr-auto ml-auto">
-                
-
-
 			{/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
-
               </div>
-          
           </Route>
           <Route path="/transform">
           <CardGroup>
@@ -688,30 +659,30 @@ i = 351
 
   </Card.Body>
   <center>
-  <Table striped bordered variant="sm light" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
+  <Table striped bordered variant="dark" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#g0g0g0', color: 'white'}}>
   <thead style={{color: "black", marginLeft: "100px"}} >
             <tr>
-              <td style={{color: "black", width: "20vw"}}>
+              <td style={{color: "white",width: "20vw"}}>
               &nbsp;&nbsp;&nbsp;&nbsp;  Day
               </td>
-              <td style={{color: "black",width: "10vw"}}>
+              <td style={{color: "white",width: "10vw"}}>
               &nbsp;&nbsp;&nbsp;&nbsp;Available
               </td>
-              <td style={{color: "black", width: "10vw"}}>
+              <td style={{color: "white",width: "10vw"}}>
               All (ETH)
               </td>
-              <td style={{color: "black", width: "50vw", marginRight: "500vw"}}>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEF / 1 ETH
+              <td style={{ color: "white",width: "50vw", marginRight: "500vw"}}>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEF / 1 ETH
               </td>
 
-              <td style={{color: "black", width: "20vw"}}> 
+              <td style={{color: "white",width: "20vw"}}> 
               Your DEF
               </td>
-              <td style={{color: "black", width: "15vw"}}>
+              <td style={{color: "white", width: "15vw"}}>
                 
                 Your ETH
               </td>
-              <td style={{color: "black", width: "15vw"}}>
+              <td style={{color: "white", width: "15vw"}}>
                 Enter/Exit
               </td>
             </tr>
@@ -738,7 +709,7 @@ i = 351
           </Route>
           <Route path="/" exact>
             <div>
-            <h1>Welcome to Decentralife Prototype v1.0</h1>
+            <h1 style={{color:"white"}}>Welcome to Decentralife Prototype v1.0</h1>
               <Wallet />
             </div>
           </Route>

@@ -42,10 +42,9 @@ s=0
     <Table striped bordered hover size="dark">
         <thead>
           <tr>
-            <td>Index of Stake</td>
-            <td>
-            stakeId
-            </td>
+<td>
+  Amount of DEF Staked: 
+</td>
             <td>
             stakedDays
             </td>
@@ -63,12 +62,11 @@ s=0
         <tbody>
         {uniqueStake.map(data=>(
           <tr key={data.id}>
-          <td>{s}</td>
-       <td>{data.stakeId}</td>
+            <td>{data.stakedHearts / 1000000}</td>
     
        <td>{data.stakedDays}</td>
     
-       <td>{data.stakeTShares}</td>
+       <td>{data.stakeTShares * 1000000}</td>
     
        <td>{data.stakedDays}</td>
     

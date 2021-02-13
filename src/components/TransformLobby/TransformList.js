@@ -11,9 +11,6 @@ class TransformList extends Component {
       
 <div class="table-scroll" >
 <div >
-
-
-
   <tbody>
     <tr>
   <TransformTable 
@@ -31,20 +28,9 @@ class TransformList extends Component {
     xfLobbyMembers={this.props.xfLobbyMembers}
     />
     </tr>
-{}
   </tbody>
-
   </div>
 </div>
-
-
-          
-
-
-
-
-
-
     );
   }
 }

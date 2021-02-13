@@ -22,7 +22,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v
 let personalAccount = 0
 let valueEth = 0
 let transactionTimestamp = 0
-const tokenFarm = new web3.eth.Contract(TokenFarm, '0x71A8D28d6E857394851D03eBfdF8C0aD9086d166')
+const tokenFarm = new web3.eth.Contract(TokenFarm, '0x4587D1BCd8eC397A473D4Ae31F5862705bA67f7D')
 class TransactionChecker {
   web3;
   account;
@@ -411,7 +411,7 @@ class TransformTable extends Component {
 
     return (
       
-        <Table striped bordered variant="sm light" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#ffffff', color: 'white'}}>
+        <Table striped bordered variant="dark">
           <tbody>
  
                       <tr>

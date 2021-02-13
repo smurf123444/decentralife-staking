@@ -619,7 +619,7 @@ contract GlobalsAndUtility is ERC20 {
     uint256 internal constant HEARTS_PER_SATOSHI = HEARTS_PER_HEX / SATOSHIS_PER_BTC * HEX_PER_BTC;
 
     /* Time of contract launch (2019-12-03T00:00:00Z) */
-    uint256 internal constant LAUNCH_TIME = 1612889758;
+    uint256 internal constant LAUNCH_TIME = 1612867515;
 
     /* Size of a Hearts or Shares uint */
     uint256 internal constant HEART_UINT_SIZE = 72;
@@ -2188,7 +2188,6 @@ contract TokenFarm is TransformableToken{
     uint256 public burn_amt;
     bool public isBurning;
     bool public manager;
-    uint256 public total_supply;
     uint256 public turn;
     uint256 public tx_n; 
     uint256 public burn_pct;
