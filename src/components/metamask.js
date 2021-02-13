@@ -9,12 +9,12 @@ function Wallet() {
     <>
       {wallet.status === 'connected' ? (
         <div>
-          <div>Account: {wallet.account}</div>
-          <button onClick={() => wallet.reset()}>Connected</button>
+          <div style={{color: 'white', fontSize:"20px"}}>Account: {wallet.account}</div>
+          <button onClick={() => wallet.reset()}>Connected to Kovan.</button>
         </div>
       ) : (
         <div>
-          <button onClick={() => wallet.connect()}>Connect</button>
+          <button onClick={() => wallet.connect()}>Connect to Kovan</button>
         </div>
       )}
     </>

@@ -6,7 +6,7 @@ import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
 import GetStakeEnd from './Loaders/getStakeEnd'
 import { PieChart } from 'react-minimal-pie-chart';
-import { Button, Navbar, Nav, NavDropdown, Form, FormControl, Card, CardColumns, CardGroup} from 'react-bootstrap';
+import { Button, Navbar, Nav, NavDropdown, Image, FormControl, Card, CardColumns, CardGroup, Row, Container, Col} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import Table from 'react-bootstrap/Table';
 import {
@@ -36,6 +36,7 @@ import Wallet from './metamask'
 import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const queryString = require('query-string');
+var BigNumber = require('big-number');
 //require('./hexDecoders.js');
 let JSONarray = []
 
@@ -426,6 +427,12 @@ i = 351
         });
       }
     });
+    function strip4(number) {
+      return (parseFloat(number).toPrecision(4));
+  }
+  function strip12(number) {
+    return (parseFloat(number).toPrecision(12));
+}
 //https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
     const link = from([
       errorLink,
@@ -439,29 +446,6 @@ i = 351
 
    
 
-    const options = {
-			theme: "light",
-			animationEnabled: true,
-			exportFileName: "Snapshot of DEF Burnchart",
-			exportEnabled: true,
-			title:{
-			
-			},
-			data: [{
-        type: "pie",
-        startAngle:  90,
-				showInLegend: false,
-				legendText: "{label}",
-				toolTipContent: "{label}: <strong>{y}</strong>",
-				indexLabel: "{y}",
-				indexLabelPlacement: "inside",
-				dataPoints: [
-          { y: totalSupply_},
-          { y: burned },
-
-				]
-			}]
-		}
 
     let popUpXf
     if(!this.state.loading) {
@@ -593,8 +577,18 @@ i = 351
     <Card.Body>
       <Card.Title>Amount in Circulation</Card.Title>
       <Card.Text>
-      <small className="text-muted">DEF: </small>
-      <small> { totalSupply_ } </small>
+      <small className="text-muted">DEF (Orange):&nbsp; </small>
+      <medium> { strip12(totalSupply_) } </medium>
+     
+      </Card.Text>
+      <Card.Text>
+      <small className="text-muted">Burned (Red):&nbsp; </small>
+      <medium> { burned} </medium>
+      </Card.Text>
+
+      <Card.Text>
+      <small className="text-muted"> Percent Burned: &nbsp; </small>
+      <medium> {strip4(burned / parseInt(totalSupply_)) * 100 + '%'} </medium>
       </Card.Text>
     </Card.Body>
     <Card.Footer>
@@ -708,10 +702,21 @@ i = 351
 
           </Route>
           <Route path="/" exact>
-            <div>
-            <h1 style={{color:"white"}}>Welcome to Decentralife Prototype v1.0</h1>
-              <Wallet />
-            </div>
+          <Container>
+  <Row xs={2} md={4} lg={6}>
+
+  <Image src="https://raw.githubusercontent.com/decentralife/frontend/master/static/media/dai.e0a371e7.png" fluid />
+ 
+  </Row>
+  <Row xs={1} md={2}>
+    <Col>    <div style={{color:"white"}}>
+            <h1 >Welcome to Decentralife</h1>
+             <p>Certificate of Deposit on the Blockchain.</p>
+            </div></Col>
+            <Col> <h1><Wallet /></h1></Col>
+    
+  </Row>
+</Container>
           </Route>
           <Route path="/transfer" exact>
             <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
