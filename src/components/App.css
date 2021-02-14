@@ -23,7 +23,24 @@
     margin-right:auto;
     size:1px;
   }
+  .table-scroll{
+    height: 600px !important;
+    overflow: scroll;
+    margin-right: auto;
+    margin-left: auto;
 
+}
+  .footer{
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: rgb(57, 32, 32);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    color:white;
+    width: 100%;
+  }
   body {
     margin: 0;
     font-family: "Helvetica" !important;

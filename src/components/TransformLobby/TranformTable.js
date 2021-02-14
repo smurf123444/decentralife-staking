@@ -70,17 +70,17 @@ function myAvailableHex() {
   {
     if(i >= 20)
     {
-      amount = "500m"
+      amount = "~515m"
       newArray.push (<tr><td>{amount}</td></tr>)
     }
     if(i <= 19 && i >= 1)
     {
-      amount = "525m"
+      amount = "~516m"
       newArray.push (<tr><td>{amount}</td></tr>)
     }
     if(i < 2 && i >= 1)
     {
-      amount = "1.5b"
+      amount = "~1.5b"
       newArray.push (<tr><td>{amount}</td></tr>)
     }
   }
@@ -101,12 +101,11 @@ function resolveAfter2Seconds(x) {
 
 
 
-function myTotalEth(eth, day) {
+function myTotalEth(eth, day, test) {
   let i = 351
   let s = 351 - day + 1
   let newArray= [];
   let string = ""
-
   do{
     
     if(s >= i && s <= i)
@@ -422,7 +421,7 @@ class TransformTable extends Component {
                           {myAvailableHex()}
                         </td>
                         <td>
-                          {myTotalEth(this.props.totalEth, this.props.day)}
+                          {myTotalEth(this.props.totalEth, this.props.day, this.props.dailyData)}
                         </td>
                         <td>
                           {hexToETHfunc(this.props.hexToEth, this.props.day)} 

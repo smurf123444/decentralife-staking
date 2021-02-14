@@ -27,7 +27,6 @@ export const GetStakeCompStartAndEnd = (props) => {
      ass[i] = [data.id,data.stakeId , (data.stakedHearts   / 100000000), (data.payout   / 100000000), (data.penalty / 100000000 ), (data.payout / 100000000)- (data.penalty  / 100000000), data.daysLate, data.servedDays, data.stakedShares, data.prevUnlocked ]
    i++
   })
-  console.log('stakeeee',data)
    uniqueStake = data.stakeStarts.filter(({ id }) =>
   !data.stakeEnds.some(exclude => exclude.id === id)
 );

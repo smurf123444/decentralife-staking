@@ -22,6 +22,24 @@ export function xfEnterAndExitWithAccount(tits){
   `
   return(LOAD_XFENTERS)
 }
+export function xfLobbyDailyData(){
+  const LOAD_XFDAILYDATA = gql`
+{
+ dailyDataUpdates(orderDirection:desc)
+  {
+    beginDay
+    payoutPerTShare
+    endDay
+    lobbyEth
+    lobbyHexPerEth
+    lobbyHexAvailable
+    shares
+    payout
+  }
+  }
+  `
+  return(LOAD_XFDAILYDATA)
+}
 /*
 export const LOAD_XFENTERS = gql`
 {

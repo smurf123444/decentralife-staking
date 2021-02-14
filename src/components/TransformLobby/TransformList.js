@@ -24,6 +24,7 @@ class TransformList extends Component {
     yourExitButton={this.props.yourExitButton}
     yourEnterButton={this.props.yourEnterButton}
     xfLobbyExit={this.props.xfLobbyExit}
+    dailyData={this.props.dailyData}
     xfLobbyEnter={this.props.xfLobbyEnter}
     xfLobbyMembers={this.props.xfLobbyMembers}
     />

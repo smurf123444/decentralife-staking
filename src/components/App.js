@@ -4,6 +4,7 @@ import { withWeb3 } from 'react-web3-provider';
 import { toast } from "react-toastify";
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
+import GetDailyData from './Loaders/getXfLobbyDailyData'
 import GetStakeEnd from './Loaders/getStakeEnd'
 import { PieChart } from 'react-minimal-pie-chart';
 import { Button, Navbar, Nav, NavDropdown, Image, FormControl, Card, CardColumns, CardGroup, Row, Container, Col} from 'react-bootstrap';
@@ -34,6 +35,7 @@ import Logo from '../dai.png'
 import PopupXf from './TransformLobby/PopupXf';
 import Wallet from './metamask'
 import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
+import { xfLobbyDailyData } from './Querys/Queries';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 const queryString = require('query-string');
 var BigNumber = require('big-number');
@@ -105,7 +107,23 @@ THIS IS FOR FINDING
     prevUnlocked
   }
 }
-
+THIS IS FOR FINDING
+1. Available HEx for day
+2. Hex per Eth calculation
+3. Total ETH in lobby
+4. Payout per tshare (for calculating daily rewards)
+5. day for which this information is valid.
+ dailyDataUpdates(orderDirection:desc)
+  {
+    beginDay
+    payoutPerTShare
+    endDay
+    lobbyEth
+    lobbyHexPerEth
+    lobbyHexAvailable
+    shares
+    payout
+  }
 
 
 */
@@ -120,6 +138,7 @@ class App extends Component {
       dappToken: {},
       dappTokenBalance: '0',
       burned: '0',
+      dailyDataUpdate: [],
       currentDay: '0',
       tokenFarm: {},
       totalEthXL: '0',
@@ -153,6 +172,8 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
+
+
     const web3 = window.web3
 
     const accounts = await web3.eth.getAccounts()
@@ -170,6 +191,7 @@ class App extends Component {
       let yourAddress_ = accounts[0]
       let burned = await tokenFarm.methods.burnInfo(accounts[0]).call()
       console.log(burned[1])
+
       this.setState({ account: yourAddress_.toString()})
       this.setState({ dappTokenBalance:  (personalBalance / 100000000).toString()})
       this.setState({ currentDay:  day.toString()})
@@ -181,6 +203,7 @@ class App extends Component {
 
   
   async loadWeb3() {
+
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum)
       await window.ethereum.enable()
@@ -220,7 +243,10 @@ class App extends Component {
 
 
   async initiate(){
-    
+
+
+//https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
+
     let i = 351
     const web3 = window.web3
     
@@ -416,33 +442,34 @@ i = 351
 
 
   render() {
-    const { account, dappToken, burned, currentDay, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
+    const { account, dappToken, burned, currentDay, dailyDataUpdate, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
+
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
-    console.log(this.state.currentDay)
-    const errorLink = onError(({ graphqlErrors, networkError }) => {
-      if (graphqlErrors) {
-        graphqlErrors.map(({ message, location, path }) => {
-          alert(`Graphql error ${message}`);
-        });
-      }
-    });
     function strip4(number) {
       return (parseFloat(number).toPrecision(4));
   }
   function strip12(number) {
     return (parseFloat(number).toPrecision(12));
 }
-//https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
-    const link = from([
-      errorLink,
-      new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
-    ]);
-    
-    const client = new ApolloClient({
-      cache: new InMemoryCache(),
-      link: link,
+const errorLink = onError(({ graphqlErrors, networkError }) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({ message, location, path }) => {
+      alert(`Graphql error ${message}`);
     });
+  }
+});
+
+//https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
+const link = from([
+  errorLink,
+  new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
+]);
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
+});
 
    
 
@@ -473,6 +500,8 @@ i = 351
         account={this.state.account}
       />
     }
+
+
     let xfLobbyEnters
     if(!this.state.loading) {
       xfLobbyEnters = <p id="loader" className="text-center">Loading...</p>
@@ -519,12 +548,22 @@ i = 351
       </ApolloProvider>
     }
 
-
+  
+    let dailyData
+    if(!this.state.loading) {
+      dailyData = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      dailyData =
+      <ApolloProvider client={client}>
+        <GetDailyData />
+      </ApolloProvider>
+    }
 
 
     return (
       
       <div>
+    
         <body>
                       <Router basename="/frontend">
         <div>
@@ -538,7 +577,7 @@ i = 351
     <Nav className="mr-auto">
     <Nav.Link as={Link} to="/" >Home</Nav.Link>
       <Nav.Link href="https://decentralife.medium.com/decentralife-token-846cfd424901">Info</Nav.Link>
-   
+
       <NavDropdown title="Solutions" id="basic-nav-dropdown">
         <NavDropdown.Item as={Link} to="/stake">Stake</NavDropdown.Item>
         <NavDropdown.Item as={Link} to="/transform">Transform</NavDropdown.Item>
@@ -602,17 +641,18 @@ i = 351
   <Card.Body>
     <Card.Title>Current Stakes</Card.Title>
     <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
+      New stakes that are not finished or are ready to be claimed.
     </Card.Text>
     {stakeComp}
     <Card.Title>Ended Stakes</Card.Title>
     <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
+      List of stakes that have ended previously.
     </Card.Text>
     {stakeEnds}
 
   </Card.Body>
 </Card>
+
 </CardColumns>
             <main role="main" className="col-lg-12 " style={{ maxWidth: '600px' }}>                 
               </main>
@@ -621,6 +661,7 @@ i = 351
               </div>
           </Route>
           <Route path="/transform">
+    
           <CardGroup>
           <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Transform Lobby Info</Card.Header>
@@ -652,6 +693,7 @@ i = 351
     </Card.Text>
 
   </Card.Body>
+
   <center>
   <Table striped bordered variant="dark" style={{width: '43vw', height: 'auto', margin: '0.5vh', marginTop: '0.05vh', backgroundColor: '#g0g0g0', color: 'white'}}>
   <thead style={{color: "black", marginLeft: "100px"}} >
@@ -690,6 +732,7 @@ i = 351
           closing={currentDay}
           yourAddress={yourAddress}
           yourHex={yourHex}
+          dailyData={dailyData}
           yourEth={yourEth}
           yourExitButton={yourExitButton}
           yourEnterButton={yourEnterButton}
@@ -697,16 +740,36 @@ i = 351
           xfLobbyEnter={this.enterDay}
           xfLobbyMembers={xfLobbyMembers}/>
           </center>
+
+
+
+
+
+
+
 </Card>
+
 </CardGroup>
+<div class="table-scroll">
+{dailyData}
+</div>
 
           </Route>
           <Route path="/" exact>
+          
           <Container>
   <Row xs={2} md={4} lg={6}>
 
-  <Image src="https://raw.githubusercontent.com/decentralife/frontend/master/static/media/dai.e0a371e7.png" fluid />
+
+
+
+
+  <Image src="https://i.imgur.com/UoMFVsj.jpg" fluid />
  
+
+
+
+
   </Row>
   <Row xs={1} md={2}>
     <Col>    <div style={{color:"white"}}>
@@ -716,6 +779,20 @@ i = 351
             <Col> <h1><Wallet /></h1></Col>
     
   </Row>
+  <Card>
+
+
+
+
+<div className="footer">
+    <p>Decentralife Token </p>
+    <p><a href="https://kovan.etherscan.io/address/0x4587d1bcd8ec397a473d4ae31f5862705ba67f7d">Etherscan</a></p>
+  </div>
+
+
+
+
+</Card>
 </Container>
           </Route>
           <Route path="/transfer" exact>
