@@ -121,3 +121,46 @@ export function stakeStartAndEndWithAccount(tits){
   `
   return(LOAD_STAKESTARTANDEND)
 }
+
+export function stakeStartAndEndWithAccountAndDaily(tits){
+  const LOAD_STAKESTARTANDENDANDDAILY = gql`
+  {
+  stakeStarts(where: {stakerAddr: "${tits}"}) {
+    id
+    stakerAddr
+    stakeId
+    data0
+    stakedDays
+    stakeTShares
+    startDay
+    endDay
+    stakedHearts
+  }
+  stakeEnds(where: {stakerAddr: "${tits}"}) {
+    id
+    stakerAddr
+    stakeId
+    stakedHearts
+    payout
+    penalty
+    daysLate
+    servedDays
+    stakedHearts
+    stakedShares
+    prevUnlocked
+  }
+  dailyDataUpdates(orderDirection:desc)
+  {
+    beginDay
+    payoutPerTShare
+    endDay
+    lobbyEth
+    lobbyHexPerEth
+    lobbyHexAvailable
+    shares
+    payout
+  }
+}
+  `
+  return(LOAD_STAKESTARTANDENDANDDAILY)
+}

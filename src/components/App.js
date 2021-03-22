@@ -4,10 +4,11 @@ import { withWeb3 } from 'react-web3-provider';
 import { toast } from "react-toastify";
 import GetXfCompEntersAndExit from './Loaders/getXfCompEntersAndExit'
 import GetXfExits from './Loaders/getXfExits'
+import GetXfLobbyTable from './Loaders/getXfLobbyTable'
 import GetDailyData from './Loaders/getXfLobbyDailyData'
 import GetStakeEnd from './Loaders/getStakeEnd'
 import { PieChart } from 'react-minimal-pie-chart';
-import { Button, Navbar, Nav, NavDropdown, Image, FormControl, Card, CardColumns, CardGroup, Row, Container, Col} from 'react-bootstrap';
+import { Button, Navbar, Nav, NavDropdown, Image, FormControl, Card, CardColumns, CardGroup, Row, Container, Col, Modal} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import Table from 'react-bootstrap/Table';
 import {
@@ -153,6 +154,8 @@ class App extends Component {
       totalSupply: '0',
       initSupply: '0',
       loading: true,
+      input1:null,
+      input2:null,
       showPopup: false 
       };
     this.exitDay = this.exitDay.bind(this);
@@ -162,6 +165,7 @@ class App extends Component {
     this.setState({  
          showPopup: !this.state.showPopup  
     });  
+
      }  
   web3;
   account;
@@ -188,16 +192,19 @@ class App extends Component {
      
       let totalSupply_ = await tokenFarm.methods.totalSupply().call()
       let day = await tokenFarm.methods.currentDay().call()
+      let globals_ = await tokenFarm.methods.globals().call()
       let yourAddress_ = accounts[0]
       let burned = await tokenFarm.methods.burnInfo(accounts[0]).call()
-      console.log(burned[1])
-
+     // console.log(burned)
+      console.log(globals_)
       this.setState({ account: yourAddress_.toString()})
       this.setState({ dappTokenBalance:  (personalBalance / 100000000).toString()})
       this.setState({ currentDay:  day.toString()})
       this.setState({ yourAddress:  yourAddress_.toString()})
       this.setState({ burned: (burned[1] / 100000000).toString() })
       this.setState({ totalSupply: totalSupply_.toString()})
+      this.setState({ shareRate: globals_.shareRate.toString()})
+      this.setState({ lockedHearts: globals_.lockedHeartsTotal.toString()})
 
   }
 
@@ -289,8 +296,6 @@ i = 351
      let checkPersonalEthByDay = []
      //total hex for all days available (hardcoded)
      let hexAvailableArray = myTotalHex();
-     //variable to convert Eth by day times amount available for whats left to transform on that day.
-     let hexToEthDisplay = 0
      
      //Used to store today's value that has value stored (kinda simplistic)
      let hexToEth = []
@@ -303,19 +308,11 @@ i = 351
      let xfLobbyMembersWrite = []
      let xfLobbyMembersRead = []
 
-    // personalEthByDay = await tokenFarm.methods.xfLobbyPendingDays(this.state.account).call()
+   
 //Check each day for for total Eth spent on that day.
      while (i >= 1)
      {
-      if(xfLobbyMembersRead[i] > 0)
-      {
-     
-        xfLobbyMembersWrite[i] = true
-      }
-      else
-      {
-        xfLobbyMembersWrite[i]  = false
-      }
+
       if(currentReversed === i)
       {
         checkCurrentDay[349 - i + 1] = true
@@ -324,30 +321,24 @@ i = 351
       {
         checkCurrentDay[349 - i + 1] = false
       }
-       //add items to array that include that day as the ID and t  ransferValue for value.
+         xfLobbyMembersRead  = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
       totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
-       
-      // console.log(personalEthByDay + " : OUTPUTSS")
-       //if the total Eth variable is 0, then display the amount of ether on that specific day.
        if(totalEthByDay[i] > 0){
-    
-         //equation to change amount of hex available for the day and personal.
        tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
-       //one variable is true, other is false
        hexToEth[i] = hexAvailableArray[351 - i] - (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
-       //both variables are untrue
-    
        yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
-      // hexToEth = hexAvailableArray[351 - i] * Web3.utils.fromWei(totalEthByDay, "Ether")
-       checkTotalEthByDay[351 - i + 1] = true
        }
        else
        {
          hexToEth[i] = hexAvailableArray[351 - i] * 1
-
          yourEth[i] = 0
-         checkTotalEthByDay[351 - i + 1] = false
-         
+       }
+       xfLobbyMembersRead[i]  = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
+       if(xfLobbyMembersRead[i][0] > 0){
+         checkTotalEthByDay[351 - i + 1] = true
+       }
+       else{
+        checkTotalEthByDay[351 - i + 1] = false
        }
      //  console.log(personalEthByDay)
        if(yourEth[i] > 0){
@@ -362,7 +353,7 @@ i = 351
        }
        i--
      }
-     
+     console.log(checkTotalEthByDay)
  
      this.setState({ yourHex:  yourHex[currentDay].toString()})
      this.setState({ yourEth:  yourEth[currentDay].toString()})
@@ -395,16 +386,9 @@ i = 351
      //   })
       }
 
-  stakeTokens = (amount, day) => {
-//    this.state.tokenFarm.methods.approve(this.state.tokenFarm._address, amount).send({ from: this.state.account }).on('transactionHash', (hash) => {
-      this.state.tokenFarm.methods.stakeStart(amount, day).send({ from: this.state.account }).on('transactionHash', (hash) => {
-        this.setState({ loading: false })
-      })
- //   })
-  }
-  
 
   unstakeTokens = (stakeIDparam, stakeID) => {
+    console.log('stakeIdparam',stakeIDparam,'stakeId',stakeID)
     this.state.tokenFarm.methods.stakeEnd(stakeIDparam, stakeID).send({ from: this.state.account }).on('transactionHash', (hash) => {
       this.setState({ loading: false })
     })
@@ -425,30 +409,28 @@ i = 351
     })
   }
 
+  stakeCount = () => {
+    this.state.tokenFarm.methods.stakeCount(this.state.account).send({ from: this.state.account}).on('transactionHash', (hash) => {
+      this.setState({ loading: false })
+    })
+  }
   
   getPopup = (input1, input2) => {
-    let popUpStakeEnd
-    if(!this.state.loading) {
-      popUpStakeEnd = <p id="loader" className="text-center">Loading...</p>
-    } else {
-      popUpStakeEnd =
-      <div>  
-          <button onClick={this.togglePopup.bind(this)}> <center>End </center></button>  
-          {this.state.showPopup ? <PopupStakeEnd  text='X' closePopup={this.togglePopup.bind(this)} func={this.unstakeTokens} stakeIndex={input1} stakeID={input2}/> : null }  
-      </div>  
-    }
-    return popUpStakeEnd
+    this.setState({input1,input2,showPopup:true})
   }
 
 
   render() {
-    const { account, dappToken, burned, currentDay, dailyDataUpdate, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
+    const { account, dappToken, burned, currentDay, shareRate, lockedHearts, dailyDataUpdate, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
 
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
     function strip4(number) {
       return (parseFloat(number).toPrecision(4));
   }
+  function strip8(number) {
+    return (parseFloat(number).toPrecision(8));
+}
   function strip12(number) {
     return (parseFloat(number).toPrecision(12));
 }
@@ -471,7 +453,7 @@ const client = new ApolloClient({
   link: link,
 });
 
-   
+     
 
 
     let popUpXf
@@ -500,6 +482,11 @@ const client = new ApolloClient({
         account={this.state.account}
       />
     }
+
+
+
+    
+         
 
 
     let xfLobbyEnters
@@ -533,6 +520,7 @@ const client = new ApolloClient({
     } else {
       stakeComp =
       <ApolloProvider client={client}>
+        {this.state.showPopup?<PopupStakeEnd  text='X' closePopup={this.togglePopup.bind(this)} func={this.unstakeTokens} stakeIndex={this.state.input1} stakeID={this.state.input2}/>:null}
         <GetStakeCompStartAndEnd account={this.state.account} func={this.getPopup} func2={this.unstakeTokens} />
       </ApolloProvider>
     }
@@ -559,6 +547,63 @@ const client = new ApolloClient({
       </ApolloProvider>
     }
 
+    function Example() {
+      const [show, setShow] = useState(false);
+    
+      const handleClose = () => setShow(false);
+      const handleShow = () => setShow(true);
+    
+      return (
+        <>
+          <Button variant="primary" onClick={handleShow}>
+            Launch static backdrop modal
+          </Button>
+    
+          <Modal
+            show={show}
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Modal title</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              I will not close if you click outside me. Don't even try to press
+              escape key.
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary">Understood</Button>
+            </Modal.Footer>
+          </Modal>
+        </>
+      );
+    }
+console.log(yourExitButton)
+
+    let xfTable
+    if(!this.state.loading) {
+      xfTable = <p id="loader" className="text-center">Loading...</p>
+    } else {
+      xfTable =
+      <ApolloProvider client={client}>
+      {this.state.showPopup?<PopupStakeEnd  text='X' closePopup={this.togglePopup.bind(this)} func={this.unstakeTokens} stakeIndex={this.state.input1} stakeID={this.state.input2}/>:null}
+        <GetXfLobbyTable 
+        func={this.enterDay}
+        account={this.state.account} 
+        day={this.state.currentDay} 
+        yourEnterButton={this.state.yourEnterButton} 
+        yourExitButton={this.state.yourExitButton}
+        enteredDays={this.state.yourExitButton}
+        />
+      </ApolloProvider>
+    }
+
+ 
+  
 
     return (
       
@@ -598,16 +643,16 @@ const client = new ApolloClient({
     </div>
               <Switch>
           <Route path="/stake">
+            {this.stakeCount}
 <CardColumns >
   <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   {content} 
   </Card>
-
   <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
 <PieChart
   data={[
-    { title: 'One', value: totalSupply_, color: '#E38627' },
-    { title: 'Two', value: burned, color: '#C13C37' },
+    { title: 'Total Supply', value: totalSupply_, color: '#E38627' },
+    { title: 'Burned', value: burned, color: '#C13C37' },
   ]}
 />
   </Card>
@@ -629,13 +674,25 @@ const client = new ApolloClient({
       <small className="text-muted"> Percent Burned: &nbsp; </small>
       <medium> {strip4(burned / parseInt(totalSupply_)) * 100 + '%'} </medium>
       </Card.Text>
+
+      
     </Card.Body>
     <Card.Footer>
       <small className="text-muted">Last updated 3 mins ago</small>
     </Card.Footer>
+
+  </Card>
+  <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+  <Card.Body>
+    <Card.Text>
+      <small className="text-muted"> Share Rate: &nbsp; </small>
+      <medium> {strip8(shareRate / 1000000000000)} </medium>
+      </Card.Text>
+    </Card.Body>
   </Card>
 </CardColumns>
 <CardColumns>
+
 <Card style={{ width: '100vw', height: 'auto', margin: 'auto', marginTop: '0.05vh', backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Stakes Info</Card.Header>
   <Card.Body>
@@ -661,23 +718,24 @@ const client = new ApolloClient({
               </div>
           </Route>
           <Route path="/transform">
-    
+ 
           <CardGroup>
           <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Transform Lobby Info</Card.Header>
   <Card.Body>
     <Card.Title>Enters</Card.Title>
     <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
+     Information for Entered ETH to Transform into DEF Token (minting)
     </Card.Text>
     {xfLobbyEnters}
     <Card.Title>Exits</Card.Title>
     <Card.Text>
-      With supporting text below as a natural lead-in to additional content.
+      Information for Total amount recieved from Day in Transform lobby, Based on the amount of ETH transformed.
     </Card.Text>
     {xfLobbyExits}
 
   </Card.Body>
+
 </Card>
 
             <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
@@ -732,7 +790,7 @@ const client = new ApolloClient({
           closing={currentDay}
           yourAddress={yourAddress}
           yourHex={yourHex}
-          dailyData={dailyData}
+          //dailyData={dailyData}
           yourEth={yourEth}
           yourExitButton={yourExitButton}
           yourEnterButton={yourEnterButton}
@@ -747,12 +805,11 @@ const client = new ApolloClient({
 
 
 
+
 </Card>
 
 </CardGroup>
-<div class="table-scroll">
-{dailyData}
-</div>
+
 
           </Route>
           <Route path="/" exact>

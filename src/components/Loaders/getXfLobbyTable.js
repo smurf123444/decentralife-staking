@@ -1,12 +1,33 @@
-import "./styles.css";
-import React, { useState, Component } from 'react'
+import React, { useEffect, useState, Component  } from "react";
+import { useQuery, gql } from "@apollo/client";
+import { xfEnterAndExitWithAccount, xfExitWithAccount} from "../Querys/Queries";
 import Table from 'react-bootstrap/Table';
+import Web3 from 'web3'
+import '../TransformLobby/styles.css';  
 import PopupXf from './PopupXf';
-const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
-
-
-function myDay() {
+import moment from 'moment';
+moment().format();
+export const GetXfLobbyTable = (props) => {
+  const { error, loading, data } = useQuery(xfEnterAndExitWithAccount(props.account));
+  let ass = []
+  let tits = []
+ if(loading){
+   return(<div>Loading...</div>)
+ }
+ else{
+  let i = 0;
+  data.xfLobbyEnters.map((data) => {
+   tits[i] = [data.id, data.timestamp, data.memberAddr, data.data0, data.rawAmount,data.enterDay]
+  i++
+  })
+  i = 0;
+  data.xfLobbyExits.map((data) => {
+    ass[i] = [data.id, data.timestamp , (data.xfAmount   / 1000000000) , data.memberAddr, data.data0]
+  i++
+  })
+ }
+ let i = 0
+ function myDay() {
   var newArray = []
   for (var i = 351; i >= 1; --i)
   {
@@ -14,8 +35,6 @@ function myDay() {
   }
   return newArray;
 }
-
-
 function myAvailableHex() {
   var newArray = []
   var amount = ""
@@ -39,22 +58,10 @@ function myAvailableHex() {
   }
   return newArray;   // The function returns the product of p1 and p2
 }
-
-
-function resolveAfter2Seconds(x) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(x);
-    }, 2000);
-  });
-};
-
-
-
-
-function myTotalEth(eth, day, test) {
+function myTotalEth(eth) {
   let i = 351
-  let s = 351 - day + 1
+  let s = 351 - props.day + 1
+  console.log(s)
   let newArray= [];
   let string = ""
   do{
@@ -74,11 +81,10 @@ function myTotalEth(eth, day, test) {
   // The function returns the product of p1 and p2
   
 }
-
-function hexToETHfunc(eth, day) {
+function hexToETHfunc(eth) {
 
   let i = 351
-  let s = 351 - day + 1
+  let s = 351 - props.day + 1
   let newArray= [];
   let string = ""
 
@@ -98,9 +104,10 @@ function hexToETHfunc(eth, day) {
   return newArray;   
 }
 
-function yourHEXcalc(hex, day) {
+
+function yourHEXcalc(hex) {
   let i = 351
-  let s = 351 - day + 1
+  let s = 351 - props.day + 1
   let newArray= [];
   let string = ""
 
@@ -119,10 +126,9 @@ function yourHEXcalc(hex, day) {
   return newArray;   // The function returns the product of p1 and p2
 }
 
-
-function yourETHcalc(hex, day) {
+function yourETHcalc(hex) {
   let i = 351
-  let s = 351 - day + 1
+  let s = 351 - props.day + 1
   let newArray= [];
   let string = ""
   do{
@@ -141,11 +147,40 @@ function yourETHcalc(hex, day) {
 }
  
 
+function yourButtoncalc() {
+  let i = 351
+  let s = 351 - props.day + 1
+  let newArray= [];
+  let string = ""
+  console.log(props.yourEntersButton)
+  do{
+    if(s >= i && s <= i)
+   {
+     newArray[i--] = (<tr><td className="form-button-height">   
+
+     <form className="form-button-height" id={s} onSubmit={(event) => {
+     
+       event.preventDefault()
+       props.yourExitButton()
+       props.func(parseInt(event.target.getAttribute("id")));
+
+       }}>
+         
+       <button type="submit" className="form-button-height">Exit!</button>
+       </form></td></tr>)
+   }
+   else{
+     string = ""
+     newArray[i--] = (<tr><td className="td-heightDim">{string}</td></tr>)
+   }
+   }
+   while(i > 0)
+   return newArray;   // The function returns the product of p1 and p2
+}
 
 
-var transformer = null;
 
-
+let transformer = 0
 class TransformTable extends Component {
   constructor(props){
     super(props);
@@ -177,8 +212,8 @@ class TransformTable extends Component {
   // }
 
   xfLobbyExit(s){
-    console.log('Came to this object ')
-    this.props.xfLobbyExit(s);
+    console.log('Came to this object ' + s.toString())
+    props.xfLobbyExit(s);
     
   }
 
@@ -195,19 +230,15 @@ class TransformTable extends Component {
     let popUpXf =
       <div>  
           <button type="popup" onClick={this.togglePopup.bind(this)}> Enter     </button>  
-          {this.state.showPopup ? <PopupXf  text='X' closePopup={this.togglePopup.bind(this)} fun={this.props.xfLobbyEnter} account={this.props.yourAddress}/> : null }  
-      
+          {this.state.showPopup ? <PopupXf  text='X' closePopup={this.togglePopup.bind(this)} fun={props.func} account={props.account}/> : null }  
       </div>  
     
-
     function yourButtoncalc(day,account,eth,currentDay,enterDay) {
 
       // console.log('day: ' + day + ' account: ' + account+' eth: '+eth);
        
        let i = 351
-       let initial = i + 1;
        var s = 0
-       var temp = day
        s = 351 - day + 1;
      
        let newArray= [];
@@ -268,81 +299,112 @@ class TransformTable extends Component {
 
     return (
       
-        <Table striped bordered variant="dark">
-          <tbody>
- 
-                      <tr>
-                        <td>
-                        {myDay()}
-                        </td>
-                        <td>
-                          {myAvailableHex()}
-                        </td>
-                        <td>
-                          {myTotalEth(this.props.totalEth, this.props.day, this.props.dailyData)}
-                        </td>
-                        <td>
-                          {hexToETHfunc(this.props.hexToEth, this.props.day)} 
-                        </td>
-                        <td>
-                          {yourHEXcalc(this.props.yourHex, this.props.day)}
-                        </td>
-                        <td>
-                          {yourETHcalc(this.props.yourEth, this.props.day)}
-                        </td>
-
-                        <td>
                       
-                        {yourButtoncalc(this.props.closing, this.xfLobbyExit,this.props.yourExitButton,this.props.yourEnterButton, this.props.xfLobbyEnter)}
+                        yourButtoncalc(props.closing, this.xfLobbyExit, props.yourExitButton, props.yourEnterButton, props.xfLobbyEnter)
 
-</td>
-
-</tr>   
-       </tbody>
-
-      </Table>
-      
     );
   }
   
 }
 
-export default TransformTable;
-
-/*
-  async checkBlock() {
-      //let block = await this.web3.eth.getBlock(1920050);
-      //let number = block.number;
-      
-      let i = 22682754;
-      while (i < 22682764) {
-          i++;
-          let block = await this.web3.eth.getBlock(i);
-          let number = block.number;
-
-         // console.log('Searching block ' + number);
-      if (block != null && block.transactions != null) {
-        //  console.log(block.timestamp)
 
 
-          for (let txHash of block.transactions) {
-              //contract : 0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f
-              let tx = await this.web3.eth.getTransaction(txHash);
-             // console.log(block.timestamp)
-              let time = block.timestamp
-              let timeConfigured = new Date(time*1000);
-              let accounts =  await this.web3.eth.getAccounts()
-            if (tx.to != null)
-            {
-            if ('0x075e4f66c4d53dd2d37b91bd7382b34f3b681b4f' == tx.to.toLowerCase()) {
-                //  console.log('Transaction found on block: ' + number);
-                  valueEth = await this.web3.utils.fromWei(tx.value, 'ether')
-                  transactionTimestamp = timeConfigured.toUTCString()
-                
-                  return ({address: tx.from, value: this.web3.utils.fromWei(tx.value, 'ether'), block: number});
+ let vag = []
+ while (i < tits.length) {
+  while (i < ass.length) {
+
+    if(tits[i][0] === ass[i][0]){
+        vag.push(tits[i])
+      i++
+    }
+   }
+    i++
+}
+i = 0
+ while (i < vag.length) {
+    if(vag[i][1] === tits[i][1]){
+      tits[i] = 0
+    }
+
+    i++
+   }
+i = 0
+let array = []
+while (i < tits.length)
+{
+if(tits[i] === 0)
+{
+  i++
+}
+else
+{
+  /*
+
+    id
+      timestamp
+      memberAddr
+      data0
+      rawAmount
+      enterDay
+      */
+  array[i] = (
+    <>
+    <tr key={data.id}>
+
+   <td>{/*timestamp*/
+   moment(tits[i][1] * 1000).format('L')}</td>
+
+   <td> {/*memberaddr*/tits[i][2]}</td>
+
+   <td>{/*rawAmount*/tits[i][4] }</td>
+
+   <td> {/*enterDay*/tits[i][5] }</td>
+
+    </tr>
+    </>
+   )
+   i++
+}
+}
+
+ return(
+  <>
+  <div>
+    <Table striped bordered hover variant="dark">
+        <thead>
+          <tr>
+            <td>
+            {myDay()}
+            </td>
+            <td>
+            {myAvailableHex()}
+            </td>
+            <td>
+             {myTotalEth("Tits")}
+            </td>
+            <td>
+              {hexToETHfunc("Tits")}
+            </td>
+            <td>
+              {
+                yourHEXcalc("Tits")
               }
-          }
-        }
-      }
-  }
-  }*/
+            </td>
+            <td>
+              {yourETHcalc("Tits")}
+            </td>
+            <td>
+              {<TransformTable />}
+            </td>
+          </tr>
+        </thead>
+        {array}
+
+
+      </Table>
+  </div>
+</>
+)
+}
+
+export default GetXfLobbyTable;

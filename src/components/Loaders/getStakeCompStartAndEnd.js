@@ -11,6 +11,7 @@ export const GetStakeCompStartAndEnd = (props) => {
   const { error, loading, data } = useQuery(stakeStartAndEndWithAccount(props.account));
   let ass = []
   let tits = []
+  let s = 0
   let uniqueStake=[]
  if(loading){
    return(<div>Loading...</div>)
@@ -32,21 +33,18 @@ export const GetStakeCompStartAndEnd = (props) => {
 );
  }
 
-let s = 0
-
-s=0
  return(
   <>
   <div>
     <Table striped bordered hover size="dark">
         <thead>
           <tr>
+            <td>
+              Stake ID
+            </td>
 <td>
   Amount of DEF Staked: 
 </td>
-            <td>
-            stakedDays
-            </td>
             <td>
             T-Shares
             </td>
@@ -59,18 +57,18 @@ s=0
           </tr>
         </thead>
         <tbody>
-        {uniqueStake.map(data=>(
+        {uniqueStake.map((data,index)=>(
           <tr key={data.id}>
-            <td>{data.stakedHearts / 1000000}</td>
+            <td>{data.stakeId}</td>
+            <td>{data.stakedHearts / 100000000}</td>
     
-       <td>{data.stakedDays}</td>
     
-       <td>{data.stakeTShares * 1000000}</td>
-    
+       <td>{data.stakeTShares * 100000000000}</td>
+
        <td>{data.stakedDays}</td>
     
        <td>{data.endDay}</td>
-       <td> { props.func(s++, data.stakeId) }</td>
+       <td><button onClick={()=> props.func(index,data.stakeId) }> End</button></td>
         </tr>
           
         ))}

@@ -43,9 +43,8 @@ while (i < tits.length)
 
    <td> {/*beginDay*/tits[i][0]}</td>
 
-   <td>{/*payoutPerTShare*/tits[i][2] }</td>
+   <td>{/*payoutPerTShare*/tits[i][1] }</td>
 
-   <td> {/*endDay*/tits[i][1] }</td>
    <td> {/*lobbyEth*/tits[i][3] }</td>
    <td> {/*lobbyHexPerEth*/parseInt(tits[i][4]) }</td>
    <td> {/*lobbyHexAvailable*/BigNumber(parseInt(tits[i][5])).div(10000000).toString() }</td>
@@ -55,7 +54,7 @@ while (i < tits.length)
     </tr>
     </>
    )
-   i++
+i++
 
 }
  console.log(tits.length)
@@ -65,7 +64,7 @@ s=0
     <thead>
       <tr>
         <td>
-          Day
+         Day
         </td>
         <td>
           Payout per T-share
