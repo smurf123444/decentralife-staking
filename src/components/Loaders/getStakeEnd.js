@@ -40,22 +40,22 @@ export const GetStakeEnd = (props) => {
               Gross payout
               </td>
               <td>
-              penalty
+              Penalty
               </td>
               <td>
-                Net Payout
+              Net Payout
               </td>
               <td>
-              daysLate
+              Days Late
               </td>
               <td>
-              servedDays
+              Served Days
               </td>
               <td>
-              stakedShares
+              Staked Shares
               </td>
               <td>
-              prevUnlocked
+              Good Accounting activated?
               </td>
             </tr>
           </thead>
