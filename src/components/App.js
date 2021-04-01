@@ -253,6 +253,7 @@ class App extends Component {
 
 
 //https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
+//0x4587D1BCd8eC397A473D4Ae31F5862705bA67f7D
 
     let i = 351
     const web3 = window.web3
@@ -268,7 +269,7 @@ class App extends Component {
      {
      if(i > 19)
      {
-     amount = 500000000
+     amount = 515000000
      newArray.push (amount)
      }
      if(i <= 19 && i >= 2)
@@ -443,6 +444,7 @@ const errorLink = onError(({ graphqlErrors, networkError }) => {
 });
 
 //https://api.thegraph.com/subgraphs/name/smurf123444/decentralife
+//https://api.thegraph.com/subgraphs/name/codeakk/hex
 const link = from([
   errorLink,
   new HttpLink({ uri: "https://api.thegraph.com/subgraphs/name/smurf123444/decentralife" }),
@@ -687,6 +689,7 @@ console.log(yourExitButton)
     <Card.Text>
       <small className="text-muted"> Share Rate: &nbsp; </small>
       <medium> {strip8(shareRate / 1000000000000)} </medium>
+      {console.log(shareRate)}
       </Card.Text>
     </Card.Body>
   </Card>

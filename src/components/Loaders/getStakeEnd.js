@@ -1,12 +1,13 @@
 import React, { useEffect, useState, Component  } from "react";
 import { useQuery, gql } from "@apollo/client";
 import {  stakeEndWithAccount } from "../Querys/Queries";
-import Web3 from 'web3'
 import Table from 'react-bootstrap/Table';
 import moment from 'moment';
+var bigDecimal = require('js-big-decimal');
 moment().format();
-var BigNumber = require('big-number');
-
+function strip4(number) {
+  return (parseFloat(number).toPrecision(4));
+}
 export const GetStakeEnd = (props) => {
   const { error, loading, data } = useQuery(stakeEndWithAccount(props.account));
  if(loading){
@@ -16,13 +17,13 @@ export const GetStakeEnd = (props) => {
   let array = data.stakeEnds.map((data) => (
     <tr key={data.id}>
       <td>{data.stakeId}</td>
-    <td>{BigNumber(data.stakedHearts).div(100000000).toString()}  </td>
-    <td>{data.payout  / 100000000}  </td>
-    <td>{data.penalty / 100000000}  </td>
-    <td>{BigNumber((data.payout)- (data.penalty)).div(100000000).toString() }  </td>
+    <td>{bigDecimal.divide(data.stakedHearts.toString(), '100000000', 4)}  </td>
+    <td>{ bigDecimal.divide(data.payout .toString(), '100000000', 4)}  </td>
+    <td>{bigDecimal.divide((data.penalty ).toString(), '100000000', 4) }  </td>
+    <td>{ bigDecimal.divide((data.payout-data.penalty).toString(), '100000000', 4)}  </td>
     <td>{data.daysLate    }  </td>
     <td>{data.servedDays  }  </td>
-    <td>{data.stakedShares/ 10}  </td>
+    <td>{bigDecimal.divide(data.stakedShares.toString(), '1000000000000', 10)}  </td>
     <td>{data.prevUnlocked}  </td>
 </tr>
 ))

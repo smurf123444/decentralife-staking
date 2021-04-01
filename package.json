@@ -43,6 +43,7 @@
     "graphql-tag": "^2.11.0",
     "identicon.js": "^2.3.3",
     "infura-web3-provider": "0.0.3",
+    "js-big-decimal": "^1.3.3",
     "js-sha3": "^0.8.0",
     "lodash": "^4.17.15",
     "moment": "^2.29.1",

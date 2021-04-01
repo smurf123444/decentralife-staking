@@ -3,7 +3,7 @@ import React, { useState, Component } from 'react'
 import Table from 'react-bootstrap/Table';
 import PopupXf from './PopupXf';
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('https://kovan.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
+const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/' + '885661b2ff2f4167b4c6570a07306408'));
 
 
 function myDay() {

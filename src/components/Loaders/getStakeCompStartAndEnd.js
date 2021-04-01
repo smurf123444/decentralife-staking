@@ -7,6 +7,9 @@ import '../TransformLobby/styles.css';
 import Popup from '../TransformLobby/PopupXf';
 import moment from 'moment';
 moment().format();
+function strip4(number) {
+  return (parseFloat(number).toPrecision(4));
+}
 export const GetStakeCompStartAndEnd = (props) => {
   const { error, loading, data } = useQuery(stakeStartAndEndWithAccount(props.account));
   let ass = []
@@ -60,10 +63,10 @@ export const GetStakeCompStartAndEnd = (props) => {
         {uniqueStake.map((data,index)=>(
           <tr key={data.id}>
             <td>{data.stakeId}</td>
-            <td>{data.stakedHearts / 100000000}</td>
+            <td>{Math.trunc(data.stakedHearts / 100000000)}</td>
     
     
-       <td>{data.stakeTShares * 100000000000}</td>
+       <td>{strip4(data.stakeTShares) }</td>
 
        <td>{data.stakedDays}</td>
     
