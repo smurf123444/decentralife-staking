@@ -11,11 +11,13 @@ import { PieChart } from 'react-minimal-pie-chart';
 import { Button, Navbar, Nav, NavDropdown, Image, FormControl, Card, CardColumns, CardGroup, Row, Container, Col, Modal} from 'react-bootstrap';
 import GetStakeCompStartAndEnd from './Loaders/getStakeCompStartAndEnd'
 import Table from 'react-bootstrap/Table';
+import Plot from 'react-plotly.js';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  Link,
+  withRouter
 } from "react-router-dom";
 import {
   ApolloClient,
@@ -38,6 +40,8 @@ import Wallet from './metamask'
 import PopupStakeEnd from './Loaders/PopupStakeEnd.js'
 import { xfLobbyDailyData } from './Querys/Queries';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+var Chart = require('chart.js');
+var bigDecimal = require('js-big-decimal');
 const queryString = require('query-string');
 var BigNumber = require('big-number');
 //require('./hexDecoders.js');
@@ -136,7 +140,10 @@ class App extends Component {
     super(props)
     this.state = {
       account: '0x0',
+      progressValue: 0,
+      totalEthByDay: [],
       dappToken: {},
+      globals:[],
       dappTokenBalance: '0',
       burned: '0',
       dailyDataUpdate: [],
@@ -196,7 +203,8 @@ class App extends Component {
       let yourAddress_ = accounts[0]
       let burned = await tokenFarm.methods.burnInfo(accounts[0]).call()
      // console.log(burned)
-      console.log(globals_)
+  
+      this.setState({globals: globals_})
       this.setState({ account: yourAddress_.toString()})
       this.setState({ dappTokenBalance:  (personalBalance / 100000000).toString()})
       this.setState({ currentDay:  day.toString()})
@@ -302,18 +310,17 @@ i = 351
      let hexToEth = []
      let yourHex = []
      let yourEth = []
-
+    let progressValue = 0
      let tempValue = 0
      let checkCurrentDay = []
 
      let xfLobbyMembersWrite = []
      let xfLobbyMembersRead = []
-
+    
    
 //Check each day for for total Eth spent on that day.
      while (i >= 1)
      {
-
       if(currentReversed === i)
       {
         checkCurrentDay[349 - i + 1] = true
@@ -322,12 +329,12 @@ i = 351
       {
         checkCurrentDay[349 - i + 1] = false
       }
-         xfLobbyMembersRead  = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
-      totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
+        xfLobbyMembersRead  = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
+        totalEthByDay[i] = await tokenFarm.methods.xfLobby(i).call()
        if(totalEthByDay[i] > 0){
-       tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
-       hexToEth[i] = hexAvailableArray[351 - i] - (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
-       yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
+         tempValue = parseInt(hexAvailableArray[351 - i]) * totalEthByDay[i]
+         hexToEth[i] = hexAvailableArray[351 - i] - (parseInt(hexAvailableArray[351 - i]) * Web3.utils.fromWei(totalEthByDay[i], "Ether"))
+         yourEth[i] = Web3.utils.fromWei(totalEthByDay[i], "Ether")
        }
        else
        {
@@ -335,7 +342,8 @@ i = 351
          yourEth[i] = 0
        }
        xfLobbyMembersRead[i]  = await tokenFarm.methods.xfLobbyMembers(i, this.state.account).call()
-       if(xfLobbyMembersRead[i][0] > 0){
+       console.log(xfLobbyMembersRead[i])
+       if(xfLobbyMembersRead[i][1] > 0){
          checkTotalEthByDay[351 - i + 1] = true
        }
        else{
@@ -352,10 +360,12 @@ i = 351
          yourHex[i] = 0
          checkPersonalEthByDay[351 - i + 1] = false
        }
+       this.setState({progressValue: progressValue++})
        i--
      }
-     console.log(checkTotalEthByDay)
- 
+
+     this.setState({ totalEthByDay: totalEthByDay})
+
      this.setState({ yourHex:  yourHex[currentDay].toString()})
      this.setState({ yourEth:  yourEth[currentDay].toString()})
      this.setState({ yourExitButton:  checkTotalEthByDay})
@@ -422,7 +432,8 @@ i = 351
 
 
   render() {
-    const { account, dappToken, burned, currentDay, shareRate, lockedHearts, dailyDataUpdate, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
+    
+    const { account, dappToken, progressValue, burned, currentDay, shareRate, globals, totalEthByDay, lockedHearts, dailyDataUpdate, totalEthXL, hexToEth, yourHex, yourEth, yourExitButton, yourAddress, yourEnterButton, totalSupply, initSupply, xfLobbyMembers, loading} = this.state;
 
     let initSupply_ = Web3.utils.fromWei(initSupply, "Gwei")
     let totalSupply_ = Web3.utils.fromWei(totalSupply, "Gwei")
@@ -605,7 +616,194 @@ console.log(yourExitButton)
     }
 
  
+  if(progressValue != 350) {
+    return (
+      <div>
+        
+      <Navbar  bg="dark" variant="dark">
+  <Navbar.Brand href="#home">Decentralife</Navbar.Brand>
+  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+  <Navbar.Collapse id="basic-navbar-nav">
+    <Nav className="mr-auto">
+    <Nav.Link as={Link} to="/" >Home</Nav.Link>
+      <Nav.Link href="https://decentralife.medium.com/decentralife-token-846cfd424901">Info</Nav.Link>
+
+      <NavDropdown title="Solutions" id="basic-nav-dropdown">
+        <NavDropdown.Item as={Link} to="/stake">Stake</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/transform">Transform</NavDropdown.Item>
+        <NavDropdown.Item as={Link} to="/transfer">Transfer</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Trade</NavDropdown.Item>
+      </NavDropdown>
+    </Nav>
+    <Nav>
+    <Nav.Link href="#Kovan42">KOVAN TESTNET</Nav.Link>
+    <Nav.Link href="#Day">Day : {this.state.currentDay}</Nav.Link>
+    <Nav.Link href="#deets"> <Wallet /></Nav.Link>
+    </Nav>
+  </Navbar.Collapse>
+</Navbar>
+<center>
+                <progress value={progressValue} max="351" />
+      </center>
+<Switch>
+<Route path="/" exact>
+          
+          <Container>
+  <Row xs={2} md={4} lg={6}>
+
+
+
+
+
+  <Image src="https://i.imgur.com/UoMFVsj.jpg" fluid />
+ 
+
+
+
+
+  </Row>
+  <Row xs={1} md={2}>
+    <Col>    <div style={{color:"white"}}>
+            <h1 >Welcome to Decentralife</h1>
+             <p>Certificate of Deposit on the Blockchain.</p>
+            </div></Col>
+            <Col> <h1><Wallet /></h1></Col>
+    
+  </Row>
+  <Card>
+
+
+
+
+<div className="footer">
+    <p>Decentralife Token </p>
+    <p><a href="https://kovan.etherscan.io/address/0x4587d1bcd8ec397a473d4ae31f5862705ba67f7d">Etherscan</a></p>
+  </div>
+
+
+
+
+</Card>
+</Container>
+          </Route>
+          <Route path="/transform">
+            <center>
+            <h1 style={{color: "white"}}>
+              Loading, Please Wait...
+              </h1>
+              </center></Route>
+<Route path="/stake">
+            
+            <div>
+    
+              {     console.log(yourHex)}
+            <Plot
+          data={[
+            {
+              x: totalEthByDay,
+              type: 'scatter',
+              mode: 'lines+markers',
+              marker: {color: 'red'},
+            },
+            {type: 'line', x: totalEthByDay},
+          ]}
+          layout={{width: 1000, height: 500, title: 'A Fancy Plot'}}
+        />
+            </div>
+              {this.stakeCount}
+  <CardColumns >
+    <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+    {content} 
+    </Card>
+    <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+  <PieChart
+    data={[
+      { title: 'Circulating', value: totalSupply_ - globals.lockedHeartsTotal, color: '#E38627' },
+      { title: 'Burned', value: burned, color: '#C13C37' },
+      { title: 'Staked', value: globals.lockedHeartsTotal / 10000000, color: '#3386FF'},
+    ]}
+  />
+    </Card>
+    <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+    
+      <Card.Body>
+        <Card.Title>Amount in Circulation</Card.Title>
+        <Card.Text>
+        <small className="text-muted">DEF (Orange):&nbsp; </small>
+        <medium> { strip12(totalSupply_ - (globals.lockedHeartsTotal / 10000000)) } </medium>
+       
+        </Card.Text>
+        <Card.Text>
+        <small className="text-muted">Burned (Red):&nbsp; </small>
+        <medium> { burned} </medium>
+        </Card.Text>
   
+        <Card.Text>
+        <small className="text-muted"> Staked: &nbsp; </small>
+        <medium> {globals.lockedHeartsTotal / 100000000} </medium>
+        </Card.Text>
+  
+        <Card.Text>
+        <small className="text-muted"> Percent Burned: &nbsp; </small>
+        <medium> {strip4(burned / parseInt(totalSupply_)) * 100 + '%'} </medium>
+        </Card.Text>
+  
+       
+        
+      </Card.Body>
+      <Card.Footer>
+        <small className="text-muted">Last updated 3 mins ago</small>
+      </Card.Footer>
+  
+    </Card>
+    <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
+    <Card.Body>
+      <Card.Text>
+        <small className="text-muted"> Share Rate: &nbsp; </small>
+        <medium> {strip8(shareRate / 1000000000000)} </medium>
+        </Card.Text>
+      </Card.Body>
+    </Card>
+  </CardColumns>
+  <CardColumns>
+  
+  <Card style={{ width: '100vw', height: 'auto', margin: 'auto', marginTop: '0.05vh', backgroundColor: '#3a3a3a', color: 'white'}}>
+    <Card.Header as="h5">Stakes Info</Card.Header>
+    <Card.Body>
+      <Card.Title>Current Stakes</Card.Title>
+      <Card.Text>
+        New stakes that are not finished or are ready to be claimed.
+      </Card.Text>
+      <Card.Text>
+      Loading
+      </Card.Text>
+      <Card.Title>Ended Stakes</Card.Title>
+      <Card.Text>
+        List of stakes that have ended previously.
+      </Card.Text>
+      <Card.Text>
+      Loading
+      </Card.Text>
+    </Card.Body>
+  </Card>
+  
+  </CardColumns>
+              <main role="main" className="col-lg-12 " style={{ maxWidth: '600px' }}>                 
+                </main>
+                <div className="content mr-auto ml-auto">
+        {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
+                </div>
+            </Route>
+</Switch>
+
+      </div>
+  
+    )
+  }
+  else{
+
+ 
 
     return (
       
@@ -645,6 +843,23 @@ console.log(yourExitButton)
     </div>
               <Switch>
           <Route path="/stake">
+            
+          <div>
+  
+            {     console.log(yourHex)}
+          <Plot
+        data={[
+          {
+            x: totalEthByDay,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: {color: 'red'},
+          },
+          {type: 'line', x: totalEthByDay},
+        ]}
+        layout={{width: 1000, height: 500, title: 'A Fancy Plot'}}
+      />
+          </div>
             {this.stakeCount}
 <CardColumns >
   <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
@@ -653,8 +868,9 @@ console.log(yourExitButton)
   <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
 <PieChart
   data={[
-    { title: 'Total Supply', value: totalSupply_, color: '#E38627' },
+    { title: 'Circulating', value: totalSupply_ - globals.lockedHeartsTotal, color: '#E38627' },
     { title: 'Burned', value: burned, color: '#C13C37' },
+    { title: 'Staked', value: globals.lockedHeartsTotal / 10000000, color: '#3386FF'},
   ]}
 />
   </Card>
@@ -664,7 +880,7 @@ console.log(yourExitButton)
       <Card.Title>Amount in Circulation</Card.Title>
       <Card.Text>
       <small className="text-muted">DEF (Orange):&nbsp; </small>
-      <medium> { strip12(totalSupply_) } </medium>
+      <medium> { strip12(totalSupply_ - (globals.lockedHeartsTotal / 10000000)) } </medium>
      
       </Card.Text>
       <Card.Text>
@@ -673,10 +889,16 @@ console.log(yourExitButton)
       </Card.Text>
 
       <Card.Text>
+      <small className="text-muted"> Staked: &nbsp; </small>
+      <medium> {globals.lockedHeartsTotal / 100000000} </medium>
+      </Card.Text>
+
+      <Card.Text>
       <small className="text-muted"> Percent Burned: &nbsp; </small>
       <medium> {strip4(burned / parseInt(totalSupply_)) * 100 + '%'} </medium>
       </Card.Text>
 
+     
       
     </Card.Body>
     <Card.Footer>
@@ -689,7 +911,6 @@ console.log(yourExitButton)
     <Card.Text>
       <small className="text-muted"> Share Rate: &nbsp; </small>
       <medium> {strip8(shareRate / 1000000000000)} </medium>
-      {console.log(shareRate)}
       </Card.Text>
     </Card.Body>
   </Card>
@@ -721,7 +942,7 @@ console.log(yourExitButton)
               </div>
           </Route>
           <Route path="/transform">
- 
+        
           <CardGroup>
           <Card style={{ backgroundColor: '#3a3a3a', color: 'white'}}>
   <Card.Header as="h5">Transform Lobby Info</Card.Header>
@@ -746,6 +967,7 @@ console.log(yourExitButton)
   <Card.Body>
     <Card.Title>Enters</Card.Title>
     <Card.Text>
+    <progress value={progressValue} max="350" />
     <div>
               <center>
             <h3 class="margin-right-emoji">Scroll Down to Day {this.state.currentDay}</h3>
@@ -912,7 +1134,7 @@ console.log(yourExitButton)
         </body>
       </div>
     );
-
+  }
   }
   
 }
