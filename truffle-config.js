@@ -24,6 +24,11 @@
 //const fs = require('fs');
 //const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+// const infuraKey = "fj4jll3k.....";
+//
+// const fs = require('fs');
+ const mnemonic = "switch honey outdoor asset screen feed board clutch attend marble quit under clap ritual orphan";
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -42,11 +47,11 @@ module.exports = {
     // tab if you use this network and you must also set the `host`, `port` and `network_id`
     // options below to some value.
     //
-     development: {
-      host: "192.168.1.254",     // Localhost (default: none)
-      port: 8545,            // Standard Ethereum port (default: none)
-      network_id: "*",       // Any network (default: none)
-     },
+    development: {
+      host:       'localhost',
+      port:       8545,
+      network_id: '*'
+  },
     // Another network with more advanced options...
     // advanced: {
     // port: 8545,             // Custom port
@@ -58,14 +63,26 @@ module.exports = {
     //},
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-    ropsten: {
-    provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
-    network_id: 3,       // Ropsten's id
-    gas: 5500000,        // Ropsten has a lower block limit than mainnet
-    confirmations: 2,    // # of confs to wait between deployments. (default: 0)
-    timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
-    skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
-    },
+    kovan: {
+      provider: () => new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/e272d9d07a2e489d94cee678fede6768`),
+      network_id: 42,       // Ropsten's id
+      gas: 3000000,        // Ropsten has a lower block limit than mainnet
+      confirmations: 2,    // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
+      skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
+      },
+
+    mainnet: {
+        provider: () => {
+          return new HDWalletProvider(mnemonic, 'https://mainnet.infura.io/v3/e272d9d07a2e489d94cee678fede6768')
+        },
+        network_id: 1,
+        gas: 6500000,           // Default gas to send per transaction
+        gasPrice: 1000000000,  // 10 gwei (default: 20 gwei)
+        confirmations: 0,       // # of confs to wait between deployments. (default: 0)
+        timeoutBlocks: 200,     // # of blocks before a deployment times out  (minimum/default: 50)
+        skipDryRun: false        // Skip dry run before migrations? (default: false for public nets )
+      },
     // Useful for private networks
     private: {
     provider: () => new HDWalletProvider(mnemonic, `https://network.io`),
@@ -83,12 +100,12 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "^0.6.12",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "0.5.13",    // Fetch exact version from solc-bin (default: truffle's version)
       docker: false,        // Use "0.5.1" you've installed locally with docker (default: false)
       settings: {          // See the solidity docs for advice about optimization and evmVersion
       optimizer: {
       enabled: true,
-      runs: 200
+      runs: 1500
       },
      // evmVersion: "muirglacier"
       }

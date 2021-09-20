@@ -1,42 +1,94 @@
 {
-  "name": "defi-tutorial",
+  "name": "Token",
   "version": "0.1.0",
-  "description": "DeFi Token Staking App",
-  "author": "gregory@dappuniversity.com",
+  "description": "Token Defalationary",
+  "author": "fuckthepainaway@sex.com",
+  "eslintConfig": {
+    "env": {
+      "es2020": true,
+      "browser": true,
+      "node": true,
+      "mocha": true
+    }
+  },
   "dependencies": {
-    "@openzeppelin/contracts": "^3.2.0",
+    "@apollo/client": "^3.3.7",
+    "@openzeppelin/contracts": "^3.3.0",
+    "@reduxjs/toolkit": "^1.5.0",
+    "@truffle/hdwallet-provider": "^1.2.1",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link-http": "^1.5.17",
+    "axios": "^0.21.1",
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.7.0",
-    "babel-preset-es2015": "6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "6.24.1",
     "babel-preset-stage-3": "6.24.1",
     "babel-register": "6.26.0",
-    "bootstrap": "4.3.1",
-    "chai": "4.2.0",
+    "big-number": "^2.0.0",
+    "bignumber.js": "^9.0.1",
+    "bootstrap": "^4.3.1",
     "chai-as-promised": "7.1.1",
     "chai-bignumber": "3.0.0",
+    "console.table": "^0.10.0",
+    "cors": "",
+    "debug": "^4.2.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^2.5.6",
+    "express": "^4.17.1",
+    "express-graphql": "^0.12.0",
+    "ganache-time-traveler": "^1.0.15",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
     "identicon.js": "^2.3.3",
-    "nps": "^5.10.0",
+    "infura-web3-provider": "0.0.3",
+    "js-big-decimal": "^1.3.3",
+    "js-sha3": "^0.8.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.28",
+    "multibase": "^3.1.1",
+    "namor": "^2.0.2",
+    "numeral": "^2.0.6",
+    "opts": "^2.0.2",
+    "play-sound": "",
     "react": "16.8.4",
-    "react-bootstrap": "1.0.0-beta.5",
+    "react-apollo": "^3.1.5",
+    "react-bootstrap": "^1.0.0-beta.5",
     "react-dom": "16.8.4",
+    "react-minimal-pie-chart": "^8.1.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "2.1.3",
-    "truffle": "^5.1.45",
-    "web3": "1.2.11"
+    "react-table": "^7.6.2",
+    "react-toastify": "^6.2.0",
+    "react-web3-provider": "^1.1.2",
+    "run": "^1.4.0",
+    "sha3": "2.0.2",
+    "use-wallet": "^0.8.1",
+    "web3": "",
+    "web3-provider-engine": ""
   },
   "scripts": {
     "start": "react-scripts start",
+    "deploy": "yarn run build && now ./build --name=myapp-spa",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "@babel/preset-env": "^7.12.11",
+    "@babel/preset-react": "^7.12.10",
+    "chai": "^4.2.0",
+    "hardhat": "^2.0.6"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.2.1"
+  }
 }

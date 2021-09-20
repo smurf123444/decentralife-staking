@@ -1,0 +1,104 @@
+.td-height{
+  height:49px;
+}
+.td-width{
+  width:855px
+}
+.td-heightDim{
+    height:49px;
+    opacity:0.3;
+}
+.form-button-height{
+    height:24px
+}
+
+.popup {  
+    position: fixed;  
+    width: 100%;  
+    height: 100%;  
+    top: 0;  
+    left: 0;  
+    right: 0;  
+    bottom: 0;  
+    margin: auto;  
+    background-color: rgba(0,0,0, 0.5);  
+  }  
+  .float-centerHead{
+    margin-left: 215px;
+    float:center;
+  }
+  .float-centerLine{
+    margin-left: 130px;
+    float:center;
+  }
+  .popup\_inner {  
+    position: absolute;  
+    left: 25%;  
+    right: 25%;  
+    top: 25%;  
+    bottom: 25%;  
+    margin: auto;  
+    border-radius: 20px;  
+    background: white;  
+  }
+.table-scroll{
+    height: 600px !important;
+    overflow: scroll;
+    margin-right: auto;
+    margin-left: auto;
+
+}
+
+.centered {
+    height: 17300px; /* Magic here */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1600px;
+    margin-left: auto;
+  overflow: auto;
+  display: inline-block;
+  }
+  .margin-right {
+   /* Magic here */
+   float:right;
+    margin-right: auto;
+  }
+  .margin-left {
+    /* Magic here */
+    float:center;
+     margin-left: auto;
+   }
+   .margin-right-emoji {
+    /* Magic here */
+    float:center;
+     margin-right: auto;
+   }
+
+  .popup {  
+    position: fixed;  
+    width: 100%;  
+    height: 100%;  
+    top: 0;  
+    left: 0;  
+    right: 0;  
+    bottom: 0;  
+    margin: auto;  
+    background-color: rgba(0,0,0, 0.5);  
+  }  
+  .popup_open {  
+    position: absolute;  
+    left: 25%;  
+    right: 25%;  
+    top: 25%;  
+    bottom: 25%;  
+    margin: auto;  
+    border-radius: 20px;  
+    background: white;  
+  }
+  .h1_popup{
+    color:black;
+  }
+  .red{
+    color:red;
+  }

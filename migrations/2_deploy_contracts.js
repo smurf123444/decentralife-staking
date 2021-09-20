@@ -1,24 +1,11 @@
-const DappToken = artifacts.require('DECENTRALIFEe')
-const DaiToken = artifacts.require('DaiToken')
-const TokenFarm = artifacts.require('TokenFarm')
+var Contract = artifacts.require("TokenFarm");
 
 module.exports = async function(deployer, network, accounts) {
-  // Deploy Mock DAI Token
-  await deployer.deploy(DaiToken)
-  const daiToken = await DaiToken.deployed()
+  deployer.deploy(Contract);
+  /*
+  const tokenFarm = await Contract.deployed()
+  await tokenFarm.approve('0xbd20f89D276cC947dBca8Aeb88b2d38E080B952A', '1000000000000', { from: deployer })
+  await tokenFarm._transfer('0xbd20f89D276cC947dBca8Aeb88b2d38E080B952A','1000000000000', { from:deployer })
+*/
 
-  // Deploy Dapp Token
-  await deployer.deploy(DappToken)
-  const dappToken = await DappToken.deployed()
-
-  // Deploy TokenFarm
-  await deployer.deploy(TokenFarm, dappToken.address, daiToken.address)
-  const tokenFarm = await TokenFarm.deployed()
-  //ALLOW DAPP TOO TRANSFER DECENTRALIFE
-  await dappToken.allowAddress(tokenFarm.address, true)
-  // Transfer all tokens to TokenFarm (1 million)
-  await dappToken.transfer(tokenFarm.address, '1000000000000000000000000')
-
-  // Transfer 100 Mock DAI tokens to investor
-  await daiToken.transfer(accounts[1], '100000000000000000000')
-}
+};
