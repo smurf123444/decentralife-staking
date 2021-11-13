@@ -2176,15 +2176,9 @@ contract TokenFarm is TransformableToken{
 
     function() external payable {}
     using SafeMath for uint256;
-     modifier onlyOwner(){
-            require(msg.sender == owner);
-            _;
-        }
-    address public owner;
     mapping(address => uint256) public lastTXtime;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
-    uint256 private last_turnTime;
     uint256 public inactive_burn;
     uint256 private deciCalc;
     uint256 private sum;
@@ -2197,24 +2191,13 @@ constructor() public {
             0, // _claimedSatoshisTotal
             FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
         );
-    owner = msg.sender;
     lastTXtime[msg.sender] = now;
     lastST_TXtime[msg.sender] = now;
     lastLT_TXtime[msg.sender] = now;
-
-    //totalSupply
-
-    last_turnTime = now;
-  
-
     deciCalc = 10 ** uint256(decimals);
-
     inactive_burn = (25 * deciCalc).div(10000);//0.25
 
 }
-
-
-
 
 function pctCalc_minusScale(uint256 _value, uint256 _pct) public view returns (uint256 item){
         uint256 res = (_value * _pct).div(deciCalc);
@@ -2243,23 +2226,6 @@ function burn_Inactive_Address(address _address) external returns(bool boo){
         else if (now > (lastLT_TXtime[_address] + 5184000)){
             _burn(_address, balanceOf(_address));
         }
-    return (true);
-}
-
-function burn_Inactive_Contract(address _address) external returns(bool boo){
-    require(_address != address(0), "zero address");
-    require(isContract(_address) == false, "Not a Contract");
-    uint256 inactive_bal = 0;
-    require(now > lastST_TXtime[_address] + 5259486 || now > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
-    if(now > lastST_TXtime[_address] + 5259486){
-        inactive_bal = pctCalc_minusScale(balanceOf(_address), inactive_burn);
-        _burn(_address, inactive_bal);
-        lastST_TXtime[_address] = now;
-    }
-    else if(now > lastLT_TXtime[_address] + 7802829){
-        _burn(_address, balanceOf(_address));
-        lastLT_TXtime[_address] = now;
-    }
     return (true);
 }
 
