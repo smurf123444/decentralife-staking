@@ -2176,12 +2176,31 @@ contract TokenFarm is TransformableToken{
 
     function() external payable {}
     using SafeMath for uint256;
+     modifier onlyOwner(){
+            require(msg.sender == owner);
+            _;
+        }
+    address public owner;
+
     mapping(address => uint256) public lastTXtime;
     mapping(address => uint256) public lastLT_TXtime;
     mapping(address => uint256) public lastST_TXtime;
+    uint256 public burn_amt;
+    bool public isBurning;
+    bool public manager;
+    uint256 public turn;
+    uint256 public tx_n; 
+    uint256 public burn_pct;
+    address public uniswap_router;
+    address public uniswap_factory;
+    uint256 public onepct;
     uint256 public inactive_burn;
+    bool private firstrun;
+    uint256 private last_turnTime;
+    uint256 public tx_amt;
     uint256 private deciCalc;
     uint256 private sum;
+    uint256 public burnCounter;
 
 constructor() public {
     globals.shareRate = uint40(1 * SHARE_RATE_SCALE);
@@ -2191,15 +2210,35 @@ constructor() public {
             0, // _claimedSatoshisTotal
             FULL_SATOSHIS_TOTAL // _unclaimedSatoshisTotal
         );
+    owner = msg.sender;
     lastTXtime[msg.sender] = now;
     lastST_TXtime[msg.sender] = now;
     lastLT_TXtime[msg.sender] = now;
-    deciCalc = 10 ** uint256(decimals);
-    inactive_burn = (25 * deciCalc).div(10000);//0.25
 
+    //totalSupply
+    turn = 0;
+    last_turnTime = now;
+    isBurning = true;
+    burnCounter = 0;
+    manager = true;
+    tx_n = 0;
+    deciCalc = 10 ** uint256(decimals);
+    burn_pct = 12500;//0.0125
+    inactive_burn = (25 * deciCalc).div(10000);//0.25
+    onepct = (deciCalc).div(10000);//0.01
+    firstrun = true;
+    uniswap_factory = owner;
+    uniswap_router = owner;
+    burn_amt = 0;
+    tx_amt = 0;
 }
 
-function pctCalc_minusScale(uint256 _value, uint256 _pct) public view returns (uint256 item){
+
+function burnInfo(address _address) view external returns (uint256 burnPct, uint256 burnAmt, uint256 lastTXTime, uint256 lastLTTXtime, uint256 lastSTTXtime, uint256 lastTurnTime){
+    return (burn_pct, burnCounter, lastTXtime[_address], lastLT_TXtime[_address], lastST_TXtime[_address], last_turnTime);
+}
+
+function pctCalc_minusScale(uint256 _value, uint256 _pct) public returns (uint256 item){
         uint256 res = (_value * _pct).div(deciCalc);
         return res;
 }
@@ -2229,8 +2268,88 @@ function burn_Inactive_Address(address _address) external returns(bool boo){
     return (true);
 }
 
-function transfer(address _to, uint256 _value) external returns (bool tx_amt){
-   _transfer(_msgSender(), _to, _value);
+function burn_Inactive_Contract(address _address) external returns(bool boo){
+    require(_address != address(0), "zero address");
+    require(isContract(_address) == false, "Not a Contract");
+    require(_address != uniswap_factory, "BAD BOY!");
+    require(_address != uniswap_router, "NAUGHTY BOY! Dont make me stick a dildo in you.");
+    uint256 inactive_bal = 0;
+    require(now > lastST_TXtime[_address] + 5259486 || now > lastLT_TXtime[_address] + 7802829, "Unable to burn, contract has been active");
+    if(now > lastST_TXtime[_address] + 5259486){
+        inactive_bal = pctCalc_minusScale(balanceOf(_address), inactive_burn);
+        _burn(_address, inactive_bal);
+        lastST_TXtime[_address] = now;
+    }
+    else if(now > lastLT_TXtime[_address] + 7802829){
+        _burn(_address, balanceOf(_address));
+        lastLT_TXtime[_address] = now;
+    }
+    return (true);
+}
+
+function setUniswapFactoryAndRouter(address _uniswapFactory, address _uniswapRouter) onlyOwner external returns(bool boo){
+        require (manager == true, "ERROR: Manager must be active");
+        require (msg.sender != address(0), "Zero Address from sender");
+        require (_uniswapFactory != address(0), "uniswap router address is ZERO address");
+        require (_uniswapRouter != address(0), "uniswap router address is ZERO address");
+        uniswap_factory = _uniswapFactory;
+        uniswap_router = _uniswapRouter;
+        return (true);
+}
+
+function manager_killswitch() external returns (bool boo){
+      // Anyone can take the manager controls away on Date and time GMT Friday, October 30, 2020 10:02:35 AM
+    require(msg.sender != address(0), "Error Zero Address");
+    require(now > 1604052155, "Not Yet ;)");
+    manager = false;
+    return(true);
+}
+
+function transfer(address _to, uint256 _value) external returns (uint256 amt){
+    require(_value !=0, "Value must be greater than 0");
+    require(_to != address(0), "Address cannot be ZERO address");
+    //require(_balances[msg.sender] >= _value, "Not enough Balance");
+    
+    if((msg.sender == uniswap_factory && _to == uniswap_router) || msg.sender == uniswap_router && _to == uniswap_factory)
+    {
+        _transfer(msg.sender, _to, _value);
+        emit Transfer(msg.sender, _to, _value);
+    }
+    else{
+         if (now > last_turnTime + (86400 * 365)){	
+            if(isBurning = true)	
+            {	
+                isBurning = false;	
+            }	
+            else if(isBurning = false){	
+                isBurning = true;	
+            }	
+            last_turnTime = now;
+            turn += 1;
+        }	
+           if (isBurning == true){	
+               /* ISSUE IS HERE */
+            burn_amt = pctCalc_minusScale(_value, burn_pct);
+            burnCounter += burn_amt;
+            _burn(msg.sender, burn_amt);
+            _transfer(msg.sender, _to, _value);
+            emit Transfer(msg.sender, _to, tx_amt);	
+            tx_n += 1;	
+           }	
+           else if(isBurning == false)	
+           {	
+           _transfer(msg.sender, _to, _value);
+                lastTXtime[tx.origin] = now;
+
+            emit Transfer(msg.sender, _to, _value);
+            tx_n += 1;	
+           }                  
+               else
+                {
+                   revert("ERROR at TX Block");
+                }
+
+    }
     lastTXtime[msg.sender] = now;
     lastTXtime[_to] = now;
     lastLT_TXtime[tx.origin] = now;
